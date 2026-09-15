@@ -4,8 +4,9 @@
  */
 
 import Swiper from 'swiper'
-import { Pagination, Navigation, Thumbs } from 'swiper/modules'
+import { A11y, Grid, Pagination, Navigation, Thumbs } from 'swiper/modules'
 import 'swiper/css'
+import 'swiper/css/grid'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 
@@ -79,13 +80,70 @@ function initProductGallery(): void {
     })
 }
 
+function initPhotogalleries(): void {
+    const swipers = document.querySelectorAll<HTMLElement>('.photogallery-swiper')
+
+    swipers.forEach((swiperEl) => {
+        const galleryEl = swiperEl.closest<HTMLElement>('.fa-section-block--photogallery-1')
+        const prevEl = galleryEl?.querySelector<HTMLElement>('[data-photogallery-prev]')
+        const nextEl = galleryEl?.querySelector<HTMLElement>('[data-photogallery-next]')
+        const paginationEl = galleryEl?.querySelector<HTMLElement>('.photogallery-pagination')
+
+        new Swiper(swiperEl, {
+            modules: [A11y, Grid, Navigation, Pagination],
+            spaceBetween: 8,
+            slidesPerView: 2.2,
+            slidesPerGroup: 1,
+            grid: {
+                rows: 2,
+                fill: 'column',
+            },
+            navigation: {
+                nextEl,
+                prevEl,
+            },
+            pagination: {
+                el: paginationEl,
+                clickable: true,
+                dynamicBullets: true,
+                dynamicMainBullets: 3,
+            },
+            a11y: {
+                prevSlideMessage: 'Poprzednie zdjęcie',
+                nextSlideMessage: 'Następne zdjęcie',
+                paginationBulletMessage: 'Przejdź do zdjęcia {{index}}',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 3.2,
+                },
+                768: {
+                    slidesPerView: 3.2,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                1024: {
+                    spaceBetween: 16,
+                    slidesPerView: 5,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+            },
+        })
+    })
+}
+
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initEventsSwipers()
         initProductGallery()
+        initPhotogalleries()
     })
 } else {
     initEventsSwipers()
     initProductGallery()
+    initPhotogalleries()
 }

@@ -72,10 +72,10 @@
 
         <div class="flex min-w-0 flex-1 items-center gap-4">
           <img
-            src="{{ $item->image->src() }}"
-            alt="{{ $item->image->alt() }}"
-            @if ($item->image->width() > 0) width="{{ $item->image->width() }}" @endif
-            @if ($item->image->height() > 0) height="{{ $item->image->height() }}" @endif
+            src="{{ $item->image?->src('medium') ?: wc_placeholder_img_src() }}"
+            alt="{{ $item->image?->alt() ?: $item->name }}"
+            @if (($item->image?->width() ?? 0) > 0) width="{{ $item->image->width() }}" @endif
+            @if (($item->image?->height() ?? 0) > 0) height="{{ $item->image->height() }}" @endif
             class="h-16 w-12 shrink-0 object-contain"
           />
 

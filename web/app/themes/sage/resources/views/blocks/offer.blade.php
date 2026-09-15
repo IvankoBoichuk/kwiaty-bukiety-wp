@@ -1,6 +1,6 @@
 @php
   use App\Blocks\Blocks;
-  use App\Media\ImageHelper;
+  use Timber\ImageHelper;
 
   /* @var array<string, Category> $categories */
   $featuredCategory = $categories[0] ?? null;
@@ -96,7 +96,7 @@
 
     @if (!empty($heroImageSrc))
       <img
-        src="{{ ImageHelper::resize($media['file']['id'], 200) }}"
+        src="{{ ImageHelper::resize(wp_get_attachment_image_url($media['file']['id'], 'full') ?: '', 200) }}"
         alt="{{ $heroImageAlt }}"
         fetchpriority="high"
         class="object-cover max-lg:absolute max-lg:top-1/2 max-lg:right-0 max-lg:-z-20 max-lg:h-full max-lg:w-[50%] max-lg:-translate-y-1/2 lg:relative lg:aspect-video lg:min-h-90 lg:flex-1 lg:overflow-hidden lg:rounded-4xl"
@@ -111,9 +111,9 @@
     @if (!empty($featuredCategory->link))
       <div class="relative row-span-2 overflow-hidden rounded-2xl transition hover:brightness-105 lg:rounded-4xl">
         <img
-          src="{{ $featuredCategory->image->src() ?: $productPlaceholderImage }}"
+          src="{{ $featuredCategory->image?->src('medium') ?: $productPlaceholderImage }}"
           class="absolute inset-0 size-full object-cover lg:rounded-4xl"
-          alt="{{ $featuredCategory->image->alt() ?? ($featuredCategory->name ?? '') }}"
+          alt="{{ $featuredCategory->image?->alt() ?: ($featuredCategory->name ?? '') }}"
         />
         <a
           href="{{ $featuredCategory->link ?? '#' }}"
@@ -132,9 +132,9 @@
             class="relative flex items-center overflow-hidden rounded-2xl bg-[#F2EDE1] transition-colors hover:bg-[#F2EDE1]/80 lg:rounded-4xl"
           >
             <img
-              src="{{ $item->image->src() }}"
+              src="{{ $item->image?->src('medium') ?: $productPlaceholderImage }}"
               class="aspect-square h-12.75 flex-none rounded-2xl object-cover md:aspect-10/9 md:h-24 lg:h-31 lg:rounded-4xl"
-              alt="{{ $item->image->alt() }}"
+              alt="{{ $item->image?->alt() ?: $item->name }}"
             />
             <a
               href="{{ $item->link }}"

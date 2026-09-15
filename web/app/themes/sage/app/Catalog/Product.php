@@ -2,7 +2,8 @@
 
 namespace App\Catalog;
 
-use App\Media\Image;
+use Timber\Image;
+use Timber\Timber;
 use WC_Product;
 use WC_Product_Variable;
 
@@ -17,7 +18,7 @@ final class Product
     /** @var array<string, string> */
     public readonly array $badges;
     public readonly string $price;
-    public readonly Image $image;
+    public readonly ?Image $image;
     public function __construct(public readonly WC_Product $product)
     {
         $this->data = new ProductData($product);
@@ -30,12 +31,7 @@ final class Product
         $thumbnailId = $product->get_image_id();
 
         $this->price = $product->get_price_html();
-        $this->image = Image::fromAttachmentId(
-            $thumbnailId,
-            'medium',
-            $product->get_name(),
-            wc_placeholder_img_src(),
-        );
+        $this->image = Timber::get_image($thumbnailId);
     }
     public static function fromWooCommerce(WC_Product $product): self
     {

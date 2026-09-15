@@ -3,7 +3,7 @@
 namespace App\Catalog;
 
 use App\Admin\ProductAttributeIcons;
-use App\Media\Image;
+use Timber\Timber;
 use WC_Product;
 use WC_Product_Attribute;
 use WC_Product_Variation;
@@ -76,20 +76,26 @@ final class SingleProductView
         }
 
         return array_map(function (int $attachmentId): array {
-            $image = Image::fromAttachmentId(
-                $attachmentId,
-                'large',
-                $this->product->get_name(),
-                wc_placeholder_img_src('large'),
-            );
+            $image = Timber::get_image($attachmentId);
+
+            if ($image === null) {
+                return [
+                    'src' => wc_placeholder_img_src('large'),
+                    'alt' => $this->product->get_name(),
+                    'width' => 0,
+                    'height' => 0,
+                    'srcset' => '',
+                    'sizes' => '',
+                ];
+            }
 
             return [
-                'src' => $image->src(),
-                'alt' => $image->alt(),
+                'src' => $image->src('large'),
+                'alt' => $image->alt() ?: $this->product->get_name(),
                 'width' => $image->width() ?? 0,
                 'height' => $image->height() ?? 0,
-                'srcset' => $image->srcset(),
-                'sizes' => $image->sizes(),
+                'srcset' => $image->srcset('large') ?? '',
+                'sizes' => $image->img_sizes('large') ?? '',
             ];
         }, $imageIds);
     }

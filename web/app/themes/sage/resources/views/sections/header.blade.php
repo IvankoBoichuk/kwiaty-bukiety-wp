@@ -10,7 +10,7 @@
   >
     @if (!empty($logos?->dark))
       <a href="{{ home_url('/') }}" class="text-lg font-semibold tracking-[0.16em] text-[#244734] uppercase">
-        <img src="{{ $logos->dark->src() }}" alt="{{ $logos->dark->alt() ?? $siteName }}" width="66" height="31" />
+        <img src="{{ $logos->dark->src('medium') }}" alt="{{ $logos->dark->alt() ?: $siteName }}" width="66" height="31" />
       </a>
     @endif
 

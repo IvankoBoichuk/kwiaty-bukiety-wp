@@ -42,7 +42,7 @@
       @if (!empty($logos->light))
         <a href="{{ home_url('/') }}" aria-label="{{ $siteName }}">
           <img
-            src="{{ $logos->light->src() }}"
+            src="{{ $logos->light->src('medium') }}"
             alt="{{ $logos->light->alt() ?? $siteName }}"
             width="90"
             height="43"

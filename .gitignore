@@ -1,6 +1,7 @@
 # Application
 web/app/plugins/*
 !web/app/plugins/.gitkeep
+!web/app/plugins/frontenda-blocks
 web/app/mu-plugins/*/
 web/app/themes/*/
 !web/app/themes/sage
@@ -24,7 +25,7 @@ web/.htaccess
 !.env.example
 
 # Composer
-/vendor
+**/vendor
 auth.json
 
 # WP-CLI
@@ -43,5 +44,5 @@ phpunit.xml
 .phpunit.cache
 
 .devcontainer
-/node_modules
+**/node_modules/
 /package-lock.json

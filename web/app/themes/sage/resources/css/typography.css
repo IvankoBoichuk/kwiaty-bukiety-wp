@@ -3,9 +3,6 @@
 @utility text-offer-ttl {
   @apply text-[32px] leading-[1.2] font-bold;
 }
-@utility text-h1 {
-  @apply text-[24px] leading-[1.3] font-bold;
-}
 @utility h2-mobile {
   @apply text-[20px] leading-5.75 font-extrabold;
 }
@@ -17,6 +14,9 @@
 }
 @utility h3-desktop {
   @apply text-[32px] leading-9.5 font-semibold;
+}
+@utility h4-mobile {
+  @apply text-[14px] leading-[auto] font-semibold tracking-normal;
 }
 @utility h4-desktop {
   @apply text-[22px] leading-6.5 font-bold;
@@ -44,4 +44,13 @@
 }
 @utility link {
   @apply font-light text-[#2F80ED] no-underline;
+}
+.h1-offer-2 {
+  @apply font-heading text-green-default;
+  strong {
+    @apply font-bold text-[32px] leading-tight md:text-[48px];
+  }
+  em {
+    @apply italic font-medium text-[32px] leading-tight md:text-[48px];
+  }
 }

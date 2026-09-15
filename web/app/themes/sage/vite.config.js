@@ -58,7 +58,7 @@ export default defineConfig({
 
     webfontDownload([], {
       assetsSubfolder: 'fonts',
-      subsetsAllowed: ['latin']
+      subsetsAllowed: ['latin','latin-ext']
     }),
   ],
   resolve: {

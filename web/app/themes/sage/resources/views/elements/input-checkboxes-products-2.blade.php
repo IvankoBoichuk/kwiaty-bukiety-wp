@@ -71,10 +71,10 @@
         />
 
         <img
-          src="{{ $item->image->src() }}"
-          alt="{{ $item->image->alt() }}"
-          @if ($item->image->width() > 0) width="{{ $item->image->width() }}" @endif
-          @if ($item->image->height() > 0) height="{{ $item->image->height() }}" @endif
+          src="{{ $item->image?->src('medium') ?: wc_placeholder_img_src() }}"
+          alt="{{ $item->image?->alt() ?: $item->name }}"
+          @if (($item->image?->width() ?? 0) > 0) width="{{ $item->image->width() }}" @endif
+          @if (($item->image?->height() ?? 0) > 0) height="{{ $item->image->height() }}" @endif
           class="h-38.5 w-full rounded-xl object-cover lg:aspect-square lg:h-auto"
         />
 

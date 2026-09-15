@@ -9,12 +9,12 @@ use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
 use App\Blocks\Blocks;
-use App\Media\ImageHelper;
+use App\Services\PostalCodeImporter;
 use App\Support\Context;
 use App\Support\DeliveryTimer;
 use Illuminate\Support\Facades\Blade;
 use Roots\Acorn\Sage\SageServiceProvider;
-use App\Services\PostalCodeImporter;
+use Timber\Timber;
 
 class ThemeServiceProvider extends SageServiceProvider
 {
@@ -39,6 +39,7 @@ class ThemeServiceProvider extends SageServiceProvider
     public function boot()
     {
         parent::boot();
+        Timber::init();
         Categories::boot();
         Healthcheck::boot();
         Blocks::boot();
@@ -46,7 +47,6 @@ class ThemeServiceProvider extends SageServiceProvider
         DeliveryTimerSettingsPage::boot();
         ProductAttributeIcons::boot();
         DeliveryTimer::boot();
-        ImageHelper::boot();
         PostalCode::boot();
         Blade::directive('id', function ($expression) {
             return "<?php if (!empty($expression)): ?>id=\"<?php echo e($expression); ?>\"<?php endif; ?>";

@@ -2,7 +2,7 @@
 
 namespace App\Admin;
 
-use App\Media\Image;
+use Timber\Timber;
 
 class ProductAttributeIcons
 {
@@ -133,11 +133,15 @@ class ProductAttributeIcons
             return null;
         }
 
-        $image = Image::fromAttachmentId($attachmentId, 'thumbnail', $fallbackAlt, '');
+        $image = Timber::get_image($attachmentId);
+
+        if ($image === null) {
+            return null;
+        }
 
         return [
-            'src' => $image->src(),
-            'alt' => $image->alt(),
+            'src' => $image->src('thumbnail'),
+            'alt' => $image->alt() ?: $fallbackAlt,
         ];
     }
 

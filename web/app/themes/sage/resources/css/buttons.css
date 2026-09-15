@@ -1,0 +1,29 @@
+.wp-element-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 px-12.5 py-3 text-base transition;
+}
+
+.wp-block-button {
+    &.is-style-fill {
+        .has-green-default-background-color {
+            @apply bg-green-dark border-green-dark hover:bg-green-default text-white;
+        }
+    }
+    &.is-style-outline {
+        .has-green-default-color {
+            @apply bg-background text-green-default border-green-dark hover:bg-secondary;
+        }
+    }
+}
+
+.wp-block-buttons {
+    @apply flex flex-wrap items-center gap-3;
+}
+
+.wp-block-button,
+.wp-block-buttons {
+    @apply max-lg:w-full;
+}
+
+.fa-button__icon {
+    @apply size-5;
+}

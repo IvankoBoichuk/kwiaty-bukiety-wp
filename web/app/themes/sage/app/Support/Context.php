@@ -3,7 +3,7 @@
 namespace App\Support;
 
 use App\Admin\ContactSettingsPage;
-use App\Media\Image;
+use Timber\Timber;
 
 class Context
 {
@@ -60,8 +60,8 @@ class Context
         }
 
         return $this->logos = (object) [
-            'light' => Image::fromUrl($logoLightId),
-            'dark' => Image::fromUrl($logoDarkId),
+            'light' => Timber::get_image(attachment_url_to_postid((string) $logoLightId)),
+            'dark' => Timber::get_image(attachment_url_to_postid((string) $logoDarkId)),
         ];
     }
 

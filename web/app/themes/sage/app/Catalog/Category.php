@@ -2,7 +2,8 @@
 
 namespace App\Catalog;
 
-use App\Media\Image;
+use Timber\Image;
+use Timber\Timber;
 use WP_Term;
 
 final class Category
@@ -11,7 +12,7 @@ final class Category
         public readonly int $id,
         public readonly string $name,
         public readonly string $link,
-        public readonly Image $image,
+        public readonly ?Image $image,
     ) {}
 
     public static function fromWordPressTerm(WP_Term $term): self
@@ -22,7 +23,7 @@ final class Category
             id: $term->term_id,
             name: $term->name,
             link: (string) (get_term_link($term) ?: ''),
-            image: Image::fromAttachmentId($thumbnailId, 'medium', $term->name, wc_placeholder_img_src()),
+            image: Timber::get_image($thumbnailId),
         );
     }
 }

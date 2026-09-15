@@ -3,6 +3,7 @@
 namespace App\Blocks;
 
 use Illuminate\Support\Fluent;
+use Timber\Image;
 use WP_Block;
 
 class Blocks
@@ -176,11 +177,28 @@ class Blocks
 
     public static function multilineTitle(?string $value): string
     {
-        $lines = preg_split('/\r\n|\r|\n/', trim((string) $value)) ?: [];
+        $value = trim((string) $value);
+        $openingTag = '';
+        $closingTag = '';
+        $content = $value;
+
+        if (
+            preg_match(
+                '/\A\s*(<(?<tag>h[1-6])\b[^>]*>)(.*)(<\/\k<tag>\s*>)\s*\z/is',
+                $value,
+                $matches,
+            ) === 1
+        ) {
+            $openingTag = $matches[1];
+            $content = $matches[3];
+            $closingTag = $matches[4];
+        }
+
+        $lines = preg_split('/\r\n|\r|\n|<br\s*\/?>/i', $content) ?: [];
         $lines = array_values(
             array_filter(
                 array_map('trim', $lines),
-                static fn($line) => $line !== '',
+                static fn ($line) => $line !== '',
             ),
         );
 
@@ -188,20 +206,30 @@ class Blocks
             return '';
         }
 
-        if (\count($lines) != 3) {
-            return '<span class="text-offer-ttl">'
-                . esc_html($lines[0])
-                . '</span>';
-        }
-
-        return \sprintf(
-            collect([
+        if (\count($lines) === 3) {
+            $lineTemplates = [
                 '<span class="font-heading font-semibold text-[38px] leading-11.5 -mb-1.25 md:text-[56px] md:mb-3 lg:m-0 lg:text-[99px] lg:leading-21.5">%s</span>',
                 '<span class="h3-mobile -mb-2.5 md:text-[22px] lg:text-[99px] lg:font-heading lg:leading-21.5 lg:m-0 block lg:inline lg:ml-2">%s</span>',
                 '<span class="font-heading font-medium italic text-[42px] leading-[1.2] md:text-[64px] lg:text-[115px] lg:leading-[1.2] -mt-4 block">%s</span>',
-            ])->implode(''),
-            ...$lines,
-        );
+            ];
+        } else {
+            $lineTemplates = array_fill(
+                0,
+                \count($lines),
+                '<span class="text-offer-ttl">%s</span>',
+            );
+        }
+
+        $spans = implode('', array_map(
+            static fn (string $line, int $index): string => sprintf(
+                $lineTemplates[$index],
+                wp_kses_post($line),
+            ),
+            $lines,
+            array_keys($lines),
+        ));
+
+        return $openingTag . $spans . $closingTag;
     }
 
     public static function buttonClasses(
@@ -284,9 +312,24 @@ class Blocks
         };
     }
 
-    public static function sanitizeSvg(?string $svg): string
+    public static function sanitizeSvg(Image $svg): string
     {
-        if (!$svg) {
+        $path = $svg->file_loc();
+
+        if (
+            strtolower((string) pathinfo($path, PATHINFO_EXTENSION)) !== 'svg'
+            || !is_file($path)
+            || !is_readable($path)
+        ) {
+            return '';
+        }
+
+        $contents = file_get_contents($path);
+
+        if (
+            !is_string($contents)
+            || preg_match('/<svg\b[^>]*>.*<\/svg>/is', $contents, $matches) !== 1
+        ) {
             return '';
         }
 
@@ -294,10 +337,15 @@ class Blocks
             'svg' => [
                 'width' => true,
                 'height' => true,
-                'viewBox' => true,
+                'viewbox' => true,
                 'fill' => true,
+                'stroke' => true,
                 'xmlns' => true,
                 'class' => true,
+                'role' => true,
+                'aria-hidden' => true,
+                'aria-label' => true,
+                'focusable' => true,
             ],
             'path' => [
                 'd' => true,
@@ -308,21 +356,90 @@ class Blocks
                 'stroke-linejoin' => true,
                 'stroke-miterlimit' => true,
                 'clip-path' => true,
+                'fill-rule' => true,
+                'clip-rule' => true,
+                'opacity' => true,
+                'transform' => true,
             ],
-            'g' => ['clip-path' => true, 'fill' => true, 'stroke' => true],
+            'g' => [
+                'clip-path' => true,
+                'fill' => true,
+                'stroke' => true,
+                'opacity' => true,
+                'transform' => true,
+            ],
             'defs' => [],
-            'clipPath' => ['id' => true],
+            'clippath' => ['id' => true],
             'rect' => [
+                'x' => true,
+                'y' => true,
                 'width' => true,
                 'height' => true,
                 'fill' => true,
+                'stroke' => true,
                 'rx' => true,
+                'ry' => true,
+                'transform' => true,
             ],
-            'linearGradient' => ['id' => true],
-            'stop' => ['offset' => true, 'stop-color' => true],
+            'circle' => [
+                'cx' => true,
+                'cy' => true,
+                'r' => true,
+                'fill' => true,
+                'stroke' => true,
+            ],
+            'ellipse' => [
+                'cx' => true,
+                'cy' => true,
+                'rx' => true,
+                'ry' => true,
+                'fill' => true,
+                'stroke' => true,
+            ],
+            'line' => [
+                'x1' => true,
+                'y1' => true,
+                'x2' => true,
+                'y2' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+            ],
+            'polygon' => ['points' => true, 'fill' => true, 'stroke' => true],
+            'polyline' => ['points' => true, 'fill' => true, 'stroke' => true],
+            'lineargradient' => [
+                'id' => true,
+                'x1' => true,
+                'y1' => true,
+                'x2' => true,
+                'y2' => true,
+                'gradientunits' => true,
+                'gradienttransform' => true,
+            ],
+            'radialgradient' => [
+                'id' => true,
+                'cx' => true,
+                'cy' => true,
+                'r' => true,
+                'fx' => true,
+                'fy' => true,
+                'gradientunits' => true,
+                'gradienttransform' => true,
+            ],
+            'stop' => [
+                'offset' => true,
+                'stop-color' => true,
+                'stop-opacity' => true,
+            ],
+            'title' => [],
+            'desc' => [],
         ];
 
-        return wp_kses($svg, $allowed);
+        $sanitized = trim(wp_kses($matches[0], $allowed));
+
+        return str_starts_with(strtolower($sanitized), '<svg')
+            ? $sanitized
+            : '';
     }
 
     public static function faqSchema(array $items): string
