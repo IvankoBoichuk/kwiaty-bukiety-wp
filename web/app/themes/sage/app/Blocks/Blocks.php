@@ -14,7 +14,6 @@ class Blocks
     protected static array $blocks = [
         'offer' => ['title' => 'Offer'],
         'products' => ['title' => 'Products'],
-        'numbers' => ['title' => 'Numbers'],
         'reviews' => ['title' => 'Reviews'],
         'list' => ['title' => 'List'],
         'cities' => ['title' => 'Cities'],
