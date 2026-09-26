@@ -5,6 +5,4 @@
 storage
 .env
 npm-debug.log
-bun.lock
-composer.lock
 package-lock.json

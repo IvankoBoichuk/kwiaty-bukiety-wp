@@ -9,7 +9,7 @@
     $media = $context->media();
     $list = $context->list();
 @endphp
-<section>
+<section {!! $context->wrapperAttributes() !!}>
     <div class="mb-6 md:mb-12">
         @if ($header?->get('subtitle'))
             <div class="section__subtitle">

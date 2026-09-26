@@ -1,7 +1,6 @@
 # Application
 web/app/plugins/*
 !web/app/plugins/.gitkeep
-!web/app/plugins/frontenda-blocks
 web/app/mu-plugins/*/
 web/app/themes/*/
 !web/app/themes/sage
@@ -33,7 +32,6 @@ wp-cli.local.yml
 .vscode
 
 /wp-includes
-composer.lock
 
 /layout
 .htaccess

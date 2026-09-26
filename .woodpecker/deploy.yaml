@@ -1,0 +1,177 @@
+when:
+  - event: push
+    branch: dev
+  - event: manual
+
+depends_on:
+  - test
+
+# Secrets are referenced with a doubled dollar sign in commands, e.g.
+# $${SSH_HOST}. Woodpecker runs its own brace-substitution pass over this file
+# before the shell sees it, so a single dollar sign would be consumed there and
+# reach rsync empty. That pass covers comments too: never write a brace
+# expression here whose contents are not a real variable name.
+variables:
+  - &php_image php:8.3-cli-alpine
+  - &theme_path web/app/themes/sage
+  - &deploy_env
+    SSH_HOST:
+      from_secret: ssh_host
+    SSH_PORT:
+      from_secret: ssh_port
+    SSH_USER:
+      from_secret: ssh_user
+    SSH_PRIVATE_KEY:
+      from_secret: ssh_private_key
+    DEPLOY_PATH:
+      from_secret: deploy_path
+
+steps:
+  # Fail before anything is built if the repo is missing deploy secrets. This
+  # also guards rsync --delete against an empty DEPLOY_PATH.
+  - name: validate-secrets
+    image: alpine:3
+    environment: *deploy_env
+    commands:
+      - test -n "$${SSH_HOST}"
+      - test -n "$${SSH_PORT}"
+      - test -n "$${SSH_USER}"
+      - test -n "$${SSH_PRIVATE_KEY}"
+      - test -n "$${DEPLOY_PATH}"
+
+  - name: build-theme
+    image: oven/bun:1
+    directory: *theme_path
+    commands:
+      - bun install --frozen-lockfile
+      - bun run build
+
+  # PHP 8.3 matches the deploy target. The official composer image tracks the
+  # latest PHP (8.5 at the time of writing), which would resolve dependencies
+  # against a platform the server does not run, so composer is installed here.
+  - name: composer-deps
+    image: *php_image
+    commands:
+      - apk add --no-cache git unzip curl
+      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+      - composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+      - cd web/app/themes/sage
+      - composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+  # frontenda-blocks ships its editor bundle only as source: blocks/section/build/
+  # is gitignored upstream, so the composer dist archive contains no compiled JS.
+  # Must run after composer-deps, which is what puts the plugin on disk.
+  - name: build-plugin
+    image: oven/bun:1
+    directory: web/app/plugins/frontenda-blocks
+    commands:
+      - bun install --frozen-lockfile
+      - bun run build
+
+  - name: deploy
+    image: alpine:3
+    environment: *deploy_env
+    commands:
+      - apk add --no-cache rsync openssh-client
+      - mkdir -p ~/.ssh
+      - echo "$${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+      - chmod 600 ~/.ssh/id_ed25519
+      - ssh-keyscan -p "$${SSH_PORT}" "$${SSH_HOST}" >> ~/.ssh/known_hosts
+      - |
+        rsync -az --delete \
+          -e "ssh -i ~/.ssh/id_ed25519 -p $${SSH_PORT}" \
+          --exclude=".git" \
+          --exclude=".github" \
+          --exclude=".woodpecker" \
+          --exclude=".devcontainer" \
+          --exclude=".env" \
+          --exclude=".env.*" \
+          --exclude=".htaccess" \
+          --exclude="layout" \
+          --exclude="node_modules" \
+          --exclude="web/app/uploads" \
+          --exclude="web/app/cache" \
+          --exclude="web/app/backups-dup-lite" \
+          --exclude="web/app/upgrade" \
+          --exclude="web/app/upgrade-temp-backup" \
+          --exclude="web/app/languages" \
+          --exclude="web/.htaccess" \
+          --exclude="web/app/themes/twentytwentyfive" \
+          ./ \
+          "$${SSH_USER}@$${SSH_HOST}:$${DEPLOY_PATH}"
+
+  # Acorn caches discovered packages and services under web/app/cache/acorn,
+  # which rsync excludes, so a plugin added or removed by this deploy would not
+  # be picked up until the cache is dropped. Non-fatal: wp-cli may be absent.
+  - name: clear-cache
+    image: alpine:3
+    environment: *deploy_env
+    failure: ignore
+    commands:
+      - apk add --no-cache openssh-client
+      - mkdir -p ~/.ssh
+      - echo "$${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+      - chmod 600 ~/.ssh/id_ed25519
+      - ssh-keyscan -p "$${SSH_PORT}" "$${SSH_HOST}" >> ~/.ssh/known_hosts
+      - |
+        ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
+          "cd $${DEPLOY_PATH} && command -v wp >/dev/null 2>&1 \
+             && wp acorn optimize:clear \
+             || rm -rf web/app/cache/acorn/framework/cache/*.php web/app/cache/acorn/framework/views/*"
+
+  - name: smoke-test
+    image: alpine:3
+    commands:
+      - apk add --no-cache curl
+      - curl --fail --silent --show-error https://dev.kwiaty-bukiety.com.pl > /dev/null
+
+# Production deploy for `main`. To enable: uncomment the two steps below, add
+# `- event: push` / `branch: main` to the `when` block at the top of this file,
+# and create the prod_* secrets in Woodpecker.
+#
+# - name: validate-secrets-prod
+#   image: alpine:3
+#   environment: &prod_env
+#     SSH_HOST:
+#       from_secret: prod_ssh_host
+#     SSH_PORT:
+#       from_secret: prod_ssh_port
+#     SSH_USER:
+#       from_secret: prod_ssh_user
+#     SSH_PRIVATE_KEY:
+#       from_secret: prod_ssh_private_key
+#     DEPLOY_PATH:
+#       from_secret: prod_deploy_path
+#   when:
+#     - event: push
+#       branch: main
+#   commands:
+#     - test -n "$${SSH_HOST}"
+#     - test -n "$${SSH_PORT}"
+#     - test -n "$${SSH_USER}"
+#     - test -n "$${SSH_PRIVATE_KEY}"
+#     - test -n "$${DEPLOY_PATH}"
+#
+# - name: deploy-prod
+#   image: alpine:3
+#   environment: *prod_env
+#   when:
+#     - event: push
+#       branch: main
+#   commands:
+#     - apk add --no-cache rsync openssh-client
+#     - mkdir -p ~/.ssh
+#     - echo "$${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+#     - chmod 600 ~/.ssh/id_ed25519
+#     - ssh-keyscan -p "$${SSH_PORT}" "$${SSH_HOST}" >> ~/.ssh/known_hosts
+#     - |
+#       rsync -az --delete \
+#         -e "ssh -i ~/.ssh/id_ed25519 -p $${SSH_PORT}" \
+#         --exclude=".git" --exclude=".github" --exclude=".woodpecker" \
+#         --exclude=".devcontainer" --exclude=".env" --exclude=".env.*" \
+#         --exclude=".htaccess" --exclude="layout" --exclude="node_modules" \
+#         --exclude="web/app/uploads" --exclude="web/app/cache" \
+#         --exclude="web/app/backups-dup-lite" --exclude="web/app/upgrade" \
+#         --exclude="web/app/upgrade-temp-backup" --exclude="web/app/languages" \
+#         --exclude="web/.htaccess" \
+#         ./ "$${SSH_USER}@$${SSH_HOST}:$${DEPLOY_PATH}"

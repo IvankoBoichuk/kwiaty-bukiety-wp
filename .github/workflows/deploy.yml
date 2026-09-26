@@ -1,10 +1,10 @@
 name: Deploy to Hostinger
 
+# Superseded by Woodpecker CI (.woodpecker/deploy.yaml), which now owns the
+# deploy on push to dev. The push trigger is removed so both do not rsync
+# --delete to the same target at once; this workflow is kept as a manual
+# fallback only.
 on:
-  push:
-    branches:
-      - main
-      - dev
   workflow_dispatch:
 
 concurrency:

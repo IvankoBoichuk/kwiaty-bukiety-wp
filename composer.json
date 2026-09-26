@@ -16,6 +16,10 @@
     "wp-packages": {
       "type": "composer",
       "url": "https://repo.wp-packages.org"
+    },
+    "frontenda-blocks": {
+      "type": "vcs",
+      "url": "https://github.com/IvankoBoichuk/frontenda-blocks"
     }
   },
   "require": {
@@ -28,17 +32,19 @@
     "roots/wordpress": "^7.0.0",
     "roots/wp-config": "1.0.0",
     "wp-plugin/woocommerce": "^10.9",
-    "wp-plugin/query-monitor": "^4.0",
+    "wp-plugin/loco-translate": "^2.8",
     "roots/allow-svg": "^1.0",
     "wp-plugin/woo-payu-payment-gateway": "^2.10",
     "wp-plugin/woocommerce-paypal-payments": "^4.0.4",
     "roots/acorn": "^6.2",
     "generoi/sage-woocommerce": "^1.1",
-    "timber/timber": "^2.5"
+    "timber/timber": "^2.5",
+    "frontenda/frontenda-blocks": "dev-main"
   },
   "require-dev": {
     "laravel/pint": "^1.18",
-    "pestphp/pest": "^4.7"
+    "pestphp/pest": "^4.7",
+    "wp-plugin/query-monitor": "^4.0"
   },
   "config": {
     "optimize-autoloader": true,

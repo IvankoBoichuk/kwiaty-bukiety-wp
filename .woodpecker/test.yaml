@@ -1,0 +1,27 @@
+when:
+  - event: [push, pull_request, manual]
+
+# PHP 8.3 matches the deploy target. The official composer image tracks the
+# latest PHP (8.5 at the time of writing), which would resolve dependencies
+# against a platform the server does not run, so composer is installed by hand.
+steps:
+  - name: composer-install
+    image: &php_image php:8.3-cli-alpine
+    commands:
+      - apk add --no-cache git unzip curl
+      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+      - composer install --no-interaction --no-progress --prefer-dist
+
+  # Non-blocking: the codebase currently has 11 pint findings, so this reports
+  # style drift without gating the deploy. Drop `failure: ignore` once the
+  # existing findings are fixed.
+  - name: lint
+    image: *php_image
+    failure: ignore
+    commands:
+      - vendor/bin/pint --test
+
+  - name: test
+    image: *php_image
+    commands:
+      - vendor/bin/pest
