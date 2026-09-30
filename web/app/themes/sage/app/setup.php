@@ -28,18 +28,60 @@ add_filter('block_editor_settings_all', function ($settings) {
     return $settings;
 });
 
-add_filter(
+/**
+ * Feed the front-end bundle its translations.
+ *
+ * The theme's scripts are emitted by Vite as bare module tags, not through
+ * wp_enqueue_script, so there is no handle for wp_set_script_translations()
+ * to hang the catalogue on -- and without it every __() call in the checkout
+ * and product JS rendered in English, including the form validation messages.
+ * Merge the generated JED catalogues by hand instead.
+ *
+ * @return string
+ */
+function scriptLocaleData(string $domain): string
+{
+    $locale = determine_locale();
+    $directory = get_template_directory() . '/languages/front';
+    $messages = [];
+
+    foreach (glob("{$directory}/{$domain}-{$locale}-*.json") ?: [] as $file) {
+        $decoded = json_decode((string) file_get_contents($file), true);
+        $data = $decoded['locale_data'][$domain] ?? null;
+
+        if (is_array($data)) {
+            $messages = array_merge($messages, $data);
+        }
+    }
+
+    return $messages === [] ? '' : (string) wp_json_encode([
+        'domain' => $domain,
+        'locale_data' => [$domain => $messages],
+    ]);
+}
+
+add_action(
     'wp_enqueue_scripts',
     function () {
         if (is_admin()) {
             return;
         }
 
-        $dependencies = ['wp-i18n'];
-        foreach ($dependencies as $dependency) {
-            if (!wp_script_is($dependency)) {
-                wp_enqueue_script($dependency);
-            }
+        if (!wp_script_is('wp-i18n')) {
+            wp_enqueue_script('wp-i18n');
+        }
+
+        $localeData = scriptLocaleData('sage-front');
+
+        if ($localeData !== '') {
+            wp_add_inline_script(
+                'wp-i18n',
+                sprintf(
+                    'wp.i18n.setLocaleData( %s.locale_data["sage-front"], "sage-front" );',
+                    $localeData,
+                ),
+                'after',
+            );
         }
 
         echo Vite::withEntryPoints(['resources/js/app.ts'])->toHtml();
@@ -248,6 +290,16 @@ add_action(
             'sage-front',
             get_template_directory() . '/languages/front',
         );
+
+        /**
+         * The admin-facing strings use their own domain, which nothing ever
+         * loaded -- so all 60-odd of them (menu locations, sidebar names,
+         * customizer labels, both settings pages) were untranslatable.
+         */
+        load_theme_textdomain(
+            'sage-back',
+            get_template_directory() . '/languages/back',
+        );
     },
     20,
 );
@@ -281,8 +333,14 @@ add_action('widgets_init', function () {
 });
 
 add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
-    $wp_customize->add_setting('logo_dark');
-    $wp_customize->add_setting('logo_light');
+    // Both settings hold an uploaded image URL, so sanitize as a URL rather
+    // than letting the raw value through.
+    $wp_customize->add_setting('logo_dark', [
+        'sanitize_callback' => 'esc_url_raw',
+    ]);
+    $wp_customize->add_setting('logo_light', [
+        'sanitize_callback' => 'esc_url_raw',
+    ]);
 
     $wp_customize->add_control(
         new WP_Customize_Image_Control($wp_customize, 'logo_dark', [

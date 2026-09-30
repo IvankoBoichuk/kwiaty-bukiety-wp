@@ -29,10 +29,11 @@ class Healthcheck
     {
         unset($request);
 
+        // Anyone can call this, so it says only that the site is up. The
+        // environment and theme name told a caller whether they had found
+        // staging and what to aim at.
         return new WP_REST_Response([
             'status' => 'ok',
-            'service' => wp_get_theme()->get('Name') ?: 'sage',
-            'environment' => wp_get_environment_type(),
             'timestamp' => gmdate('c'),
         ]);
     }

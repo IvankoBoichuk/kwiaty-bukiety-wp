@@ -156,11 +156,13 @@ class DeliveryTimer
 
         return [
             sprintf(
-                'pn-pt: %s',
+                /* translators: %s is an hour range, e.g. 9:00 - 18:00 */
+                __('Mon-Fri: %s', 'sage-front'),
                 $this->formatHourRange($settings['weekday_hours']),
             ),
             sprintf(
-                'sob-nd: %s',
+                /* translators: %s is an hour range, e.g. 10:00 - 16:00 */
+                __('Sat-Sun: %s', 'sage-front'),
                 $this->formatHourRange($settings['weekend_hours']),
             ),
         ];

@@ -375,6 +375,14 @@ class ProductAttributeIcons
 
     protected static function postedAttachmentId(): int
     {
+        // Reached only through woocommerce_attribute_added/updated, which
+        // WooCommerce already gates on manage_product_terms and its own
+        // nonce. Check the capability anyway rather than let the hook
+        // contract be the only thing standing here.
+        if (! current_user_can('manage_product_terms')) {
+            return 0;
+        }
+
         return absint($_POST[self::FIELD_NAME] ?? 0);
     }
 

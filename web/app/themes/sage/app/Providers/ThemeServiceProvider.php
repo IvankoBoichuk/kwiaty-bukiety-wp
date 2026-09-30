@@ -9,6 +9,7 @@ use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
 use App\Console\LegacyBlockMigrator;
+use App\Console\PostalCodeSchema;
 use App\Services\PostalCodeImporter;
 use App\Support\Context;
 use App\Support\DeliveryTimer;
@@ -52,11 +53,25 @@ class ThemeServiceProvider extends SageServiceProvider
         });
 
         if (defined('WP_CLI') && WP_CLI) {
+            \WP_CLI::add_command('postal-codes install', function () {
+                if (PostalCodeSchema::install()) {
+                    \WP_CLI::success('Created the postal_codes table.');
+
+                    return;
+                }
+
+                \WP_CLI::log('The postal_codes table already exists.');
+            });
+
             \WP_CLI::add_command('postal-codes import', function ($args) {
                 $path = $args[0] ?? null;
 
                 if (! $path) {
                     \WP_CLI::error('Path is required.');
+                }
+
+                if (! PostalCodeSchema::exists()) {
+                    \WP_CLI::error('The postal_codes table is missing. Run `wp postal-codes install` first.');
                 }
 
                 $count = app(PostalCodeImporter::class)->import($path);

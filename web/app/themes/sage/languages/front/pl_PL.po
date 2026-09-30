@@ -874,3 +874,33 @@ msgid ""
 msgstr ""
 "Twoje zamówienie zostało pomyślnie złożone, a potwierdzenie zostało wysłane "
 "na Twój adres e-mail."
+
+#: resources/views/partials/delivery-timer.blade.php:7
+msgid "Flower delivery even today"
+msgstr "Dostawa kwiatów nawet dziś"
+
+#: resources/views/partials/delivery-timer.blade.php:8
+msgid "Order within:"
+msgstr "Zamów w ciągu:"
+
+#: app/Support/Context.php:124
+msgid "Opening hours"
+msgstr "Godziny pracy"
+
+#. translators: %s is an hour range, e.g. 9:00 - 18:00
+#: app/Support/DeliveryTimer.php:161
+msgid "Mon-Fri: %s"
+msgstr "pn-pt: %s"
+
+#. translators: %s is an hour range, e.g. 10:00 - 16:00
+#: app/Support/DeliveryTimer.php:165
+msgid "Sat-Sun: %s"
+msgstr "sob-nd: %s"
+
+#: resources/views/frontenda-blocks/section/products-1.blade.php:54
+msgid "Previous"
+msgstr "Poprzedni"
+
+#: resources/views/frontenda-blocks/section/products-1.blade.php:66
+msgid "Next"
+msgstr "Następny"

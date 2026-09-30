@@ -45,17 +45,63 @@
 
 Якщо простими словами: це не просто чистий WordPress, а вже підготовлена стартова база саме під WooCommerce сайт, яку можна брати за основу для магазину й далі розвивати під потрібний дизайн та бізнес-логіку.
 
+## Розгортання
+
+Деплой у `dev` робить Woodpecker (`.woodpecker/deploy.yaml`) на пуш у гілку `dev`.
+GitHub Actions (`.github/workflows/deploy.yml`) лишився ручним запасним варіантом.
+Прод-кроки в конвеєрі поки закоментовані.
+
+Конвеєр збирає тему, ставить composer-залежності, **окремо збирає editor-assets
+плагіна `frontenda-blocks`** (він тримає `blocks/section/build/` у `.gitignore`,
+тож composer-архів приходить без зібраного JS), розкладає все через
+`rsync --delete` і скидає кеш Acorn.
+
+### Що треба на сервері окремо
+
+- `.env` — не деплоїться (виключений із rsync і з git). Для `dev` став
+  `WP_ENV=staging`, інакше або сайт індексується, або в публіку світять помилки.
+- `.htaccess` — теж не деплоїться.
+- Таблиця поштових індексів:
+
+  ```bash
+  wp acorn postal-codes:install
+  wp postal-codes import data/postal-codes.csv
+  ```
+
+  Без неї автокомпліт міста й індексу в чекауті не працює.
+
+### Перенести прод на локальну машину
+
+```bash
+mysqldump -h <host> -u <user> -p --single-transaction --default-character-set=utf8mb4 <database> > stage-$(date +%F-%H%M).sql
+tar -czf uploads-$(date +%F-%H%M).tar.gz web/app/uploads
+```
+
+Локально:
+
+```bash
+mysql -h database -u wordpress -ppassword wordpress < stage-<timestamp>.sql
+tar -xzf uploads-<timestamp>.tar.gz
+wp search-replace 'https://dev.kwiaty-bukiety.com.pl' 'http://localhost:8084'
+```
+
+## Блоки
+
+Секції сторінок будуються з `fa/section` — блока з плагіна
+[frontenda-blocks](https://github.com/IvankoBoichuk/frontenda-blocks), який
+ставиться через composer. Variant і layout секції обирають PHP-шаблон:
+спершу шукається `web/app/themes/sage/frontenda-blocks/section/<variant>-<layout>.php`
+у темі, і лише потім шаблон плагіна. Кожен такий файл — тонкий місток до
+однойменного Blade у `resources/views/frontenda-blocks/section/`.
+
+Після змін у плагіні:
+
+```bash
+composer update frontenda/frontenda-blocks
+cd web/app/plugins/frontenda-blocks && bun install && bun run build
+```
+
 ## Примітка
 
+
 README написаний у спрощеному вигляді, щоб швидко зрозуміти призначення репозиторію без зайвої технічної інформації.
-
-
-mysqldump -h localhost -u 'u958399693_iedcP' -p --single-transaction --default-character-set=utf8mb4 'u958399693_HSVuZ' > stage-$(date +%F-%H%M).sql
-
-tar -czf uploads-$(date +%F-%H%M).tar.gz web/app/uploads
-
-mysql -h database -u wordpress -ppassword wordpress < /roots/app/stage-2026-06-26-1830.sql
-
-wp search-replace 'https://dev.kwiaty-bukiety.com.pl' 'http://localhost:8080'
-
-tar -xzf uploads-2026-06-26-1835.tar.gz

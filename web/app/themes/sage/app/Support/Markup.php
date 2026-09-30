@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Vite;
+use Throwable;
 use Timber\Image;
 
 /**
@@ -13,6 +15,23 @@ use Timber\Image;
  */
 final class Markup
 {
+    /**
+     * Resolve a built asset, or null when it is not in the manifest.
+     *
+     * webfonts.css only exists because vite-plugin-webfont-dl downloads the
+     * Google Fonts CSS at build time. A build without egress produces no such
+     * entry, and an unguarded Vite::asset() would then throw on every page of
+     * the site rather than just lose the webfont preload.
+     */
+    public static function viteAsset(string $asset): ?string
+    {
+        try {
+            return Vite::asset($asset);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
     public static function multilineTitle(?string $value): string
     {
         $value = trim((string) $value);

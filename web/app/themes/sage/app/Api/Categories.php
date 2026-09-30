@@ -11,6 +11,14 @@ class Categories
 
     protected const ROUTE = '/categories';
 
+    protected const ALLOWED_TAXONOMIES = ['product_cat', 'product_tag', 'category', 'post_tag'];
+
+    protected const DEFAULT_TAXONOMY = 'product_cat';
+
+    protected const DEFAULT_NUMBER = 20;
+
+    protected const MAX_NUMBER = 100;
+
     protected const ORDER_VALUES = ['ASC', 'DESC'];
 
     protected const ORDERBY_VALUES = [
@@ -29,20 +37,7 @@ class Categories
         'none',
     ];
 
-    protected const FIELDS_VALUES = [
-        'all',
-        'all_with_object_id',
-        'ids',
-        'tt_ids',
-        'names',
-        'slugs',
-        'count',
-        'id=>parent',
-        'id=>name',
-        'id=>slug',
-    ];
 
-    protected const GET_VALUES = ['all', 'all_with_object_id'];
 
     public static function boot(): void
     {
@@ -56,11 +51,9 @@ class Categories
             'callback' => [self::class, 'handle'],
             'permission_callback' => [self::class, 'permission_callback'],
             'args' => [
-                'taxonomy' => self::keyListArg(
-                    'Taxonomy slug or list of taxonomy slugs.',
-                ),
-                'object_ids' => self::integerListArg(
-                    'Limit results to terms attached to object IDs.',
+                'taxonomy' => self::enumArg(
+                    'Taxonomy slug. Restricted to the taxonomies this endpoint serves.',
+                    self::ALLOWED_TAXONOMIES,
                 ),
                 'orderby' => self::enumArg(
                     'Field used to sort terms.',
@@ -80,35 +73,18 @@ class Categories
                     'Exclude terms and their descendants by IDs.',
                 ),
                 'number' => self::integerArg(
-                    'Maximum number of terms to return.',
+                    'Maximum number of terms to return (1-100, default 20).',
                 ),
                 'offset' => self::integerArg(
                     'Number of terms to skip before collecting results.',
                 ),
-                'fields' => self::enumArg(
-                    'Fields format returned by get_terms.',
-                    self::FIELDS_VALUES,
-                ),
                 'name' => self::textListArg('Term name or list of term names.'),
                 'slug' => self::textListArg('Term slug or list of term slugs.'),
-                'term_taxonomy_id' => self::integerListArg(
-                    'Filter by term taxonomy IDs.',
-                ),
                 'hierarchical' => self::booleanArg(
                     'Whether to include hierarchical descendants.',
                 ),
                 'search' => self::textArg('Search term names and slugs.'),
                 'name__like' => self::textArg('Match terms by partial name.'),
-                'description__like' => self::textArg(
-                    'Match terms by partial description.',
-                ),
-                'pad_counts' => self::booleanArg(
-                    'Whether to pad term counts in hierarchical taxonomies.',
-                ),
-                'get' => self::enumArg(
-                    'Whether to return all terms regardless of hide_empty.',
-                    self::GET_VALUES,
-                ),
                 'child_of' => self::integerArg(
                     'Return descendants of a given term ID.',
                 ),
@@ -118,24 +94,6 @@ class Categories
                 'childless' => self::booleanArg(
                     'Whether to return only childless terms.',
                 ),
-                'cache_domain' => self::textArg(
-                    'Custom cache domain for term queries.',
-                ),
-                'cache_results' => self::booleanArg(
-                    'Whether to cache term query results.',
-                ),
-                'update_term_meta_cache' => self::booleanArg(
-                    'Whether to prime term meta cache.',
-                ),
-                'meta_query' => self::arrayArg('Term meta query clauses.'),
-                'meta_key' => self::textArg(
-                    'Meta key used for filtering or sorting.',
-                ),
-                'meta_value' => self::textArg('Meta value used for filtering.'),
-                'meta_type' => self::textArg(
-                    'MySQL meta value type for comparisons.',
-                ),
-                'meta_compare' => self::textArg('Meta comparison operator.'),
             ],
         ]);
     }
@@ -191,7 +149,6 @@ class Categories
     ): array {
         $allowedKeys = [
             'taxonomy',
-            'object_ids',
             'orderby',
             'order',
             'hide_empty',
@@ -200,27 +157,14 @@ class Categories
             'exclude_tree',
             'number',
             'offset',
-            'fields',
             'name',
             'slug',
-            'term_taxonomy_id',
             'hierarchical',
             'search',
             'name__like',
-            'description__like',
-            'pad_counts',
-            'get',
             'child_of',
             'parent',
             'childless',
-            'cache_domain',
-            'cache_results',
-            'update_term_meta_cache',
-            'meta_query',
-            'meta_key',
-            'meta_value',
-            'meta_type',
-            'meta_compare',
         ];
 
         $queryArgs = [];
@@ -232,6 +176,27 @@ class Categories
 
             $queryArgs[$key] = $request->get_param($key);
         }
+
+        // Anonymous callers pick the taxonomy, so restrict them to the ones
+        // this endpoint exists to serve.
+        $taxonomy = $queryArgs['taxonomy'] ?? self::DEFAULT_TAXONOMY;
+        $taxonomy = \is_array($taxonomy) ? reset($taxonomy) : $taxonomy;
+        $queryArgs['taxonomy'] = \in_array($taxonomy, self::ALLOWED_TAXONOMIES, true)
+            ? $taxonomy
+            : self::DEFAULT_TAXONOMY;
+
+        // get_terms() treats number = 0 as unlimited, so an unclamped value is
+        // a one-request table scan. Treat 0 as "unspecified" rather than 1,
+        // which is what a caller omitting the parameter means.
+        $number = (int) ($queryArgs['number'] ?? 0);
+        $queryArgs['number'] = $number > 0
+            ? min(self::MAX_NUMBER, $number)
+            : self::DEFAULT_NUMBER;
+
+        // Always cache: a public endpoint must not be able to ask for a cold
+        // query on every call.
+        $queryArgs['cache_results'] = true;
+        $queryArgs['fields'] = 'all';
 
         return $queryArgs;
     }
@@ -323,33 +288,6 @@ class Categories
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    protected static function keyListArg(string $description): array
-    {
-        return [
-            'description' => $description,
-            'sanitize_callback' => static function ($value): array|string {
-                if (!is_array($value)) {
-                    return sanitize_key((string) $value);
-                }
-
-                return array_values(
-                    array_filter(
-                        array_map(
-                            static fn($item): string => sanitize_key(
-                                (string) $item,
-                            ),
-                            $value,
-                        ),
-                        static fn(string $item): bool => $item !== '',
-                    ),
-                );
-            },
-        ];
-    }
-
-    /**
      * @param array<int, string> $allowedValues
      * @return array<string, mixed>
      */
@@ -382,19 +320,6 @@ class Categories
             ): bool {
                 return in_array((string) $value, $allowedValues, true)
                     || in_array(strtoupper((string) $value), $allowedValues, true);
-            },
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected static function arrayArg(string $description): array
-    {
-        return [
-            'description' => $description,
-            'sanitize_callback' => static function ($value): array {
-                return is_array($value) ? $value : [];
             },
         ];
     }

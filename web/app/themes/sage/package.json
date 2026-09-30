@@ -11,12 +11,9 @@
     "format:blade": "prettier --write \"resources/views/**/*.blade.php\"",
     "format:blade:check": "prettier --check \"resources/views/**/*.blade.php\"",
     "typecheck": "tsc --noEmit",
-    "translate": "npm run translate:pot && npm run translate:update",
-    "translate:pot": "wp i18n make-pot . ./resources/lang/sage.pot --include=\"theme.json,patterns,app,resources\"",
-    "translate:update": "for file in ./resources/lang/*.po; do wp i18n update-po ./resources/lang/sage.pot $file; done",
-    "translate:compile": "npm run translate:mo && npm run translate:js",
-    "translate:js": "wp i18n make-json ./resources/lang --pretty-print",
-    "translate:mo": "wp i18n make-mo ./resources/lang ./resources/lang"
+    "translate:front": "wp i18n make-pot . ./languages/front/sage-front.pot --domain=sage-front --include=\"app,resources\" && for file in ./languages/front/*.po; do wp i18n update-po ./languages/front/sage-front.pot $file; done",
+    "translate:back": "wp i18n make-pot . ./languages/back/sage-back.pot --domain=sage-back --include=\"app,resources\" && for file in ./languages/back/*.po; do wp i18n update-po ./languages/back/sage-back.pot $file; done",
+    "translate:compile": "wp i18n make-mo ./languages/front ./languages/front && wp i18n make-mo ./languages/back ./languages/back && wp i18n make-json ./languages/front --pretty-print --no-purge"
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.25.0",

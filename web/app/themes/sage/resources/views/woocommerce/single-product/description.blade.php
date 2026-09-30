@@ -21,7 +21,7 @@
 
   <div class="overflow-hidden transition-all duration-300" x-show="open" x-collapse>
     <div class="prose prose-a:text-[#0885CD] prose-a:no-underline prose-a:hover:underline max-w-full pt-2 lg:pt-6">
-      {!! $description !!}
+      {!! wp_kses_post($description) !!}
     </div>
   </div>
 </div>

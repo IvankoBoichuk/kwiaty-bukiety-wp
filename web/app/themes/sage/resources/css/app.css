@@ -213,6 +213,12 @@
   }
 }
 
+/* Used by every fa/section header that renders a subtitle. It had no
+   definition at all, so subtitles rendered as unstyled body text. */
+.section__subtitle {
+  @apply text-body-15 text-green-default mb-1 font-semibold uppercase;
+}
+
 .fa-section-block--photogallery-1 {
   @apply mx-0;
 }

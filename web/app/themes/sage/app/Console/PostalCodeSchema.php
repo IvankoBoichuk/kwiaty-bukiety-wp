@@ -1,12 +1,33 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+declare(strict_types=1);
+
+namespace App\Console;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up(): void
+/**
+ * Creates the postal_codes table.
+ *
+ * database/migrations/ holds the same definition, but Acorn 6 ships no
+ * `migrate` command, so nothing ever ran it and a fresh install had no table
+ * at all -- which takes down the checkout's city and postcode autocomplete.
+ * This runs from WP-CLI instead and is safe to re-run.
+ */
+final class PostalCodeSchema
+{
+    public static function exists(): bool
     {
+        return Schema::hasTable('postal_codes');
+    }
+
+    public static function install(): bool
+    {
+        if (self::exists()) {
+            return false;
+        }
+
         Schema::create('postal_codes', function (Blueprint $table) {
             $table->id();
 
@@ -26,10 +47,7 @@ return new class extends Migration {
             $table->index(['postal_code', 'settlement']);
             $table->index(['settlement', 'postal_code']);
         });
-    }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('postal_codes');
+        return true;
     }
-};
+}

@@ -51,6 +51,27 @@ class PostalCode
         ]);
     }
 
+    /**
+     * Columns every lookup returns.
+     *
+     * @var list<string>
+     */
+    protected const COLUMNS = [
+        'postal_code',
+        'settlement',
+        'street',
+        'house_numbers',
+        'municipality',
+        'county',
+        'province',
+    ];
+
+    protected const MAX_RESULTS = 100;
+
+    protected const CACHE_GROUP = 'sage_postal_codes';
+
+    protected const CACHE_TTL = 12 * HOUR_IN_SECONDS;
+
     public static function findByPostalCode(WP_REST_Request $request): WP_REST_Response
     {
         $postalCode = trim((string) $request->get_param('postal_code'));
@@ -61,31 +82,19 @@ class PostalCode
             ], 400);
         }
 
-        $results = PostalCodeModel::query()
-            ->select([
-                'postal_code',
-                'settlement',
-                'street',
-                'house_numbers',
-                'municipality',
-                'county',
-                'province',
-            ])
+        return self::respond("code:{$postalCode}", static fn() => PostalCodeModel::query()
+            ->select(self::COLUMNS)
             ->where('postal_code', $postalCode)
             ->orderBy('settlement')
             ->orderBy('street')
-            ->get();
-
-        return new WP_REST_Response([
-            'data' => $results,
-            'count' => $results->count(),
-        ]);
+            ->limit(self::MAX_RESULTS)
+            ->get());
     }
 
     public static function findBySettlement(WP_REST_Request $request): WP_REST_Response
     {
         $settlement = trim((string) $request->get_param('settlement'));
-        $limit = min(max((int) $request->get_param('limit'), 1), 100);
+        $limit = min(max((int) $request->get_param('limit'), 1), self::MAX_RESULTS);
 
         if ($settlement === '') {
             return new WP_REST_Response([
@@ -93,25 +102,41 @@ class PostalCode
             ], 400);
         }
 
-        $results = PostalCodeModel::query()
-            ->select([
-                'postal_code',
-                'settlement',
-                'street',
-                'house_numbers',
-                'municipality',
-                'county',
-                'province',
-            ])
-            ->where('settlement', 'like', $settlement . '%')
+        // Unescaped, a bare "%" collapses the prefix match into LIKE '%%' and
+        // scans the whole table -- which this endpoint hands to anyone, on
+        // every keystroke of the checkout autocomplete.
+        $prefix = addcslashes($settlement, '%_\\') . '%';
+
+        return self::respond("settlement:{$settlement}:{$limit}", static fn() => PostalCodeModel::query()
+            ->select(self::COLUMNS)
+            ->where('settlement', 'like', $prefix)
             ->orderBy('settlement')
             ->orderBy('postal_code')
             ->limit($limit)
-            ->get();
+            ->get());
+    }
 
-        return new WP_REST_Response([
-            'data' => $results,
+    /**
+     * The autocomplete fires per keystroke over a table of ~118k rows, so the
+     * same handful of prefixes gets asked for constantly. Cache the response.
+     */
+    protected static function respond(string $key, callable $query): WP_REST_Response
+    {
+        $cacheKey = md5($key);
+        $cached = wp_cache_get($cacheKey, self::CACHE_GROUP);
+
+        if (is_array($cached)) {
+            return new WP_REST_Response($cached);
+        }
+
+        $results = $query();
+        $payload = [
+            'data' => $results->all(),
             'count' => $results->count(),
-        ]);
+        ];
+
+        wp_cache_set($cacheKey, $payload, self::CACHE_GROUP, self::CACHE_TTL);
+
+        return new WP_REST_Response($payload);
     }
 }

@@ -27,7 +27,7 @@
 
             @if ($option['description'] !== '')
               <span class="text-gray-3 group-[.active]:text-background text-center text-sm">
-                {!! $option['description'] !!}
+                {!! wp_kses_post($option['description']) !!}
               </span>
             @endif
           </button>

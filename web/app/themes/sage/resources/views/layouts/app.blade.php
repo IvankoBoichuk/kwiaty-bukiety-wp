@@ -5,18 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   @php(do_action('get_header'))
   @php(wp_head())
-  @php($webfonts = \Illuminate\Support\Facades\Vite::asset('webfonts.css'))
+  @php($webfonts = \App\Support\Markup::viteAsset('webfonts.css'))
 
-  <link
-    rel="preload"
-    as="style"
-    href="{{ $webfonts }}"
-    onload="
-      this.onload = null;
-      this.rel = 'stylesheet';
-    "
-  />
-  <noscript><link rel="stylesheet" href="{{ $webfonts }}" /></noscript>
+  @if ($webfonts)
+    <link
+      rel="preload"
+      as="style"
+      href="{{ $webfonts }}"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript><link rel="stylesheet" href="{{ $webfonts }}" /></noscript>
+  @endif
 </head>
 
 <body @php(body_class()) x-data="mobileMenu">

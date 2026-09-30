@@ -121,7 +121,7 @@ class Context
                 ...$emails,
                 [
                     'type' => 'text',
-                    'value' => 'Godziny pracy',
+                    'value' => __('Opening hours', 'sage-front'),
                     'details' => $this->workingHoursDetails(),
                 ],
             ]),

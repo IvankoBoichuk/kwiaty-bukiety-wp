@@ -82,7 +82,7 @@
                         x-collapse
                     >
                         <div class="text-body-13 text-green-dark md:text-body-16 ml-auto w-full pt-2 font-light md:pt-4 lg:max-w-208.5 lg:pr-51">
-                            {!! $item->text() !!}
+                            {!! wp_kses_post($item->text()) !!}
                         </div>
                     </div>
                 </div>
