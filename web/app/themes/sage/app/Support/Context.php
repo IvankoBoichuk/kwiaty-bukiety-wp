@@ -60,9 +60,43 @@ class Context
         }
 
         return $this->logos = (object) [
-            'light' => Timber::get_image(attachment_url_to_postid((string) $logoLightId)),
-            'dark' => Timber::get_image(attachment_url_to_postid((string) $logoDarkId)),
+            'light' => self::logoImage((string) $logoLightId),
+            'dark' => self::logoImage((string) $logoDarkId),
         ];
+    }
+
+    /**
+     * The customizer stores a URL, so the id has to be looked up.
+     *
+     * attachment_url_to_postid() is an uncached raw query against wp_posts.guid
+     * and this runs on every page through the header and footer composers, so
+     * memoise the result. Skips the query entirely when the setting is empty,
+     * which the old code did not -- it called through with '' whenever only one
+     * of the two logos was set.
+     */
+    protected static function logoImage(string $url): ?\Timber\Image
+    {
+        static $resolved = [];
+
+        if (trim($url) === '') {
+            return null;
+        }
+
+        if (! \array_key_exists($url, $resolved)) {
+            $cacheKey = 'sage_logo_id_' . md5($url);
+            $attachmentId = get_transient($cacheKey);
+
+            if ($attachmentId === false) {
+                $attachmentId = attachment_url_to_postid($url);
+                set_transient($cacheKey, $attachmentId, DAY_IN_SECONDS);
+            }
+
+            $resolved[$url] = $attachmentId > 0
+                ? Timber::get_image((int) $attachmentId)
+                : null;
+        }
+
+        return $resolved[$url];
     }
 
     /**

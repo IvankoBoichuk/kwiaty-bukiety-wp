@@ -177,21 +177,8 @@ class Categories
             $queryArgs[$key] = $request->get_param($key);
         }
 
-        // Anonymous callers pick the taxonomy, so restrict them to the ones
-        // this endpoint exists to serve.
-        $taxonomy = $queryArgs['taxonomy'] ?? self::DEFAULT_TAXONOMY;
-        $taxonomy = \is_array($taxonomy) ? reset($taxonomy) : $taxonomy;
-        $queryArgs['taxonomy'] = \in_array($taxonomy, self::ALLOWED_TAXONOMIES, true)
-            ? $taxonomy
-            : self::DEFAULT_TAXONOMY;
-
-        // get_terms() treats number = 0 as unlimited, so an unclamped value is
-        // a one-request table scan. Treat 0 as "unspecified" rather than 1,
-        // which is what a caller omitting the parameter means.
-        $number = (int) ($queryArgs['number'] ?? 0);
-        $queryArgs['number'] = $number > 0
-            ? min(self::MAX_NUMBER, $number)
-            : self::DEFAULT_NUMBER;
+        $queryArgs['taxonomy'] = self::resolveTaxonomy($queryArgs['taxonomy'] ?? null);
+        $queryArgs['number'] = self::clampNumber($queryArgs['number'] ?? null);
 
         // Always cache: a public endpoint must not be able to ask for a cold
         // query on every call.
@@ -199,6 +186,35 @@ class Categories
         $queryArgs['fields'] = 'all';
 
         return $queryArgs;
+    }
+
+    /**
+     * Anonymous callers pick the taxonomy, so restrict them to the ones this
+     * endpoint exists to serve.
+     */
+    public static function resolveTaxonomy(mixed $taxonomy): string
+    {
+        if (\is_array($taxonomy)) {
+            $taxonomy = reset($taxonomy);
+        }
+
+        return \in_array($taxonomy, self::ALLOWED_TAXONOMIES, true)
+            ? (string) $taxonomy
+            : self::DEFAULT_TAXONOMY;
+    }
+
+    /**
+     * get_terms() reads number = 0 as unlimited, so an unclamped value is a
+     * one-request table scan. 0 means "unspecified" here, which is what a
+     * caller omitting the parameter means -- not "one term".
+     */
+    public static function clampNumber(mixed $number): int
+    {
+        $number = (int) $number;
+
+        return $number > 0
+            ? min(self::MAX_NUMBER, $number)
+            : self::DEFAULT_NUMBER;
     }
 
     /**

@@ -50,7 +50,6 @@ export function initMenu() {
 
     search() {
       // Placeholder for search functionality
-      console.log('Search triggered');
       // You can implement search modal or redirect here
     }
   }));

@@ -22,7 +22,8 @@ export function openVideoModal(trigger: HTMLElement): void {
 		modal.classList.add('flex');
 		
 		// Play video
-		video.play().catch(err => console.log('Autoplay prevented:', err));
+		// Autoplay is blocked by policy in plenty of browsers; nothing to do.
+			void video.play().catch(() => {});
 		
 		// Prevent body scroll
 		document.body.style.overflow = 'hidden';
@@ -136,7 +137,7 @@ function initVideoPlayer(): void {
 			const video = entry.target as HTMLVideoElement;
 			if (entry.isIntersecting) {
 				// Video in viewport - play
-				video.play().catch(err => console.log('Autoplay prevented:', err));
+				void video.play().catch(() => {});
 			} else {
 				// Video out of viewport - pause
 				video.pause();

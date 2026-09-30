@@ -102,10 +102,7 @@ class PostalCode
             ], 400);
         }
 
-        // Unescaped, a bare "%" collapses the prefix match into LIKE '%%' and
-        // scans the whole table -- which this endpoint hands to anyone, on
-        // every keystroke of the checkout autocomplete.
-        $prefix = addcslashes($settlement, '%_\\') . '%';
+        $prefix = self::escapeLike($settlement) . '%';
 
         return self::respond("settlement:{$settlement}:{$limit}", static fn() => PostalCodeModel::query()
             ->select(self::COLUMNS)
@@ -114,6 +111,18 @@ class PostalCode
             ->orderBy('postal_code')
             ->limit($limit)
             ->get());
+    }
+
+    /**
+     * Escape the LIKE wildcards in a user-supplied prefix.
+     *
+     * Unescaped, a bare "%" collapses the prefix match into LIKE '%%' and
+     * scans the whole table -- which this endpoint hands to anyone, on every
+     * keystroke of the checkout autocomplete.
+     */
+    public static function escapeLike(string $value): string
+    {
+        return addcslashes($value, '%_\\');
     }
 
     /**

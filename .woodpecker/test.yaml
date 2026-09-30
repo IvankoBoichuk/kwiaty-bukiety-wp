@@ -12,12 +12,8 @@ steps:
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
       - composer install --no-interaction --no-progress --prefer-dist
 
-  # Non-blocking: the codebase currently has 11 pint findings, so this reports
-  # style drift without gating the deploy. Drop `failure: ignore` once the
-  # existing findings are fixed.
   - name: lint
     image: *php_image
-    failure: ignore
     commands:
       - vendor/bin/pint --test
 
@@ -25,3 +21,12 @@ steps:
     image: *php_image
     commands:
       - vendor/bin/pest
+
+  # The deploy builds the theme anyway, but only after the test pipeline has
+  # passed, so a type error would otherwise surface halfway through a deploy.
+  - name: typecheck
+    image: oven/bun:1
+    directory: web/app/themes/sage
+    commands:
+      - bun install --frozen-lockfile
+      - bun run typecheck

@@ -24,5 +24,5 @@ setScrollBarWidth();
 initMenu();
 initCounterAnimation();
 initDeliveryTimers();
-initIntlTelInputs();
+void initIntlTelInputs();
 Alpine.start();

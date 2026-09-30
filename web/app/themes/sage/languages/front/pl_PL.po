@@ -904,3 +904,7 @@ msgstr "Poprzedni"
 #: resources/views/frontenda-blocks/section/products-1.blade.php:66
 msgid "Next"
 msgstr "Następny"
+
+#: resources/views/sections/header.blade.php:24
+msgid "Cart"
+msgstr "Koszyk"
