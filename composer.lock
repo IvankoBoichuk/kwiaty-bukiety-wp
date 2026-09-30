@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46fca91b8b345491a981389e44547f32",
+    "content-hash": "d7e8e3249231d9c26c8ce63822d6012d",
     "packages": [
         {
             "name": "brick/math",
@@ -7494,15 +7494,15 @@
         },
         {
             "name": "wp-plugin/woocommerce",
-            "version": "10.9.4",
+            "version": "11.1.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/woocommerce/",
-                "reference": "tags/10.9.4"
+                "reference": "tags/11.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/woocommerce.10.9.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/woocommerce.11.1.2.zip"
             },
             "require": {
                 "composer/installers": "~1.0|~2.0"
@@ -7521,7 +7521,7 @@
                 "issues": "https://wordpress.org/support/plugin/woocommerce",
                 "source": "https://plugins.svn.wordpress.org/woocommerce"
             },
-            "time": "2026-09-22T19:02:05+00:00"
+            "time": "2026-09-28T15:14:59+00:00"
         },
         {
             "name": "wp-plugin/woocommerce-paypal-payments",
