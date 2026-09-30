@@ -1,5 +1,5 @@
 @php
-    use App\Blocks\Blocks;
+    use App\Support\Markup;
     use Frontenda\Blocks\SectionContext;
     /**
      * @var SectionContext $context
@@ -30,7 +30,7 @@
             
                 @if ($header?->get('title'))
                     <div class="text-dark-text mb-3">
-                        {!! Blocks::multilineTitle($header->get('title')->render()) !!}
+                        {!! Markup::multilineTitle($header->get('title')->render()) !!}
                     </div>
                 @endif
 

@@ -1,5 +1,4 @@
 @php
-    use App\Blocks\Blocks;
     use Frontenda\Blocks\SectionContext;
 
     /** @var SectionContext $context */

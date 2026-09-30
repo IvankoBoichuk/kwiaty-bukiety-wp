@@ -1,5 +1,5 @@
 @php
-    use App\Blocks\Blocks;
+    use App\Support\Markup;
     use Frontenda\Blocks\SectionContext;
     /** @var SectionContext $context */
 @endphp
@@ -20,7 +20,7 @@
                     </div>
                     <div class="text-body-15 text-gray-1 flex items-center justify-center gap-1 leading-normal font-semibold lg:text-[22px]">
                         @if ($item->icon()?->post_mime_type === 'image/svg+xml')
-                            <div class="flex-none">{!! Blocks::sanitizeSvg($item->icon()) !!}</div>
+                            <div class="flex-none">{!! Markup::sanitizeSvg($item->icon()) !!}</div>
                         @elseif ($item->icon())
                             <div class="flex-none">
                                 <img src="{{ $item->icon()->src() }}" alt="{{ $item->icon()->alt() }}" class="size-5 object-contain" />

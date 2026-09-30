@@ -6,6 +6,6 @@ use Frontenda\Blocks\SectionContext;
 
 /** @var SectionContext $context */
 
-echo view('frontenda-blocks.section.reviews-1', [
+echo view('frontenda-blocks.section.benefits-2', [
     'context' => $context,
 ])->render();

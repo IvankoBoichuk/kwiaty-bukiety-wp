@@ -52,30 +52,43 @@ async function loadMoreCities(button: HTMLButtonElement): Promise<void> {
         return
     }
 
-    const rawArgs = button.dataset.args
-    if (!rawArgs) {
+    const taxonomy = button.dataset.taxonomy
+    if (!taxonomy) {
         removeLoadMoreButton(button)
         return
     }
 
-    const args = JSON.parse(rawArgs) as Record<string, string | number | boolean | string[] | number[]>
     const initialCount = Number(button.dataset.initialCount ?? '0')
     const renderedCount = Number(button.dataset.renderedCount ?? '0')
     const totalCount = Number(button.dataset.totalCount ?? '0')
+    const number = Number(button.dataset.number ?? '6')
 
     button.disabled = true
 
     try {
-        const params = new URLSearchParams()
-
-        Object.entries(args).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                value.forEach((item) => params.append(`${key}[]`, String(item)))
-                return
-            }
-
-            params.set(key, String(value))
+        // Only these keys are sent: the endpoint accepts far more, and the
+        // section should not hand a visitor an arbitrary term query to edit.
+        const params = new URLSearchParams({
+            taxonomy,
+            number: String(number),
+            orderby: button.dataset.orderBy || 'name',
+            order: button.dataset.order || 'asc',
+            hide_empty: button.dataset.hideEmpty === '1' ? '1' : '0',
         })
+
+        if (button.dataset.nameLike) {
+            params.set('name__like', button.dataset.nameLike)
+        }
+
+        // Paging by offset would re-serve the terms the section pinned, which
+        // are not necessarily the first page of this query. Exclude what is
+        // already on screen instead.
+        const excluded = (button.dataset.exclude || '')
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
+
+        excluded.forEach((id) => params.append('exclude[]', id))
 
         const response = await fetch(`/wp-json/sage/v1/categories?${params.toString()}`, {
             method: 'GET',
@@ -101,13 +114,11 @@ async function loadMoreCities(button: HTMLButtonElement): Promise<void> {
         })
 
         const nextRenderedCount = renderedCount + cities.length
-        const nextOffset = Number(args.offset ?? 0) + cities.length
 
         button.dataset.renderedCount = String(nextRenderedCount)
-        args.offset = nextOffset
-        button.dataset.args = JSON.stringify(args)
+        button.dataset.exclude = [...excluded, ...cities.map((city) => String(city.id))].join(',')
 
-        if (nextRenderedCount >= totalCount || cities.length < Number(args.number ?? 6)) {
+        if (nextRenderedCount >= totalCount || cities.length < number) {
             removeLoadMoreButton(button)
             return
         }

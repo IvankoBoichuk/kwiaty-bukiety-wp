@@ -1,5 +1,5 @@
 @php
-    use App\Blocks\Blocks;
+    use App\Support\Markup;
     use Frontenda\Blocks\SectionContext;
 
     /** @var SectionContext $context */
@@ -89,7 +89,7 @@
             @endforeach
         </div>
 
-        {!! Blocks::faqSchema($schemaItems) !!}
+        {!! Markup::faqSchema($schemaItems) !!}
     @elseif ($list?->textIfEmpty())
         <p>{{ $list->textIfEmpty() }}</p>
     @endif

@@ -219,6 +219,23 @@
 .fa-section-block--photogallery-1 .swiper-wrapper {
   @apply sage-container;
 }
+
+/* The slider bleeds past the section gutter, so the wrapper drops it and the
+   inner container re-applies it. */
+.fa-section-block--products-1 {
+  @apply text-dark-text relative mx-0;
+}
+
+.fa-section-block--products-2 {
+  @apply bx-container bg-[#E5EFDE] py-12 lg:py-30;
+}
+
+.fa-section-block--cities-1 {
+  @apply bx-container text-dark-text bg-[#E5EFDE] py-10;
+}
+.fa-section-block--cities-1 img {
+  @apply h-full w-full object-cover;
+}
  
 .woocommerce-products-header {
   @apply py-5 md:py-6 lg:py-8;

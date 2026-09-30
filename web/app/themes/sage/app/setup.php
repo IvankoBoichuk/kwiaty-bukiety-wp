@@ -28,28 +28,6 @@ add_filter('block_editor_settings_all', function ($settings) {
     return $settings;
 });
 
-/**
- * Inject scripts into the block editor.
- *
- * @return void
- */
-add_action('admin_head', function () {
-    if (!get_current_screen()?->is_block_editor()) {
-        return;
-    }
-
-    if (!Vite::isRunningHot()) {
-        $dependencies = json_decode(Vite::content('editor.deps.json'));
-
-        foreach ($dependencies as $dependency) {
-            if (!wp_script_is($dependency)) {
-                wp_enqueue_script($dependency);
-            }
-        }
-    }
-    echo Vite::withEntryPoints(['resources/js/editor.ts'])->toHtml();
-});
-
 add_filter(
     'wp_enqueue_scripts',
     function () {

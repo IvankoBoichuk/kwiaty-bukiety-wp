@@ -1,179 +1,18 @@
 <?php
 
-namespace App\Blocks;
+declare(strict_types=1);
 
-use Illuminate\Support\Fluent;
+namespace App\Support;
+
 use Timber\Image;
-use WP_Block;
 
-class Blocks
+/**
+ * Presentation helpers shared by the fa/section templates and the WooCommerce
+ * partials. These outlived App\Blocks\Blocks, which registered the legacy
+ * sage/* blocks and was removed once the last of them was migrated.
+ */
+final class Markup
 {
-    /**
-     * @var array<string, array<string, string>>
-     */
-    protected static array $blocks = [
-        'offer' => ['title' => 'Offer'],
-        'products' => ['title' => 'Products'],
-        'reviews' => ['title' => 'Reviews'],
-        'list' => ['title' => 'List'],
-        'cities' => ['title' => 'Cities'],
-    ];
-
-    public static function boot(): void
-    {
-        add_filter('block_categories_all', [self::class, 'addCategory']);
-        add_action('init', [self::class, 'register']);
-    }
-
-    public static function addCategory(array $categories): array
-    {
-        array_unshift($categories, [
-            'slug' => 'kwiaty-bukiety',
-            'title' => __('Kwiaty Bukiety', 'sage-back'),
-            'icon' => null,
-        ]);
-
-        return $categories;
-    }
-
-    public static function register(): void
-    {
-        foreach (self::$blocks as $slug => $config) {
-            register_block_type("sage/{$slug}", [
-                'api_version' => 3,
-                'title' => __($config['title'], 'sage-back'),
-                'render_callback' => fn(
-                    array $attributes = [],
-                    string $content = '',
-                    ?WP_Block $block = null,
-                ): string => self::render($slug, $attributes, $block),
-                'attributes' => static::defaults()[$slug],
-                'supports' => [
-                    'anchor' => true,
-                    'className' => true,
-                    'html' => false,
-                ],
-            ]);
-        }
-    }
-
-    public static function prepare(
-        string $slug,
-        array $attributes = [],
-        ?WP_Block $block = null,
-    ): array {
-        $defaults = static::defaults()[$slug]['default'] ?? [];
-        $data = array_replace_recursive($defaults, $attributes);
-        $data['layout'] ??= 'default';
-
-        foreach ($data as $key => &$value) {
-            $value = apply_filters(
-                "sage/blocks/{$key}",
-                $value,
-                $attributes,
-                $block,
-            );
-            $value = apply_filters(
-                "sage/blocks/{$slug}/{$key}",
-                $value,
-                $attributes,
-                $block,
-            );
-        }
-
-        return $data;
-    }
-
-    public static function render(
-        string $slug,
-        array $attributes = [],
-        ?WP_Block $block = null,
-    ): string {
-        $data = self::prepare($slug, $attributes, $block);
-
-        return view(
-            self::resolveBlockView($slug, $data['layout']),
-            array_merge(
-                [
-                    'attributes' => self::toViewVariable($attributes),
-                    'block' => $block,
-                ],
-                self::viewVariables($data),
-            ),
-        )->render();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public static function defaults(): array
-    {
-        static $defaults;
-
-        if (isset($defaults)) {
-            return $defaults;
-        }
-
-        $path = get_theme_file_path('resources/blocks/defaults.json');
-
-        if (!file_exists($path)) {
-            return $defaults = [];
-        }
-
-        $decoded = json_decode((string) file_get_contents($path), true);
-
-        return $defaults = \is_array($decoded) ? $decoded : [];
-    }
-
-    protected static function resolveBlockView(
-        string $slug,
-        string $layout,
-    ): string {
-        $layoutPath = "resources/views/blocks/{$slug}-{$layout}.blade.php";
-
-        if (
-            $layout !== 'default'
-            && file_exists(get_theme_file_path($layoutPath))
-        ) {
-            return "blocks.{$slug}-{$layout}";
-        }
-
-        return "blocks.{$slug}";
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected static function viewVariables(array $data): array
-    {
-        $variables = [];
-
-        foreach ($data as $key => $value) {
-            if (!is_string($key)) {
-                continue;
-            }
-
-            $variables[$key] = self::toViewVariable($value);
-        }
-
-        return $variables;
-    }
-
-    protected static function toViewVariable(mixed $value): mixed
-    {
-        if (!is_array($value)) {
-            return $value;
-        }
-
-        if (!array_is_list($value)) {
-            return new Fluent(
-                array_map([self::class, 'toViewVariable'], $value),
-            );
-        }
-
-        return array_map([self::class, 'toViewVariable'], $value);
-    }
-
     public static function multilineTitle(?string $value): string
     {
         $value = trim((string) $value);
@@ -197,7 +36,7 @@ class Blocks
         $lines = array_values(
             array_filter(
                 array_map('trim', $lines),
-                static fn ($line) => $line !== '',
+                static fn($line) => $line !== '',
             ),
         );
 
@@ -220,7 +59,7 @@ class Blocks
         }
 
         $spans = implode('', array_map(
-            static fn (string $line, int $index): string => sprintf(
+            static fn(string $line, int $index): string => sprintf(
                 $lineTemplates[$index],
                 wp_kses_post($line),
             ),

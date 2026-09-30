@@ -39,7 +39,6 @@ export default defineConfig({
       input: [
         'resources/js/app.ts',
         'resources/css/editor.css',
-        'resources/js/editor.ts',
       ],
       refresh: true,
       assets: ['resources/images/**', 'resources/fonts/**'],

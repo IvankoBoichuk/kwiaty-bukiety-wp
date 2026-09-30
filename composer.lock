@@ -588,12 +588,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/IvankoBoichuk/frontenda-blocks.git",
-                "reference": "ae694abb89d15448bf092a24a27bd5d2ef8d41a6"
+                "reference": "d4725e5979adff0faf3a9600fd36058036e652ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/ae694abb89d15448bf092a24a27bd5d2ef8d41a6",
-                "reference": "ae694abb89d15448bf092a24a27bd5d2ef8d41a6",
+                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/d4725e5979adff0faf3a9600fd36058036e652ce",
+                "reference": "d4725e5979adff0faf3a9600fd36058036e652ce",
                 "shasum": ""
             },
             "require": {
@@ -610,7 +610,7 @@
                 "source": "https://github.com/IvankoBoichuk/frontenda-blocks/tree/main",
                 "issues": "https://github.com/IvankoBoichuk/frontenda-blocks/issues"
             },
-            "time": "2026-09-15T22:30:14+00:00"
+            "time": "2026-09-30T10:36:33+00:00"
         },
         {
             "name": "fruitcake/php-cors",

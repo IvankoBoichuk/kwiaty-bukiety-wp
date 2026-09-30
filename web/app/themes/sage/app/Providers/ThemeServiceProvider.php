@@ -8,7 +8,7 @@ use App\Admin\ProductAttributeIcons;
 use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
-use App\Blocks\Blocks;
+use App\Console\LegacyBlockMigrator;
 use App\Services\PostalCodeImporter;
 use App\Support\Context;
 use App\Support\DeliveryTimer;
@@ -42,7 +42,6 @@ class ThemeServiceProvider extends SageServiceProvider
         Timber::init();
         Categories::boot();
         Healthcheck::boot();
-        Blocks::boot();
         ContactSettingsPage::boot();
         DeliveryTimerSettingsPage::boot();
         ProductAttributeIcons::boot();
@@ -63,6 +62,83 @@ class ThemeServiceProvider extends SageServiceProvider
                 $count = app(PostalCodeImporter::class)->import($path);
 
                 \WP_CLI::success("Imported {$count} postal codes.");
+            });
+
+            \WP_CLI::add_command('blocks migrate', function ($args, $assoc) {
+                $postIds = array_values(array_filter(array_map(
+                    'absint',
+                    explode(',', (string) ($assoc['post_id'] ?? '')),
+                )));
+
+                if ($postIds === []) {
+                    \WP_CLI::error('--post_id=<id[,id]> is required.');
+                }
+
+                $dryRun = isset($assoc['dry-run']);
+                $migrator = new LegacyBlockMigrator();
+
+                foreach ($postIds as $postId) {
+                    $post = get_post($postId);
+
+                    if (! $post) {
+                        \WP_CLI::warning("Post {$postId} not found.");
+
+                        continue;
+                    }
+
+                    $result = $migrator->migrate($post->post_content);
+
+                    \WP_CLI::log("--- post {$postId}: {$post->post_title}");
+
+                    foreach ($result['log'] as $line) {
+                        \WP_CLI::log("    {$line}");
+                    }
+
+                    if (! $result['changed']) {
+                        \WP_CLI::log('    nothing to migrate');
+
+                        continue;
+                    }
+
+                    if ($dryRun) {
+                        \WP_CLI::log('    (dry run, not saved)');
+
+                        continue;
+                    }
+
+                    // Only post_content changes. wp_update_post() would also
+                    // re-validate the page template, and it rejects the whole
+                    // update when a post points at a template the theme no
+                    // longer ships -- unrelated to this migration, but fatal
+                    // to it. Write the column directly and keep a revision.
+                    wp_save_post_revision($postId);
+
+                    global $wpdb;
+
+                    $written = $wpdb->update(
+                        $wpdb->posts,
+                        ['post_content' => $result['content']],
+                        ['ID' => $postId],
+                    );
+
+                    if ($written === false) {
+                        \WP_CLI::warning('    failed to write post_content');
+
+                        continue;
+                    }
+
+                    clean_post_cache($postId);
+
+                    $template = get_page_template_slug($postId);
+
+                    if ($template !== '' && ! isset(wp_get_theme()->get_page_templates(get_post($postId))[$template])) {
+                        \WP_CLI::warning("    post still points at a missing page template: {$template}");
+                    }
+
+                    \WP_CLI::log('    saved');
+                }
+
+                \WP_CLI::success($dryRun ? 'Dry run complete.' : 'Migration complete.');
             });
         }
     }

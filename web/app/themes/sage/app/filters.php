@@ -6,12 +6,8 @@
 
 namespace App;
 
-use App\Blocks\Blocks;
-use App\Catalog\Category;
-use App\Catalog\Product;
-use App\Catalog\Review;
+use App\Support\Markup;
 use App\Catalog\Settings;
-use WP_Term_Query;
 
 /**
  * Add "… Continued" to the excerpt.
@@ -24,123 +20,6 @@ add_filter('excerpt_more', function () {
         get_permalink(),
         __('Continued', 'sage-front'),
     );
-});
-
-function bumpProductsBlockCacheVersion(): void
-{
-    update_option(
-        'sage_blocks_products_cache_version',
-        (string) microtime(true),
-        false,
-    );
-}
-
-add_filter('sage/blocks/categories', function ($categories) {
-    $categories = get_terms([
-        'taxonomy' => 'product_cat',
-        'include' => $categories,
-        'orderby' => 'include',
-    ]);
-    $categories = array_map(
-        fn($category) => Category::fromWordPressTerm($category),
-        $categories,
-    );
-    return $categories;
-});
-
-add_filter('sage/blocks/products', function ($products) {
-    $productIds = array_values(
-        array_unique(
-            array_filter(
-                array_map('absint', is_array($products) ? $products : []),
-            ),
-        ),
-    );
-
-    if ($productIds === []) {
-        return [];
-    }
-
-    $cacheKey = sprintf(
-        'sage_blocks_products_%s',
-        md5(
-            (string) get_option('sage_blocks_products_cache_version', '1')
-                . '|'
-                . wp_json_encode($productIds),
-        ),
-    );
-    $cached = get_transient($cacheKey);
-
-    if (\is_array($cached) && wp_get_environment_type() !== 'development') {
-        return $cached;
-    }
-
-    $resolved = [];
-
-    foreach ($productIds as $productId) {
-        $product = wc_get_product($productId);
-
-        if ($product) {
-            $resolved[] = Product::fromWooCommerce($product);
-        }
-    }
-
-    set_transient(
-        $cacheKey,
-        $resolved,
-        (int) apply_filters(
-            'sage/blocks/products/cache_ttl',
-            HOUR_IN_SECONDS,
-            $productIds,
-        ),
-    );
-
-    return $resolved;
-});
-
-add_action(
-    'save_post_product',
-    __NAMESPACE__ . '\\bumpProductsBlockCacheVersion',
-);
-add_action(
-    'save_post_product_variation',
-    __NAMESPACE__ . '\\bumpProductsBlockCacheVersion',
-);
-
-add_filter('sage/blocks/cities', function ($cities) {
-    $cities = new WP_Term_Query([
-        'taxonomy' => 'product_cat',
-        'include' => $cities,
-        'orderby' => 'include',
-        'hide_empty' => false,
-    ]);
-    return $cities;
-});
-
-add_filter('sage/blocks/reviews', function ($reviews) {
-    $resolved = [];
-
-    foreach ($reviews as $item) {
-        $reviewId = absint($item);
-
-        if ($reviewId <= 0) {
-            continue;
-        }
-
-        $comment = get_comment($reviewId);
-
-        if (!($comment instanceof \WP_Comment)) {
-            continue;
-        }
-
-        // if ((int) $comment->comment_post_ID <= 0 || get_post_type((int) $comment->comment_post_ID) !== 'product') {
-        //     continue;
-        // }
-
-        $resolved[] = Review::fromWordPressComment($comment);
-    }
-
-    return $resolved;
 });
 
 add_filter(
@@ -731,9 +610,9 @@ add_action(
 );
 
 // Add specific CSS class by filter.
-add_filter( 'body_class', function( $classes ) {
-	return array_merge( $classes, ['flex', 'flex-col', 'min-h-screen'] );
-} );
+add_filter('body_class', function ($classes) {
+    return array_merge($classes, ['flex', 'flex-col', 'min-h-screen']);
+});
 
 add_filter(
     'woocommerce_get_item_data',
@@ -1027,7 +906,7 @@ add_action('woocommerce_after_shop_loop', function () {
         esc_url($nextPageUrl),
         esc_attr__('Show more', 'sage-front'),
         esc_attr__('Loading...', 'sage-front'),
-        esc_attr(Blocks::buttonClasses('border', 'md', false)),
+        esc_attr(Markup::buttonClasses('border', 'md', false)),
         esc_html__('Show more', 'sage-front'),
     );
 });
