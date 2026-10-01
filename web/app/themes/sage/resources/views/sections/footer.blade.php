@@ -189,7 +189,7 @@
     </ul>
   @endif
 
-  <div class="text-body-13 font-light text-gray-3 text-center">&copy; {{ date('Y') }} {{ $siteName }}</div>
+  <div class="text-body-13 text-gray-3 text-center font-light">&copy; {{ date('Y') }} {{ $siteName }}</div>
 </footer>
 
 <div class="sticky inset-x-0 bottom-0 z-50 w-full md:hidden">

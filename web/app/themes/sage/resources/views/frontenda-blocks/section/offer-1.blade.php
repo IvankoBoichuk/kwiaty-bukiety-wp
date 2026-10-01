@@ -45,7 +45,7 @@
                 @if ($list)
                     <ul class="flex flex-wrap items-center gap-1.5 lg:mt-8 lg:gap-x-6 lg:gap-y-4">
                         @foreach ($list->items() as $item)
-                            <li class="bg-accent border-background flex shrink items-center gap-2.5 rounded-2xl border px-2 md:h-7 md:px-3 lg:border-none lg:bg-transparent lg:p-0">
+                            <li class="bg-accent border-background flex shrink items-center gap-2.5 rounded-2xl border px-2 md:px-3 lg:border-none lg:bg-transparent lg:p-0">
                                 @if ($item->icon())
                                     <span class="hidden bg-secondary lg:flex size-13 shrink-0 items-center justify-center rounded-full">
                                         {!! $item->icon() !!}

@@ -15,7 +15,7 @@
 @endphp
 <section {!! $context->wrapperAttributes() !!}>
     <div class="flex flex-col gap-y-6 pt-1.5">
-        @if ($header?->get('title') || $header?->get('subtitle'))
+        @if ($header?->get('title') || $header?->get('subtitle') || $text?->html())
             <div class="relative mb-6">
                 @if ($header?->get('subtitle'))
                     <div
@@ -31,12 +31,12 @@
                         {!! $header->get('title')->render() !!}
                     </div>
                 @endif
-            </div>
-        @endif
-
-        @if ($text?->html())
-            <div class="text-body-15 md:text-body-16">
-                {!! $text->html() !!}
+                
+                @if ($text?->html())
+                    <div class="text-body-15 md:text-body-16">
+                        {!! $text->html() !!}
+                    </div>
+                @endif
             </div>
         @endif
 
