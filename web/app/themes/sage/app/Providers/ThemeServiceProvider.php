@@ -16,6 +16,7 @@ use App\Shop\CatalogOrder;
 use App\Shop\CartReturn;
 use App\Shop\LeadTimeRules;
 use App\Shop\WholesaleDiscount;
+use App\Shop\PostalDelivery;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -67,6 +68,7 @@ class ThemeServiceProvider extends SageServiceProvider
         CartReturn::boot();
         LeadTimeRules::boot();
         WholesaleDiscount::boot();
+        PostalDelivery::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
