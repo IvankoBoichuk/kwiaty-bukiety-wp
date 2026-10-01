@@ -22,11 +22,7 @@
     >
         @if ($header || $text || $buttons)
             <div class="flex flex-1 flex-col justify-center pt-6">
-                @if ($header?->get('subtitle'))
-                    <div class="section__subtitle">
-                        {!! $header->get('subtitle')->render() !!}
-                    </div>
-                @endif
+                @include('elements.section-subtitle', ['subtitle' => $header?->subtitle()])
             
                 @if ($header?->get('title'))
                     <div class="text-dark-text mb-3">

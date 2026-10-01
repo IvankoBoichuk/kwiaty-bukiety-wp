@@ -8,11 +8,7 @@
     $list = $context->list();
 @endphp
 <section {!! $context->wrapperAttributes() !!}>
-    @if ($header?->get('subtitle'))
-        <div class="section__subtitle">
-            {!! $header->get('subtitle')->render() !!}
-        </div>
-    @endif
+    @include('elements.section-subtitle', ['subtitle' => $header?->subtitle()])
 
     @if ($header?->get('title'))
         <div class="h2-mobile md:h2-desktop mb-6">

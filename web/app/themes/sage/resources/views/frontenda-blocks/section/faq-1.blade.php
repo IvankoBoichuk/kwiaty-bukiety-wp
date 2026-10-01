@@ -22,11 +22,7 @@
 <section {!! $context->wrapperAttributes() !!}>
     @if ($header?->subtitle() || $header?->title())
         <div class="h2-mobile md:h2-desktop mb-8 lg:mb-16">
-            @if ($header?->subtitle())
-                <div class="section__subtitle">
-                    {!! $header->subtitle()->render() !!}
-                </div>
-            @endif
+            @include('elements.section-subtitle', ['subtitle' => $header?->subtitle()])
 
             @if ($header?->title())
                 {!! $header->title()->render() !!}

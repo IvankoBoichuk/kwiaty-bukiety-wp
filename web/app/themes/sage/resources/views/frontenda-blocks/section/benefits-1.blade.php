@@ -11,11 +11,7 @@
 @endphp
 <section {!! $context->wrapperAttributes() !!}>
     <div class="mb-6 md:mb-12">
-        @if ($header?->get('subtitle'))
-            <div class="section__subtitle">
-                {!! $header->get('subtitle')->render() !!}
-            </div>
-        @endif
+        @include('elements.section-subtitle', ['subtitle' => $header?->subtitle()])
     
         @if ($header?->get('title'))
             <div class="h2-mobile md:h2-desktop text-dark-text">

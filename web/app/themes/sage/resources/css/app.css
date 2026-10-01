@@ -258,9 +258,23 @@
   }
 }
 
-/* Used by every fa/section header that renders a subtitle. It had no
-   definition at all, so subtitles rendered as unstyled body text. */
+/* Used by every fa/section header that renders a subtitle. In the design it is
+   an oversized decorative word sitting behind the content — Galada Regular
+   266px in #F6F1ED, uppercase. The section needs `isolate` so the negative
+   z-index stays inside it instead of dropping behind the body background. The
+   design only specifies the desktop size, so the word steps down on narrower
+   screens. */
 .section__subtitle {
+  @apply font-deco pointer-events-none absolute -top-24 left-1/2 -z-10 -translate-x-1/2 text-[110px] leading-none whitespace-nowrap text-[#F6F1ED] uppercase select-none md:text-[180px] lg:text-[266px];
+}
+section:has(.section__subtitle) {
+  @apply relative isolate;
+}
+
+/* The small uppercase label subtitles used before the design was available.
+   Kept as an opt-in variant so existing sections that rely on it still read
+   correctly; it is not part of the design system. */
+.section__subtitle--eyebrow {
   @apply text-body-15 text-green-default mb-1 font-semibold uppercase;
 }
 
