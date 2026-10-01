@@ -15,6 +15,7 @@ use App\SEO\CityHub;
 use App\Shop\CatalogOrder;
 use App\Shop\CartReturn;
 use App\Shop\LeadTimeRules;
+use App\Shop\WholesaleDiscount;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -65,6 +66,7 @@ class ThemeServiceProvider extends SageServiceProvider
         CatalogOrder::boot();
         CartReturn::boot();
         LeadTimeRules::boot();
+        WholesaleDiscount::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
