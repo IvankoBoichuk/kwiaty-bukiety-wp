@@ -338,6 +338,7 @@ section:has(.section__subtitle) {
 }
 
 .product-card-slider .woocommerce-Price-amount,
+.product-card-grid .woocommerce-Price-amount,
 .product-card-3 .woocommerce-Price-amount {
   @apply text-base font-bold md:text-lg;
 }
