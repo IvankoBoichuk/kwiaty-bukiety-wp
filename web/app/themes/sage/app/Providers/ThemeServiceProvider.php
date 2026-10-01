@@ -9,6 +9,10 @@ use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
 use App\Console\LegacyBlockMigrator;
+use App\SEO\OpenGraph;
+use App\SEO\ProductSchema;
+use App\SEO\Robots;
+use App\SEO\TermShortcodes;
 use App\Console\PostalCodeSchema;
 use App\Services\PostalCodeImporter;
 use App\Support\Context;
@@ -48,6 +52,10 @@ class ThemeServiceProvider extends SageServiceProvider
         ProductAttributeIcons::boot();
         DeliveryTimer::boot();
         PostalCode::boot();
+        Robots::boot();
+        TermShortcodes::boot();
+        OpenGraph::boot();
+        ProductSchema::boot();
         Blade::directive('id', function ($expression) {
             return "<?php if (!empty($expression)): ?>id=\"<?php echo e($expression); ?>\"<?php endif; ?>";
         });
