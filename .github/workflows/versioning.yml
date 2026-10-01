@@ -1,80 +1,65 @@
 name: Dev Version Bump
 
+# The bump lands in the PR rather than after the merge. A merge into dev is
+# itself a push, so Woodpecker starts deploying the moment the PR closes: a
+# bump committed afterwards pushed a second commit, which triggered a second
+# pipeline, and the first one had already shipped the pre-bump version while
+# both raced to rsync --delete the same target. Bumping here means the merge
+# commit already carries the version and one push deploys it once.
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, reopened]
     branches:
       - dev
 
 permissions:
   contents: write
-  pull-requests: read
 
-env:
-  THEME_PATH: web/app/themes/sage
+concurrency:
+  group: bump-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   bump-version:
-    if: github.event.pull_request.merged == true
+    # GITHUB_TOKEN cannot push to a fork's head branch, so the bump would only
+    # fail at the last step. Lint, tests and typecheck still run for those PRs
+    # via the Tests workflow and the Woodpecker test pipeline.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: dev
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          tools: composer:v2
-
-      - name: Install Bedrock Composer dependencies
-        run: composer install --no-interaction --no-progress --prefer-dist
-
-      - name: Install theme Composer dependencies
-        working-directory: ${{ env.THEME_PATH }}
-        run: composer install --no-interaction --no-progress --prefer-dist
-
-      - name: Install theme dependencies
-        working-directory: ${{ env.THEME_PATH }}
-        run: bun install --frozen-lockfile
-
+      # Only two files are edited and the next version is read from the API, so
+      # this job needs no PHP, Composer or Bun. Lint, tests, typecheck and the
+      # asset build already gate this PR in .woodpecker/test.yaml.
       - name: Calculate next version and update files
         run: node .github/scripts/bump-dev-version.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
-
-      - name: Run Pint
-        run: composer lint
-
-      - name: Run tests
-        run: composer test
-
-      - name: Run theme typecheck
-        working-directory: ${{ env.THEME_PATH }}
-        run: bun run typecheck
-
-      - name: Build theme assets
-        working-directory: ${{ env.THEME_PATH }}
-        run: bun run build
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
 
       - name: Commit version changes
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add composer.json web/app/themes/sage/style.css
-          git diff --cached --quiet || git commit -m "chore(release): bump dev version"
-          git push origin HEAD:dev
+
+          if git diff --cached --quiet; then
+            echo 'Version already matches the calculated one; nothing to commit.'
+            exit 0
+          fi
+
+          git commit -m "chore(release): bump dev version"
+          git push origin "HEAD:refs/heads/${HEAD_REF}"

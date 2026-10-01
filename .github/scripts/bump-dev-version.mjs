@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 const token = process.env.GITHUB_TOKEN;
 const prNumber = process.env.PR_NUMBER;
 const repo = process.env.REPO;
+const baseRef = process.env.BASE_REF || 'dev';
 
 if (!token || !prNumber || !repo) {
     throw new Error('Missing required environment variables: GITHUB_TOKEN, PR_NUMBER, REPO');
@@ -13,6 +14,10 @@ const [owner, repoName] = repo.split('/');
 if (!owner || !repoName) {
     throw new Error(`Invalid REPO value: ${repo}`);
 }
+
+const COMPOSER_PATH = 'composer.json';
+const STYLE_PATH = 'web/app/themes/sage/style.css';
+const STYLE_VERSION_PATTERN = /^(Version:\s*).+$/m;
 
 async function githubRequest(path) {
     const response = await fetch(`https://api.github.com${path}`, {
@@ -32,10 +37,6 @@ async function githubRequest(path) {
     return response.json();
 }
 
-async function fetchPullRequest() {
-    return githubRequest(`/repos/${owner}/${repoName}/pulls/${prNumber}`);
-}
-
 async function fetchPullRequestCommits() {
     const commits = [];
     let page = 1;
@@ -53,6 +54,26 @@ async function fetchPullRequestCommits() {
     }
 
     return commits;
+}
+
+/**
+ * The version the branch is bumped *from*. It has to come from the base branch
+ * rather than the checked-out tree: this runs again on every push to the PR,
+ * and reading the tree would compound its own earlier bump -- three pushes
+ * would turn one `feat:` into three minor releases.
+ */
+async function fetchBaseVersion() {
+    const file = await githubRequest(
+        `/repos/${owner}/${repoName}/contents/${COMPOSER_PATH}?ref=${encodeURIComponent(baseRef)}`,
+    );
+
+    const composerJson = JSON.parse(Buffer.from(file.content, file.encoding || 'base64').toString('utf8'));
+
+    if (!composerJson.version) {
+        throw new Error(`${COMPOSER_PATH} on ${baseRef} is missing a version field`);
+    }
+
+    return composerJson.version;
 }
 
 function detectBump(messages) {
@@ -103,13 +124,7 @@ function incrementVersion(version, bumpLevel) {
     return version;
 }
 
-function stripConventionalPrefix(message) {
-    const firstLine = message.split('\n')[0].trim();
-    return firstLine.replace(/^[a-z]+(\([^)]+\))?!?:\s*/i, '');
-}
-
 async function main() {
-    const pr = await fetchPullRequest();
     const commits = await fetchPullRequestCommits();
     const messages = commits.map((commit) => commit.commit.message.trim()).filter(Boolean);
     const bumpLevel = detectBump(messages);
@@ -119,37 +134,29 @@ async function main() {
         return;
     }
 
-    const composerPath = 'composer.json';
-    const stylePath = 'web/app/themes/sage/style.css';
+    const baseVersion = await fetchBaseVersion();
+    const nextVersion = incrementVersion(baseVersion, bumpLevel);
 
-    const composerRaw = await readFile(composerPath, 'utf8');
-    const composerJson = JSON.parse(composerRaw);
-    const currentVersion = composerJson.version;
-
-    if (!currentVersion) {
-        throw new Error('composer.json is missing a version field');
-    }
-
-    const nextVersion = incrementVersion(currentVersion, bumpLevel);
-
-    if (nextVersion === currentVersion) {
-        console.log(`Version remains unchanged at ${currentVersion}.`);
+    if (nextVersion === baseVersion) {
+        console.log(`Version remains unchanged at ${baseVersion}.`);
         return;
     }
 
-    composerJson.version = nextVersion;
-    await writeFile(composerPath, `${JSON.stringify(composerJson, null, 2)}\n`);
+    const composerRaw = await readFile(COMPOSER_PATH, 'utf8');
+    const composerJson = JSON.parse(composerRaw);
+    const styleRaw = await readFile(STYLE_PATH, 'utf8');
 
-    const styleRaw = await readFile(stylePath, 'utf8');
-    const updatedStyle = styleRaw.replace(/^(Version:\s*).+$/m, `$1${nextVersion}`);
-
-    if (updatedStyle === styleRaw) {
-        throw new Error(`Failed to update Version header in ${stylePath}`);
+    if (!STYLE_VERSION_PATTERN.test(styleRaw)) {
+        throw new Error(`Failed to find a Version header in ${STYLE_PATH}`);
     }
 
-    await writeFile(stylePath, updatedStyle);
+    composerJson.version = nextVersion;
+    await writeFile(COMPOSER_PATH, `${JSON.stringify(composerJson, null, 2)}\n`);
+    await writeFile(STYLE_PATH, styleRaw.replace(STYLE_VERSION_PATTERN, `$1${nextVersion}`));
 
-    console.log(`Bumped version ${currentVersion} -> ${nextVersion} for PR #${pr.number}`);
+    // The workflow commits only when this actually changed something, so a
+    // re-run that lands on the same number is a no-op rather than an error.
+    console.log(`Bumped version ${baseVersion} (${baseRef}) -> ${nextVersion} for PR #${prNumber}`);
 }
 
 main().catch((error) => {
