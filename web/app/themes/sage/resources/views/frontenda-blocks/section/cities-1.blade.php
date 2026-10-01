@@ -82,7 +82,12 @@
             </div>
 
             @if ($media)
-                <div class="relative -my-10 -mr-30 hidden overflow-hidden lg:col-span-5 lg:block">
+                {{-- The image bleeds out to the right edge of the window, which
+                     means cancelling exactly the gutter the section reserves —
+                     a fixed -120px only matched it at 1920px and overhung the
+                     viewport on anything narrower, leaving a horizontal
+                     scrollbar. --}}
+                <div class="-mr-container relative -my-10 hidden overflow-hidden lg:col-span-5 lg:block">
                     <div class="absolute inset-y-0 left-0 w-[50vw]">
                         {{-- The column is hidden below lg, so only the desktop size is worth generating. --}}
                         {!! $media->html(['desktop' => '760x520']) !!}

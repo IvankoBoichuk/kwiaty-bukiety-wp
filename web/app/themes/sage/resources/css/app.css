@@ -48,6 +48,22 @@
 /* Base styles */
 @layer base {
   :root {
+    /* Overwritten by resources/js/modules/set-scrollbar-width.ts on load and
+       resize. The fallback is deliberately generous: until that runs, an
+       over-wide scrollbar only pulls a full-bleed element short of the edge,
+       while an under-wide one would overhang the viewport and flash a
+       horizontal scrollbar. */
+    --scrollbar-width: 20px;
+
+    /* The gutter bx-container reserves on each side. bx-container states it as
+       a percentage, which is correct on a section but useless to its
+       descendants: a percentage margin inside a grid item resolves against that
+       item's grid area, not the page. Restating it against the viewport (minus
+       the scrollbar, which 100vw counts and the percentage does not) gives the
+       same number anywhere in the tree, so a nested element can bleed out to
+       the window edge exactly. */
+    --container-gutter: max(20px, calc((100vw - var(--scrollbar-width) - 1680px) / 2));
+
     /* Swiper configuration */
     --swiper-pagination-color: var(--color-purple-easy);
     --swiper-pagination-bullet-horizontal-gap: 2.5px;
@@ -57,6 +73,14 @@
     --swiper-pagination-bullet-inactive-color: var(--color-purple-easy);
     --header-bottom-height: 48px;
     --header-top-height: 103px;
+  }
+
+  /* The header is taller on the desktop design -- a 48px top bar above a 92px
+     logo row -- and everything that sticks under it offsets itself by this. */
+  @media (width >= 64rem) {
+    :root {
+      --header-top-height: 140px;
+    }
   }
 
   body {
@@ -195,8 +219,29 @@
   @apply mx-3 md:mx-8 lg:mx-[max(20px,calc((100%-1680px)/2))];
 }
 
+/* The negative counterparts of the container gutter: each cancels the padding
+   bx-container reserves on that side, so an element nested inside a padded
+   container can bleed back out to the window edge.
+
+   They read --container-gutter instead of restating bx-container's percentage,
+   because a percentage margin resolves against the element's own containing
+   block — for a grid item that is its grid area, not the page — so the
+   percentage form is only correct on a direct child of a full-width container
+   and quietly computes a far smaller gutter anywhere deeper. */
+
+/* Bleeds out on both sides. */
 @utility -mx-container {
-  @apply -mx-3 md:-mx-8 lg:-mx-[max(20px,calc((100%-1680px)/2))];
+  @apply -mx-3 md:-mx-8 lg:-mx-[var(--container-gutter)];
+}
+
+/* Bleeds out on the left only. */
+@utility -ml-container {
+  @apply -ml-3 md:-ml-8 lg:-ml-[var(--container-gutter)];
+}
+
+/* Bleeds out on the right only. */
+@utility -mr-container {
+  @apply -mr-3 md:-mr-8 lg:-mr-[var(--container-gutter)];
 }
 
 @utility sage-container {
