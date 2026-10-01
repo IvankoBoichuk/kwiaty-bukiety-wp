@@ -6,7 +6,6 @@
 
 namespace App;
 
-use App\Support\Markup;
 use App\Catalog\Settings;
 
 /**
@@ -901,14 +900,9 @@ add_action('woocommerce_after_shop_loop', function () {
         return;
     }
 
-    printf(
-        '<div class="mt-8 flex justify-center" data-products-load-more><button type="button" data-products-load-more-button data-next-url="%s" data-default-label="%s" data-loading-label="%s" class="%s"><span>%s</span></button></div>',
-        esc_url($nextPageUrl),
-        esc_attr__('Show more', 'sage-front'),
-        esc_attr__('Loading...', 'sage-front'),
-        esc_attr(Markup::buttonClasses('border', 'md', false)),
-        esc_html__('Show more', 'sage-front'),
-    );
+    echo view('partials.products-load-more', [
+        'nextUrl' => $nextPageUrl,
+    ])->render();
 });
 
 remove_action(
