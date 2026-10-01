@@ -14,6 +14,7 @@ use App\Console\LegacyBlockMigrator;
 use App\SEO\CityHub;
 use App\Shop\CatalogOrder;
 use App\Shop\CartReturn;
+use App\Shop\LeadTimeRules;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -63,6 +64,7 @@ class ThemeServiceProvider extends SageServiceProvider
         CityHub::boot();
         CatalogOrder::boot();
         CartReturn::boot();
+        LeadTimeRules::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
