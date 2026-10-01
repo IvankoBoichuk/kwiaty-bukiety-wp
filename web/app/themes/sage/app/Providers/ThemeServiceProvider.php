@@ -19,6 +19,7 @@ use App\Shop\LeadTimeRules;
 use App\Shop\WholesaleDiscount;
 use App\Shop\PostalDelivery;
 use App\Shop\OrderNotifications;
+use App\Shop\OrderAdminColumns;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -73,6 +74,7 @@ class ThemeServiceProvider extends SageServiceProvider
         WholesaleDiscount::boot();
         PostalDelivery::boot();
         OrderNotifications::boot();
+        OrderAdminColumns::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
