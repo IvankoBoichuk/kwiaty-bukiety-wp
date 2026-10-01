@@ -101,8 +101,36 @@
   .woocommerce-notices-wrapper {
     @apply empty:hidden;
   }
+
+  /* WordPress and WooCommerce mark "Required" and similar hints with this
+     class and expect the theme to hide them; without it the word prints
+     next to every required label. */
+  .screen-reader-text {
+    @apply sr-only;
+  }
+
+  /* The plugin stylesheets are dropped wholesale (see app/setup.php), so the
+     stock notices arrive unstyled wherever WooCommerce prints them -- the
+     empty category archive, the account screens, the order pages. */
+  .woocommerce-info,
+  .woocommerce-message,
+  .woocommerce-error {
+    @apply text-body-15 flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3;
+  }
+
+  .woocommerce-info {
+    @apply text-green-default border-[#C9D9D1] bg-[#EAF2ED];
+  }
+
+  .woocommerce-message {
+    @apply text-green-default border-green-easy bg-[#E5EFDE];
+  }
+
+  .woocommerce-error {
+    @apply m-0 list-none flex-col items-start gap-1 border-[#E5B8B3] bg-[#FBEDEC] text-[#C6463D];
+  }
   .term-description {
-    @apply prose prose-a:text-[#0885CD] prose-a:no-underline prose-a:hover:underline max-w-full;
+    @apply prose prose-a:text-[#2F80ED] prose-a:no-underline prose-a:hover:underline max-w-full;
   }
 
   [x-cloak] {
@@ -307,6 +335,226 @@ section:has(.section__subtitle) {
 }
 .woocommerce-products-header__title {
   @apply h2-mobile md:h2-desktop text-green-dark;
+}
+
+/* --- Stock WooCommerce screens ---------------------------------------------
+   The account screens and the order-pay endpoint are plain WooCommerce default
+   templates, and the theme removes the plugin's stylesheets (app/setup.php),
+   so they arrive with no styling at all. They are dressed here with the same
+   tokens as the custom cart and checkout rather than by overriding a dozen
+   templates. */
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce {
+  @apply mx-container flex flex-col gap-6 pt-6 pb-12 lg:gap-8 lg:pb-20;
+}
+
+.woocommerce-account-title {
+  @apply h2-mobile md:h2-desktop text-green-dark;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce h2,
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce h3 {
+  @apply text-green-dark text-[20px] leading-tight font-bold;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce p {
+  @apply text-body-15;
+}
+
+/* Forms: login, lost password, account details, addresses, order pay. */
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce form {
+  @apply flex flex-col gap-4;
+}
+
+.woocommerce-account form.login,
+.woocommerce-account form.register,
+.woocommerce-account form.lost_reset_password {
+  @apply w-full max-w-xl rounded-xl border border-[#E0E0D7] bg-white p-5;
+}
+
+.woocommerce-account .u-columns {
+  @apply grid gap-6 md:grid-cols-2;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .form-row {
+  @apply m-0 flex flex-col;
+}
+
+/* Float clears from the stock templates; the rows are flex items here. */
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce .clear {
+  @apply hidden;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay)
+  .woocommerce
+  label:not(.woocommerce-form__label-for-checkbox) {
+  @apply text-green-default mb-1.5 block text-[14px] font-medium;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce .input-text,
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce input[type='text'],
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce input[type='email'],
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce input[type='tel'],
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce input[type='password'],
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce select,
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce textarea {
+  @apply text-green-default focus:border-green-easy w-full rounded-[14px] border border-[#DDD7CF] bg-[#FCF9F6] px-4 py-3 text-[14px] leading-5 placeholder:text-[#A4A094] focus:outline-none;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce-form__label-for-checkbox {
+  @apply text-body-15 text-green-default flex items-center gap-2;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce-form__input-checkbox {
+  @apply accent-green-dark size-4;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce .required {
+  @apply text-[#C6463D];
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) fieldset {
+  @apply flex flex-col gap-4 rounded-xl border border-[#E0E0D7] p-4;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) legend {
+  @apply text-green-dark px-2 text-[16px] font-semibold;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce .button,
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce button[type='submit'],
+:is(.woocommerce-account, .woocommerce-order-pay) .woocommerce .woocommerce-Button {
+  @apply border-green-default bg-green-dark text-gray-6 inline-flex w-fit items-center justify-center rounded-full border-2 px-8 py-3 text-[13px] font-semibold uppercase transition-opacity duration-200 hover:opacity-90;
+}
+
+/* Order tables: account orders, order details, order pay. */
+
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table {
+  @apply w-full border-separate border-spacing-0 overflow-hidden rounded-xl border border-[#E0E0D7] bg-white text-left;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table th,
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table td {
+  @apply text-body-14 border-b border-[#E0E0D7] px-4 py-3;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table th {
+  @apply text-green-dark font-semibold;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table td {
+  @apply text-green-default;
+}
+
+:is(.woocommerce-account, .woocommerce-order-pay) table.shop_table tr:last-child td {
+  @apply border-b-0;
+}
+
+/* The plugin's small-screen stylesheet is dropped with the rest, so the order
+   tables scroll instead of reflowing into stacked rows. */
+@media (width < 48rem) {
+  :is(.woocommerce-account, .woocommerce-order-pay) table.shop_table {
+    @apply block overflow-x-auto whitespace-nowrap;
+  }
+}
+
+/* The order-pay endpoint shows either the pay form or the receipt summary,
+   depending on the gateway, so both are covered. */
+
+.woocommerce-order-pay .order_details {
+  @apply m-0 flex list-none flex-wrap gap-6 rounded-xl border border-[#E0E0D7] bg-white p-4;
+}
+
+.woocommerce-order-pay .order_details li {
+  @apply text-body-14 text-green-default flex flex-col gap-1;
+}
+
+.woocommerce-order-pay .order_details strong {
+  @apply text-green-dark text-[16px] font-semibold;
+}
+
+/* Payment methods on the order-pay endpoint. */
+
+.woocommerce-order-pay .wc_payment_methods {
+  @apply m-0 flex list-none flex-col gap-2 p-0;
+}
+
+.woocommerce-order-pay .wc_payment_method {
+  @apply rounded-xl border border-[#E0E0D7] bg-white p-3;
+}
+
+.woocommerce-order-pay .wc_payment_method label {
+  @apply text-green-default mb-0 inline-flex items-center gap-2 text-[15px] font-medium;
+}
+
+.woocommerce-order-pay .payment_box {
+  @apply text-body-14 mt-2 text-[#426E59];
+}
+
+/* Account-only chrome. */
+
+.woocommerce-MyAccount-navigation {
+  @apply rounded-xl border border-[#E0E0D7] bg-white p-2 lg:self-start;
+}
+
+.woocommerce-MyAccount-navigation ul {
+  @apply m-0 flex list-none flex-col gap-1 p-0;
+}
+
+.woocommerce-MyAccount-navigation-link a {
+  @apply text-body-15 text-green-default block rounded-lg px-4 py-2.5 font-medium transition-colors duration-200 hover:bg-[#E8E8DB];
+}
+
+.woocommerce-MyAccount-navigation-link.is-active a {
+  @apply bg-green-dark text-gray-6;
+}
+
+.woocommerce-MyAccount-content {
+  @apply text-green-default min-w-0;
+}
+
+.woocommerce-MyAccount-content > * + * {
+  @apply mt-4;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content a:not(.button):not(.woocommerce-Button),
+.woocommerce-account .woocommerce-LostPassword a {
+  @apply text-[#2F80ED] hover:underline;
+}
+
+.woocommerce-account .woocommerce-Addresses {
+  @apply grid gap-4 md:grid-cols-2;
+}
+
+.woocommerce-account .woocommerce-Address {
+  @apply rounded-xl border border-[#E0E0D7] bg-white p-4;
+}
+
+.woocommerce-account .woocommerce-Address-title {
+  @apply mb-2 flex flex-wrap items-center justify-between gap-3;
+}
+
+.woocommerce-account .woocommerce-Address-title h2,
+.woocommerce-account .woocommerce-Address-title h3 {
+  @apply m-0 text-[18px];
+}
+
+.woocommerce-account address {
+  @apply text-body-15 text-green-default not-italic;
+}
+
+.woocommerce-account .woocommerce-pagination ul {
+  @apply m-0 flex list-none flex-wrap gap-2 p-0;
+}
+
+.woocommerce-account .woocommerce-pagination li a,
+.woocommerce-account .woocommerce-pagination li span {
+  @apply text-body-14 text-green-default inline-flex min-w-9 items-center justify-center rounded-full border border-[#E0E0D7] bg-white px-3 py-1.5;
+}
+
+.woocommerce-account .woocommerce-pagination li span.current {
+  @apply bg-green-dark text-gray-6 border-green-default;
 }
 
 #main {

@@ -914,6 +914,13 @@ add_action('woocommerce_after_shop_loop', function () {
     ])->render();
 });
 
+/* The account screens render through a shortcode inside the page content, so
+   nothing prints a heading. The logged-in half gets one from the my-account
+   template override; this covers the login and lost-password forms. */
+add_action('woocommerce_before_customer_login_form', function () {
+    echo view('partials.account-title')->render();
+});
+
 remove_action(
     'woocommerce_before_main_content',
     'woocommerce_output_content_wrapper',
