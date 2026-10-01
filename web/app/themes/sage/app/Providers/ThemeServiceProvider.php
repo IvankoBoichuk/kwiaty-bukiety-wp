@@ -20,6 +20,7 @@ use App\Shop\WholesaleDiscount;
 use App\Shop\PostalDelivery;
 use App\Shop\OrderNotifications;
 use App\Shop\OrderAdminColumns;
+use App\Shop\RestApiGuard;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -75,6 +76,7 @@ class ThemeServiceProvider extends SageServiceProvider
         PostalDelivery::boot();
         OrderNotifications::boot();
         OrderAdminColumns::boot();
+        RestApiGuard::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
