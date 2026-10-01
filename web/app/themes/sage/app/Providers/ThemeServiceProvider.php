@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Admin\ContactSettingsPage;
+use App\Admin\CategoryFaqMetabox;
 use App\Admin\DeliveryTimerSettingsPage;
 use App\Admin\ProductAttributeIcons;
 use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
+use App\Console\FaqImporter;
 use App\Console\LegacyBlockMigrator;
 use App\SEO\CityHub;
 use App\Modules\LocalLinking\LocalLinking;
@@ -53,6 +55,7 @@ class ThemeServiceProvider extends SageServiceProvider
         ContactSettingsPage::boot();
         DeliveryTimerSettingsPage::boot();
         ProductAttributeIcons::boot();
+        CategoryFaqMetabox::boot();
         DeliveryTimer::boot();
         PostalCode::boot();
         CityHub::boot();
@@ -91,6 +94,37 @@ class ThemeServiceProvider extends SageServiceProvider
                 $count = app(PostalCodeImporter::class)->import($path);
 
                 \WP_CLI::success("Imported {$count} postal codes.");
+            });
+
+            \WP_CLI::add_command('kb-faq import', function ($args, $assoc) {
+                $path = $args[0] ?? null;
+
+                if (! $path) {
+                    \WP_CLI::error('Path to faq-parsed.json is required.');
+                }
+
+                $dryRun = isset($assoc['dry-run']);
+
+                try {
+                    $result = (new FaqImporter())->import((string) $path, $dryRun);
+                } catch (\InvalidArgumentException $exception) {
+                    \WP_CLI::error($exception->getMessage());
+                }
+
+                foreach ($result['missing'] as $slug) {
+                    \WP_CLI::warning("No product_cat term with slug '{$slug}'; skipped.");
+                }
+
+                foreach ($result['empty'] as $slug) {
+                    \WP_CLI::warning("Category '{$slug}' has no usable questions; skipped.");
+                }
+
+                \WP_CLI::success(sprintf(
+                    '%s %d categories / %d questions.',
+                    $dryRun ? 'Would import' : 'Imported',
+                    $result['terms'],
+                    $result['questions'],
+                ));
             });
 
             \WP_CLI::add_command('blocks migrate', function ($args, $assoc) {
