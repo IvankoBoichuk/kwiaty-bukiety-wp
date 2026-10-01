@@ -12,6 +12,7 @@ use App\Api\PostalCode;
 use App\Console\FaqImporter;
 use App\Console\LegacyBlockMigrator;
 use App\SEO\CityHub;
+use App\Shop\CatalogOrder;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -59,6 +60,7 @@ class ThemeServiceProvider extends SageServiceProvider
         DeliveryTimer::boot();
         PostalCode::boot();
         CityHub::boot();
+        CatalogOrder::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
