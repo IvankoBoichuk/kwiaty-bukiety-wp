@@ -80,7 +80,10 @@ function detectBump(messages) {
     let level = 0;
 
     for (const message of messages) {
-        if (/(^|\n)[a-z]+(\([^)]+\))?!: /i.test(message) || /BREAKING CHANGE:/i.test(message)) {
+        // Both markers have to sit at the start of a line: `BREAKING CHANGE:`
+        // is a footer per the convention, and matching it anywhere would let a
+        // commit body that merely describes the rules trigger a major release.
+        if (/(^|\n)[a-z]+(\([^)]+\))?!: /i.test(message) || /(^|\n)BREAKING[ -]CHANGE: /i.test(message)) {
             level = Math.max(level, 3);
             continue;
         }
