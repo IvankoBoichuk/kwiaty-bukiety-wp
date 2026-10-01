@@ -3,6 +3,8 @@
   class="flex flex-col gap-8"
   data-delivery-schedule="{!! esc_attr(wp_json_encode($deliverySchedule, JSON_UNESCAPED_UNICODE)) !!}"
 >
+  @include('woocommerce.single-product.shop-notices')
+
   <div class="grid grid-cols-2 gap-x-3 gap-y-6 lg:gap-6">
     {{-- Delivery date --}}
     <div data-funeral-delivery-date-section>
