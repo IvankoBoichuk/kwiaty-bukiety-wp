@@ -223,6 +223,7 @@ add_action(
          */
         register_nav_menus([
             'primary_navigation' => __('Primary Navigation', 'sage-back'),
+            'top_bar_navigation' => __('Top Bar Navigation', 'sage-back'),
             'footer_navigation' => __('Footer Navigation', 'sage-back'),
             'footer_secondary_navigation' => __(
                 'Footer Secondary Navigation',

@@ -20,6 +20,7 @@ class Header extends Composer
             'siteName' => $context->siteName(),
             'logos' => $context->logos(),
             'menu' => $context->primaryNavigation(),
+            'topBarMenu' => $context->topBarNavigation(),
             'phone' => $context->phone(),
             'deliveryTimer' => $context->deliveryTimer(),
         ];

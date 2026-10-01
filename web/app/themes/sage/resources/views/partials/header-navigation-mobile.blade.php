@@ -116,5 +116,56 @@
         </div>
       @endforeach
     </div>
+
+    {{-- The top bar menu has no room of its own on small screens, so it is
+         appended to the drawer rather than dropped. --}}
+    @if (!empty($topBarMenu))
+      <div class="mt-6 border-t border-gray-200 pt-4" x-data="accordion">
+        @foreach ($topBarMenu as $item)
+          <div class="border-b border-gray-200 last:border-b-0">
+            @if (!empty($item['children']))
+              <button
+                @click="toggle('top-{{ $loop->index }}')"
+                type="button"
+                class="flex w-full items-center justify-between py-3 text-left text-sm text-gray-600"
+              >
+                <span>{{ $item['title'] }}</span>
+                <svg
+                  class="size-4 transition-transform"
+                  :class="isActive('top-{{ $loop->index }}') ? 'rotate-180' : ''"
+                  fill="none"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                >
+                  <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+
+              <div x-show="isActive('top-{{ $loop->index }}')" x-collapse class="pb-2 pl-4">
+                @foreach ($item['children'] as $child)
+                  <a
+                    href="{{ $child['url'] }}"
+                    @if (!empty($child['target'])) target="{{ $child['target'] }}" rel="noopener" @endif
+                    class="hover:text-primary block py-2 pl-3 text-sm text-gray-600"
+                    @click="closeMenu()"
+                  >
+                    {{ $child['title'] }}
+                  </a>
+                @endforeach
+              </div>
+            @else
+              <a
+                href="{{ $item['url'] }}"
+                @if (!empty($item['target'])) target="{{ $item['target'] }}" rel="noopener" @endif
+                class="hover:text-primary block py-3 text-sm text-gray-600"
+                @click="closeMenu()"
+              >
+                {{ $item['title'] }}
+              </a>
+            @endif
+          </div>
+        @endforeach
+      </div>
+    @endif
   </nav>
 </div>

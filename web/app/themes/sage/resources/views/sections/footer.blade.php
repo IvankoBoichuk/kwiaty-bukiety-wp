@@ -228,6 +228,7 @@
           @elseif ($item['type'] === 'button')
             <button
               type="button"
+              @if ($item['action'] === 'search') data-search-toggle @endif
               @click="{{ $item['action'] }}()"
               aria-label="{{ $item['name'] }}"
               class="counter-for-{{ $item['id'] }} text-gray-6 relative block text-[14px] leading-4.75"

@@ -24,6 +24,11 @@ class Context
     /**
      * @var array<int, array<string, mixed>>|null
      */
+    protected ?array $topBarNavigation = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
     protected ?array $contacts = null;
 
     /**
@@ -108,24 +113,18 @@ class Context
      */
     public function primaryNavigation(): array
     {
-        if ($this->primaryNavigation !== null) {
-            return $this->primaryNavigation;
-        }
+        return $this->primaryNavigation
+            ??= $this->menuTree('primary_navigation');
+    }
 
-        $locations = get_nav_menu_locations();
-        $menuId = $locations['primary_navigation'] ?? null;
-
-        if (!$menuId) {
-            return $this->primaryNavigation = [];
-        }
-
-        $menuItems = wp_get_nav_menu_items($menuId);
-
-        if (!is_array($menuItems)) {
-            return $this->primaryNavigation = [];
-        }
-
-        return $this->primaryNavigation = $this->buildMenuTree($menuItems);
+    /**
+     * The secondary links in the dark bar above the logo row.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function topBarNavigation(): array
+    {
+        return $this->topBarNavigation ??= $this->menuTree('top_bar_navigation');
     }
 
     /**
@@ -294,11 +293,37 @@ class Context
             $branch[] = [
                 'title' => $item->title,
                 'url' => $item->url,
+                'target' => $item->target,
+                /* The menu item's own CSS classes from the admin screen. The
+                   header reads them to single out an item: the design marks a
+                   promoted category with a filled pill, which is editorial, not
+                   structural, so it is carried by a `promo` class rather than
+                   by a position in the tree. */
+                'classes' => array_values(array_filter((array) $item->classes)),
                 'children' => $children,
             ];
         }
 
         return $branch;
+    }
+
+    /**
+     * The nested items of a menu location, children included.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function menuTree(string $location): array
+    {
+        $locations = get_nav_menu_locations();
+        $menuId = $locations[$location] ?? null;
+
+        if (!$menuId) {
+            return [];
+        }
+
+        $items = wp_get_nav_menu_items($menuId);
+
+        return is_array($items) ? $this->buildMenuTree($items) : [];
     }
 
     /**
