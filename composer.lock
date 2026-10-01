@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7e8e3249231d9c26c8ce63822d6012d",
+    "content-hash": "daa4a8c1f5994725c502cd7747830481",
     "packages": [
         {
             "name": "brick/math",
@@ -584,33 +584,32 @@
         },
         {
             "name": "frontenda/frontenda-blocks",
-            "version": "dev-main",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IvankoBoichuk/frontenda-blocks.git",
-                "reference": "d4725e5979adff0faf3a9600fd36058036e652ce"
+                "reference": "bd86fdcc5da65ee5349dfbfbeaa0c378c800315f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/d4725e5979adff0faf3a9600fd36058036e652ce",
-                "reference": "d4725e5979adff0faf3a9600fd36058036e652ce",
+                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/bd86fdcc5da65ee5349dfbfbeaa0c378c800315f",
+                "reference": "bd86fdcc5da65ee5349dfbfbeaa0c378c800315f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1",
                 "timber/timber": "^2.5"
             },
-            "default-branch": true,
             "type": "wordpress-plugin",
             "license": [
                 "MIT"
             ],
             "description": "Reusable dynamic Gutenberg section block",
             "support": {
-                "source": "https://github.com/IvankoBoichuk/frontenda-blocks/tree/main",
+                "source": "https://github.com/IvankoBoichuk/frontenda-blocks/tree/v1.1.0",
                 "issues": "https://github.com/IvankoBoichuk/frontenda-blocks/issues"
             },
-            "time": "2026-09-30T10:36:33+00:00"
+            "time": "2026-10-01T18:23:02+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -10662,9 +10661,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "frontenda/frontenda-blocks": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
