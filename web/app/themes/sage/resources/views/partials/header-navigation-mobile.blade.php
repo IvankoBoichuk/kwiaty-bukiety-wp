@@ -35,7 +35,8 @@
   x-transition:leave="transition ease-in duration-200"
   x-transition:leave-start="translate-x-0"
   x-transition:leave-end="translate-x-full"
-  class="bg-background fixed top-0 right-0 bottom-0 z-50 flex w-80 max-w-[85vw] flex-col overflow-y-auto border-l border-[#426E59]"
+  class="bg-background fixed top-0 right-0 bottom-0 z-50 flex w-80 max-w-[85vw] flex-col overflow-y-auto overscroll-contain border-l border-[#426E59]"
+  @keydown.escape.window="closeMenu()"
   x-cloak
 >
   <nav class="flex-1 overflow-y-auto px-4 pt-4 pb-16" aria-label="{{ wp_get_nav_menu_name('primary_navigation') }}">

@@ -1,6 +1,10 @@
-<div class="relative max-lg:hidden" @focusout="if (!$el.contains($event.relatedTarget)) closeDesktopMenu();">
+<div
+  class="relative max-lg:hidden"
+  @focusout="if (!$el.contains($event.relatedTarget)) closeDesktopMenu();"
+  @keydown.escape.window="closeDesktopMenu()"
+>
   <nav aria-label="{{ wp_get_nav_menu_name('primary_navigation') }}">
-    <ul class="flex items-center justify-center gap-8 text-[13px] font-semibold text-[#244734] uppercase">
+    <ul class="text-green-dark flex items-center gap-11 text-[16px] font-semibold">
       @foreach ($menu as $item)
         <li>
           @if (!empty($item['children']))
@@ -8,18 +12,27 @@
               href="{{ $item['url'] }}"
               @mouseenter="openDesktopMenu('desktop-menu-{{ $loop->index }}')"
               @focusin="openDesktopMenu('desktop-menu-{{ $loop->index }}')"
-              class="relative z-50 flex items-center gap-2 py-3 transition-colors duration-200 hover:text-[#426E59] focus:text-[#426E59] focus:outline-none"
+              class="relative z-50 flex items-center gap-1.5 py-3 transition-colors duration-200 hover:text-[#426E59] focus:text-[#426E59] focus:outline-none"
             >
               <span>{{ $item['title'] }}</span>
               <svg
-                class="size-4 transition-transform duration-200"
+                class="size-4 shrink-0 transition-transform duration-200"
                 :class="isDesktopMenuActive('desktop-menu-{{ $loop->index }}') ? 'rotate-180' : ''"
                 fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
+            </a>
+          @elseif (in_array('promo', $item['classes'] ?? [], true))
+            {{-- A promoted category: filled pill instead of a plain link. Give
+                 the menu item the `promo` CSS class in Appearance > Menus. --}}
+            <a
+              href="{{ $item['url'] }}"
+              class="bg-accent text-purple-dark block rounded-full px-5 py-3 transition-opacity duration-200 hover:opacity-80 focus:opacity-80 focus:outline-none"
+            >
+              {{ $item['title'] }}
             </a>
           @else
             <a
@@ -43,16 +56,16 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="pointer-events-none fixed inset-0 z-50 hidden lg:block"
+    :style="`--menu-top: ${getDesktopMenuTop()}px`"
     x-cloak
   >
     <div
-      class="pointer-events-auto absolute inset-x-0 bottom-0 bg-black/30"
-      :style="`top: ${getDesktopMenuTop()}px`"
+      class="pointer-events-auto absolute inset-x-0 top-[var(--menu-top,0px)] bottom-0 bg-black/30"
       @mouseenter="closeDesktopMenu()"
       @click="closeDesktopMenu()"
     ></div>
 
-    <div class="pointer-events-none absolute inset-x-0 min-h-136" :style="`top: ${getDesktopMenuTop()}px`">
+    <div class="pointer-events-none absolute inset-x-0 top-[var(--menu-top,0px)] min-h-136">
       @foreach ($menu as $item)
         @if (!empty($item['children']))
           <div
@@ -63,7 +76,7 @@
             x-transition:leave="transition-all ease-in duration-180"
             x-transition:leave-start="translate-y-0 opacity-100"
             x-transition:leave-end="translate-y-[-10px] opacity-0"
-            class="bg-background pointer-events-auto absolute inset-x-0 top-0 border border-[#C7D7CF] py-9 shadow-[0_24px_60px_rgba(36,71,52,0.14)]"
+            class="bg-background pointer-events-auto absolute inset-x-0 top-0 max-h-[calc(100dvh-var(--menu-top,0px)-3rem)] overflow-y-auto overscroll-contain border border-[#C7D7CF] py-9 shadow-[0_24px_60px_rgba(36,71,52,0.14)]"
             x-cloak
           >
             <div class="bx-container mx-auto w-full">
