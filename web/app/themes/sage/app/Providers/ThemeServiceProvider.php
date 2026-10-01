@@ -9,6 +9,7 @@ use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
 use App\Console\LegacyBlockMigrator;
+use App\SEO\CityHub;
 use App\Modules\LocalLinking\LocalLinking;
 use App\Modules\LocalLinking\PopularOrderAdmin;
 use App\SEO\OpenGraph;
@@ -54,6 +55,7 @@ class ThemeServiceProvider extends SageServiceProvider
         ProductAttributeIcons::boot();
         DeliveryTimer::boot();
         PostalCode::boot();
+        CityHub::boot();
         LocalLinking::boot();
         PopularOrderAdmin::boot();
         Robots::boot();
