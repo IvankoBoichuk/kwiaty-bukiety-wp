@@ -54,14 +54,18 @@ class Context
 
         $logoDarkId = get_theme_mod('logo_dark');
         $logoLightId = get_theme_mod('logo_light');
+        $logoDarkLgId = get_theme_mod('logo_dark_lg');
+        $logoLightLgId = get_theme_mod('logo_light_lg');
 
-        if (!$logoLightId && !$logoDarkId) {
+        if (!$logoLightId && !$logoDarkId && !$logoDarkLgId && !$logoLightLgId) {
             return $this->logos = null;
         }
 
         return $this->logos = (object) [
             'light' => self::logoImage((string) $logoLightId),
             'dark' => self::logoImage((string) $logoDarkId),
+            'darkLg' => self::logoImage((string) $logoDarkLgId),
+            'lightLg' => self::logoImage((string) $logoLightLgId),
         ];
     }
 

@@ -41,13 +41,23 @@
     <div class="order-1 flex items-center gap-8.75 md:flex-col md:items-start md:gap-3.5 lg:w-47">
       @if (!empty($logos->light))
         <a href="{{ home_url('/') }}" aria-label="{{ $siteName }}">
-          <img
-            src="{{ $logos->light->src('medium') }}"
-            alt="{{ $logos->light->alt() ?? $siteName }}"
-            width="90"
-            height="43"
-            class="h-auto w-22.5"
-          />
+          <picture>
+            @if (!empty($logos->lightLg))
+              <source
+                media="(min-width: 96rem)"
+                srcset="{{ $logos->lightLg->src('full') }}"
+                @if (($logos->lightLg->width() ?? 0) > 0) width="{{ $logos->lightLg->width() }}" @endif
+                @if (($logos->lightLg->height() ?? 0) > 0) height="{{ $logos->lightLg->height() }}" @endif
+              />
+            @endif
+            <img
+              src="{{ $logos->light->src('medium') }}"
+              alt="{{ $logos->light->alt() ?? $siteName }}"
+              width="90"
+              height="43"
+              class="h-auto w-22.5 2xl:w-auto"
+            />
+          </picture>
         </a>
       @else
         <a

@@ -341,6 +341,12 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
     $wp_customize->add_setting('logo_light', [
         'sanitize_callback' => 'esc_url_raw',
     ]);
+    $wp_customize->add_setting('logo_light_lg', [
+        'sanitize_callback' => 'esc_url_raw',
+    ]);
+    $wp_customize->add_setting('logo_dark_lg', [
+        'sanitize_callback' => 'esc_url_raw',
+    ]);
 
     $wp_customize->add_control(
         new WP_Customize_Image_Control($wp_customize, 'logo_dark', [
@@ -351,10 +357,26 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
     );
 
     $wp_customize->add_control(
+        new WP_Customize_Image_Control($wp_customize, 'logo_dark_lg', [
+            'label' => __('Logo Dark Large', 'sage-back'),
+            'section' => 'title_tagline',
+            'settings' => 'logo_dark_lg',
+        ]),
+    );
+
+    $wp_customize->add_control(
         new WP_Customize_Image_Control($wp_customize, 'logo_light', [
             'label' => __('Logo Light', 'sage-back'),
             'section' => 'title_tagline',
             'settings' => 'logo_light',
+        ]),
+    );
+
+    $wp_customize->add_control(
+        new WP_Customize_Image_Control($wp_customize, 'logo_light_lg', [
+            'label' => __('Logo Light Large', 'sage-back'),
+            'section' => 'title_tagline',
+            'settings' => 'logo_light_lg',
         ]),
     );
 });
