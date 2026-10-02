@@ -1,9 +1,9 @@
 name: Main Release
 
+# The push trigger is removed: no GitHub Actions workflow in this repo fires on
+# its own any more, Woodpecker CI owns push-driven work. The changelog, tag,
+# GitHub release and production deploy now run only when started by hand.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:

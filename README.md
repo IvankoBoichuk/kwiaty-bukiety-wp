@@ -48,8 +48,11 @@
 ## Розгортання
 
 Деплой у `dev` робить Woodpecker (`.woodpecker/deploy.yaml`) на пуш у гілку `dev`.
-GitHub Actions (`.github/workflows/deploy.yml`) лишився ручним запасним варіантом.
 Прод-кроки в конвеєрі поки закоментовані.
+
+Усі workflow у `.github/workflows/` лишаються в репо, але **жоден не
+запускається сам** — у кожного тільки `workflow_dispatch`. Push-роботу тримає
+Woodpecker, а GitHub Actions лишився ручним запасним варіантом.
 
 Конвеєр збирає тему, ставить composer-залежності, **окремо збирає editor-assets
 плагіна `frontenda-blocks`** (він тримає `blocks/section/build/` у `.gitignore`,
@@ -59,7 +62,9 @@ GitHub Actions (`.github/workflows/deploy.yml`) лишився ручним за
 ### Версіювання
 
 Версію підіймає `.github/workflows/versioning.yml` — **у PR, до мерджу**, а не
-після. `bump-dev-version.mjs` читає коміти PR і рахує рівень за conventional
+після. Запуск ручний: у Actions треба стартувати workflow і передати номер PR
+(`pr_number`), бо без події `pull_request` йому нізвідки взяти гілку.
+`bump-dev-version.mjs` читає коміти PR і рахує рівень за conventional
 commits: `!:` або `BREAKING CHANGE:` → major, `feat:` → minor, `fix:` → patch,
 решта не рахується. Новий номер пишеться в `composer.json` і `style.css` окремим
 комітом `chore(release): bump dev version` у гілку PR.
@@ -73,8 +78,8 @@ commits: `!:` або `BREAKING CHANGE:` → major, `feat:` → minor, `fix:` →
 перший встигав доставити версію без бампу — а два `rsync --delete` ішли в одну
 теку. Тепер мердж-коміт уже несе потрібну версію і деплой один.
 
-Прямий пуш у `dev` (без PR) версію **не** підіймає — тригер стоїть лише на
-`pull_request`.
+Пуш сам по собі версію **не** підіймає — ні прямий у `dev`, ні в гілку PR.
+Бамп відбувається лише тоді, коли workflow запустили руками.
 
 ### Що треба на сервері окремо
 

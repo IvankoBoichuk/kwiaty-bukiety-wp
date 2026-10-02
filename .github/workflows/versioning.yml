@@ -6,31 +6,56 @@ name: Dev Version Bump
 # pipeline, and the first one had already shipped the pre-bump version while
 # both raced to rsync --delete the same target. Bumping here means the merge
 # commit already carries the version and one push deploys it once.
+#
+# The pull_request trigger is removed: no GitHub Actions workflow in this repo
+# fires on its own any more. Nothing supplies an event payload to a manual run,
+# so the PR is named as an input and its refs are read from the API instead.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - dev
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Number of the pull request to bump
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: bump-${{ github.event.pull_request.number }}
+  group: bump-${{ inputs.pr_number }}
   cancel-in-progress: true
 
 jobs:
   bump-version:
-    # GITHUB_TOKEN cannot push to a fork's head branch, so the bump would only
-    # fail at the last step. Lint, tests and typecheck still run for those PRs
-    # via the Tests workflow and the Woodpecker test pipeline.
-    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
+      # Stands in for github.event.pull_request, which a manual run does not
+      # have. gh is preinstalled on the runner and needs no checkout.
+      - name: Read pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/pulls/${{ inputs.pr_number }}" \
+            --jq '"head_ref=\(.head.ref)", "base_ref=\(.base.ref)", "head_repo=\(.head.repo.full_name)"' \
+            >> "$GITHUB_OUTPUT"
+
+      # GITHUB_TOKEN cannot push to a fork's head branch, so the bump would only
+      # fail at the last step. The pull_request trigger skipped such PRs
+      # silently; a hand-started run was asked for explicitly, so say why not.
+      - name: Check the branch can be pushed to
+        env:
+          HEAD_REPO: ${{ steps.pr.outputs.head_repo }}
+        run: |
+          if [ "${HEAD_REPO}" != "${{ github.repository }}" ]; then
+            echo "PR #${{ inputs.pr_number }} is from the fork ${HEAD_REPO}; GITHUB_TOKEN cannot push the bump to its branch." >&2
+            exit 1
+          fi
+
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ steps.pr.outputs.head_ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -44,13 +69,13 @@ jobs:
         run: node .github/scripts/bump-dev-version.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ inputs.pr_number }}
           REPO: ${{ github.repository }}
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_REF: ${{ steps.pr.outputs.base_ref }}
 
       - name: Commit version changes
         env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
