@@ -8,7 +8,11 @@ steps:
   - name: composer-install
     image: &php_image php:8.3-cli-alpine
     commands:
-      - apk add --no-cache git unzip curl
+      # `patch` is what cweagans/composer-patches shells out to. It only uses
+      # `git apply` when the package directory is itself a git repo, and
+      # --prefer-dist unpacks from a zip, so the binary is the only route --
+      # and alpine does not ship it.
+      - apk add --no-cache git unzip curl patch
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
       - composer install --no-interaction --no-progress --prefer-dist
 
