@@ -105,6 +105,50 @@ add_action(
 );
 
 /**
+ * Defer the front-end scripts that are safe to delay.
+ *
+ * Everything the theme itself ships is already deferred: Vite emits the bundle
+ * as <script type="module">, which the HTML spec defers by definition and on
+ * which a defer attribute is ignored, and WooCommerce registers its own
+ * front-end scripts with a defer strategy. What is still blocking is an
+ * allowlist of one, because the rest cannot be delayed without breaking the
+ * page that takes the money:
+ *
+ * - jquery-core, jquery-migrate: the PayU gateway prints a bare inline
+ *   jQuery(document).ready() block into the cart markup with no handle for
+ *   WP_Scripts to see, so core cannot know about it. Deferring jQuery moves it
+ *   after that block and throws "jQuery is not defined" on the cart.
+ * - payu-gateway: an IIFE that takes jQuery as its argument, same constraint.
+ * - wp-i18n: carries the locale data as an inline "after" script, and
+ *   WP_Scripts::filter_eligible_strategies() refuses to delay any handle that
+ *   has one. It prints in the footer regardless, so it costs no render time.
+ *
+ * google-pay is the one worth delaying: a blocking cross-origin request to
+ * pay.google.com in the head of the cart, enqueued by the PayU Google Pay
+ * gateway with no dependents and no strategy of its own. payu-gateway.js only
+ * reaches for window.google.payments inside validate_payu_google_pay(), which
+ * runs when the order is placed and guards the lookup with optional chaining,
+ * so the deferred pay.js is in place long before anything reads it.
+ *
+ * @return void
+ */
+add_action(
+    'wp_enqueue_scripts',
+    function (): void {
+        if (is_admin()) {
+            return;
+        }
+
+        foreach (['google-pay'] as $handle) {
+            if (wp_script_is($handle, 'enqueued')) {
+                wp_script_add_data($handle, 'strategy', 'defer');
+            }
+        }
+    },
+    999,
+);
+
+/**
  * Use the generated theme.json file.
  *
  * @return string
