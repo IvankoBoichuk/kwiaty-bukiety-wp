@@ -337,4 +337,26 @@ final class Markup
             ),
         );
     }
+
+    /**
+     * Promote a section's media to the priority the LCP element needs.
+     *
+     * MediaRenderer takes its priority from the block's own attribute, which
+     * defaults to low, so the hero of a page ships fetchpriority="low"
+     * loading="lazy" unless an editor remembers to flip it -- and a lazily
+     * loaded LCP image is exactly what Lighthouse flags.
+     *
+     * The rendered tag is rewritten rather than re-rendered: the slot API takes
+     * no priority argument, and going around it would lose the <picture>, its
+     * per-breakpoint sources and the focal-point style. Media an editor already
+     * marked high carries neither string and passes through untouched.
+     */
+    public static function asLcpMedia(string $html): string
+    {
+        return str_replace(
+            ['fetchpriority="low"', 'loading="lazy"'],
+            ['fetchpriority="high"', 'loading="eager"'],
+            $html,
+        );
+    }
 }
