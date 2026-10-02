@@ -52,7 +52,7 @@
             @endif
             <img
               src="{{ $logos->light->src('medium') }}"
-              alt="{{ $logos->light->alt() ?? $siteName }}"
+              alt="{{ $logos->light->alt() ?: $siteName }}"
               width="90"
               height="43"
               class="h-auto w-22.5 2xl:w-auto"

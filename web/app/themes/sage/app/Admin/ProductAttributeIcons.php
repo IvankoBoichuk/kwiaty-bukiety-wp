@@ -237,7 +237,7 @@ class ProductAttributeIcons
 
                 input.value = String(attachment.id ?? '')
                 image.src = attachment.sizes?.thumbnail?.url || attachment.url || ''
-                image.alt = attachment.alt || attachment.filename || ''
+                image.alt = attachment.alt || attachment.filename || <?php echo wp_json_encode(__('Attribute icon preview', 'sage-back')); ?>
                 syncState()
               })
 
@@ -248,7 +248,7 @@ class ProductAttributeIcons
               event.preventDefault()
               input.value = ''
               image.src = ''
-              image.alt = ''
+              image.alt = <?php echo wp_json_encode(__('Attribute icon preview', 'sage-back')); ?>
               syncState()
             })
 
@@ -268,6 +268,10 @@ class ProductAttributeIcons
         $imageAlt = $attachmentId > 0
             ? (string) get_post_meta($attachmentId, '_wp_attachment_image_alt', true)
             : '';
+
+        if ($imageAlt === '') {
+            $imageAlt = __('Attribute icon preview', 'sage-back');
+        }
 
         if ($isEdit) {
             ?>

@@ -25,7 +25,7 @@
                             <div class="flex-none">
                                 <img
                                     src="{{ $item->icon()->src() }}"
-                                    alt="{{ $item->icon()->alt() }}"
+                                    alt="{{ $item->icon()->alt() ?: $item->label() }}"
                                     @if (($item->icon()->width() ?? 0) > 0) width="{{ $item->icon()->width() }}" @endif
                                     @if (($item->icon()->height() ?? 0) > 0) height="{{ $item->icon()->height() }}" @endif
                                     class="size-5 object-contain"

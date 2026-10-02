@@ -60,12 +60,12 @@
     x-cloak
   >
     <div
-      class="pointer-events-auto absolute inset-x-0 top-[var(--menu-top,0px)] bottom-0 bg-black/30"
+      class="pointer-events-auto absolute inset-x-0 top-(--menu-top,0px) bottom-0 bg-black/30"
       @mouseenter="closeDesktopMenu()"
       @click="closeDesktopMenu()"
     ></div>
 
-    <div class="pointer-events-none absolute inset-x-0 top-[var(--menu-top,0px)] min-h-136">
+    <div class="pointer-events-none absolute inset-x-0 top-(--menu-top,0px) min-h-136">
       @foreach ($menu as $item)
         @if (!empty($item['children']))
           <div

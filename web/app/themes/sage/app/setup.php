@@ -30,37 +30,19 @@ add_filter('block_editor_settings_all', function ($settings) {
 });
 
 /**
- * Feed the front-end bundle its translations.
+ * Emit the front-end bundle.
  *
- * The theme's scripts are emitted by Vite as bare module tags, not through
- * wp_enqueue_script, so there is no handle for wp_set_script_translations()
- * to hang the catalogue on -- and without it every __() call in the checkout
- * and product JS rendered in English, including the form validation messages.
- * Merge the generated JED catalogues by hand instead.
+ * The bundle used to need the wp-i18n script, because Vite externalizes
+ * @wordpress/i18n to the global wp.i18n -- and since it dereferences wp.i18n.__
+ * while the module is evaluating, wp-i18n and its wp-hooks dependency had to be
+ * blocking, which put two round trips in the critical request path for roughly
+ * two dozen validation messages. Those strings now travel in the config objects
+ * the pages already print (App\Checkout\CartCheckout::strings() and the product
+ * payload in content-single-product.blade.php), translated here on the server,
+ * so neither script is enqueued any more.
  *
- * @return string
+ * @return void
  */
-function scriptLocaleData(string $domain): string
-{
-    $locale = determine_locale();
-    $directory = get_template_directory() . '/languages/front';
-    $messages = [];
-
-    foreach (glob("{$directory}/{$domain}-{$locale}-*.json") ?: [] as $file) {
-        $decoded = json_decode((string) file_get_contents($file), true);
-        $data = $decoded['locale_data'][$domain] ?? null;
-
-        if (is_array($data)) {
-            $messages = array_merge($messages, $data);
-        }
-    }
-
-    return $messages === [] ? '' : (string) wp_json_encode([
-        'domain' => $domain,
-        'locale_data' => [$domain => $messages],
-    ]);
-}
-
 add_action(
     'wp_enqueue_scripts',
     function () {
@@ -68,26 +50,68 @@ add_action(
             return;
         }
 
-        if (!wp_script_is('wp-i18n')) {
-            wp_enqueue_script('wp-i18n');
+        /*
+         * The my-account and order-pay screens are stock WooCommerce templates
+         * dressed by resources/css/account.css. That sheet is a separate entry
+         * so the pages that decide LCP do not block on rules they never use.
+         */
+        $entryPoints = ['resources/js/app.ts'];
+
+        if (
+            function_exists('is_account_page')
+            && (is_account_page() || is_checkout_pay_page())
+        ) {
+            $entryPoints[] = 'resources/css/account.css';
         }
 
-        $localeData = scriptLocaleData('sage-front');
-
-        if ($localeData !== '') {
-            wp_add_inline_script(
-                'wp-i18n',
-                sprintf(
-                    'wp.i18n.setLocaleData( %s.locale_data["sage-front"], "sage-front" );',
-                    $localeData,
-                ),
-                'after',
-            );
-        }
-
-        echo Vite::withEntryPoints(['resources/js/app.ts'])->toHtml();
+        echo Vite::withEntryPoints($entryPoints)->toHtml();
     },
     100,
+);
+
+/**
+ * Defer the front-end scripts that are safe to delay.
+ *
+ * Everything the theme itself ships is already deferred: Vite emits the bundle
+ * as <script type="module">, which the HTML spec defers by definition and on
+ * which a defer attribute is ignored, and WooCommerce registers its own
+ * front-end scripts with a defer strategy. What is still blocking is an
+ * allowlist of one, because the rest cannot be delayed without breaking the
+ * page that takes the money:
+ *
+ * - jquery-core, jquery-migrate: the PayU gateway prints a bare inline
+ *   jQuery(document).ready() block into the cart markup with no handle for
+ *   WP_Scripts to see, so core cannot know about it. Deferring jQuery moves it
+ *   after that block and throws "jQuery is not defined" on the cart.
+ * - payu-gateway: an IIFE that takes jQuery as its argument, same constraint.
+ * - wp-i18n: the theme no longer enqueues it, but WooCommerce still does on the
+ *   cart and checkout, and there it carries inline "after" data, which
+ *   WP_Scripts::filter_eligible_strategies() refuses to delay. It prints in the
+ *   footer regardless, so it costs no render time.
+ *
+ * google-pay is the one worth delaying: a blocking cross-origin request to
+ * pay.google.com in the head of the cart, enqueued by the PayU Google Pay
+ * gateway with no dependents and no strategy of its own. payu-gateway.js only
+ * reaches for window.google.payments inside validate_payu_google_pay(), which
+ * runs when the order is placed and guards the lookup with optional chaining,
+ * so the deferred pay.js is in place long before anything reads it.
+ *
+ * @return void
+ */
+add_action(
+    'wp_enqueue_scripts',
+    function (): void {
+        if (is_admin()) {
+            return;
+        }
+
+        foreach (['google-pay'] as $handle) {
+            if (wp_script_is($handle, 'enqueued')) {
+                wp_script_add_data($handle, 'strategy', 'defer');
+            }
+        }
+    },
+    999,
 );
 
 /**

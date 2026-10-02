@@ -7,7 +7,7 @@ import type {
     ProductPurchaseAddition,
     ProductPurchaseStore
 } from './types'
-import { __ } from '@wordpress/i18n'
+import { createTranslator } from '../strings'
 import type { ProductVariation } from '@/types/ProductVariations'
 import { animateCSS } from '../animate'
 
@@ -33,7 +33,10 @@ export class ProductStore implements ProductPurchaseStore {
 
     readonly #plugins = new Map<string, ProductPlugin>()
 
+    private readonly t: (key: string, fallback: string) => string
+
     constructor(config: ProductPurchaseConfig) {
+        this.t = createTranslator(config.i18n)
 
         this.productId = config.productId
         this._basePrice = config.basePrice
@@ -233,14 +236,14 @@ export class ProductStore implements ProductPurchaseStore {
         this.syncDeliveryFieldsFromInputs()
 
         if (this.deliveryDate.trim() === '') {
-            this.deliveryDateError = __('Choose a delivery date', 'sage-front')
+            this.deliveryDateError = this.t('deliveryDateRequired', 'Choose a delivery date')
             isValid = false
         } else {
             this.deliveryDateError = ''
         }
 
         if (this.deliveryTime.trim() === '') {
-            this.deliveryTimeError = __('Choose a delivery time', 'sage-front')
+            this.deliveryTimeError = this.t('deliveryTimeRequired', 'Choose a delivery time')
             isValid = false
         } else {
             this.deliveryTimeError = ''

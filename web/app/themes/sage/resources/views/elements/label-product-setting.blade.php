@@ -16,7 +16,7 @@
   @elseif ($imageIcon)
     <img
       src="{{ $imageIcon['src'] }}"
-      alt="{{ $imageIcon['alt'] }}"
+      alt="{{ ($imageIcon['alt'] ?? '') ?: $label }}"
       @if (($imageIcon['width'] ?? 0) > 0) width="{{ (int) $imageIcon['width'] }}" @endif
       @if (($imageIcon['height'] ?? 0) > 0) height="{{ (int) $imageIcon['height'] }}" @endif
       class="size-5 shrink-0 object-contain"

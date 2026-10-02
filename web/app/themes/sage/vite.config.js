@@ -38,6 +38,7 @@ export default defineConfig({
       buildDirectory: 'build',
       input: [
         'resources/js/app.ts',
+        'resources/css/account.css',
         'resources/css/editor.css',
       ],
       refresh: true,

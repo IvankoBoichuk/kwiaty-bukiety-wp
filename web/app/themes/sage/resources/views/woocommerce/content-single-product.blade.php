@@ -12,9 +12,21 @@
     $currencySymbol = function_exists('get_woocommerce_currency_symbol')
       ? html_entity_decode((string) get_woocommerce_currency_symbol(), ENT_QUOTES | ENT_HTML5, 'UTF-8')
       : 'zł';
-    $priceFormat = function_exists('get_woocommerce_price_format')
-      ? (string) get_woocommerce_price_format()
-      : '%2$s %1$s';
+    /*
+     * WooCommerce separates the amount from the symbol with a literal &nbsp; in
+     * every spaced currency position, and this template is handed to JS, which
+     * writes the result out as text -- so the entity has to be decoded here or
+     * the customer reads "179&nbsp;zl" on the page. Only the format is decoded:
+     * the symbol above already is, and running it through again would mangle a
+     * symbol that legitimately contained an ampersand.
+     */
+    $priceFormat = html_entity_decode(
+      function_exists('get_woocommerce_price_format')
+        ? (string) get_woocommerce_price_format()
+        : '%2$s %1$s',
+      ENT_QUOTES | ENT_HTML5,
+      'UTF-8',
+    );
     $formattedPriceTemplate = str_replace('%1$s', $currencySymbol, $priceFormat);
     [$currencyPrefix, $currencySuffix] = array_pad(explode('%2$s', $formattedPriceTemplate, 2), 2, '');
 
@@ -33,6 +45,13 @@
       'currencyMinorUnit' => function_exists('wc_get_price_decimals') ? (int) wc_get_price_decimals() : 2,
       'isVariable' => $product->is_type('variable'),
       'storeApiNonce' => (string) wp_create_nonce('wc_store_api'),
+      // Travels in the config rather than through @wordpress/i18n, so the
+      // bundle needs neither the global wp.i18n nor the two render-blocking
+      // scripts behind it (see resources/js/modules/strings.ts).
+      'i18n' => [
+        'deliveryDateRequired' => __('Choose a delivery date', 'sage-front'),
+        'deliveryTimeRequired' => __('Choose a delivery time', 'sage-front'),
+      ],
     ];
   }
 

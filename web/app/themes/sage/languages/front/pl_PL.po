@@ -921,3 +921,15 @@ msgstr "Szukaj &hellip;"
 #: resources/views/partials/header-search.blade.php:51
 msgid "Close"
 msgstr "Zamknij"
+
+#: resources/views/404.blade.php:18
+msgid "Page not found"
+msgstr "Nie znaleziono strony"
+
+#: resources/views/404.blade.php:21
+msgid "The page you were looking for has been moved or never existed. Search for a bouquet below, or start again from the home page."
+msgstr "Strona, której szukasz, została przeniesiona lub nigdy nie istniała. Poszukaj bukietu poniżej albo wróć na stronę główną."
+
+#: resources/views/404.blade.php:65
+msgid "Browse bouquets"
+msgstr "Przejrzyj bukiety"
