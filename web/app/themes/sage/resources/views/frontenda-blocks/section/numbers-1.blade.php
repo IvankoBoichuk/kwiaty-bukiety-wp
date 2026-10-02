@@ -23,7 +23,13 @@
                             <div class="flex-none">{!! Markup::sanitizeSvg($item->icon()) !!}</div>
                         @elseif ($item->icon())
                             <div class="flex-none">
-                                <img src="{{ $item->icon()->src() }}" alt="{{ $item->icon()->alt() }}" class="size-5 object-contain" />
+                                <img
+                                    src="{{ $item->icon()->src() }}"
+                                    alt="{{ $item->icon()->alt() }}"
+                                    @if (($item->icon()->width() ?? 0) > 0) width="{{ $item->icon()->width() }}" @endif
+                                    @if (($item->icon()->height() ?? 0) > 0) height="{{ $item->icon()->height() }}" @endif
+                                    class="size-5 object-contain"
+                                />
                             </div>
                         @endif
                         {{ $item->label() }}

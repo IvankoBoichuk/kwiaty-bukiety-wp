@@ -14,7 +14,13 @@
       <use href="{{ get_template_directory_uri() . '/resources/icon/sprite-base.svg' }}#{{ $spriteIcon }}"></use>
     </svg>
   @elseif ($imageIcon)
-    <img src="{{ $imageIcon['src'] }}" alt="{{ $imageIcon['alt'] }}" class="size-5 shrink-0 object-contain" />
+    <img
+      src="{{ $imageIcon['src'] }}"
+      alt="{{ $imageIcon['alt'] }}"
+      @if (($imageIcon['width'] ?? 0) > 0) width="{{ (int) $imageIcon['width'] }}" @endif
+      @if (($imageIcon['height'] ?? 0) > 0) height="{{ (int) $imageIcon['height'] }}" @endif
+      class="size-5 shrink-0 object-contain"
+    />
   @endif
   <span class="max-lg:text-body-14 lg:font-semibold">{{ $label }}</span>
 </div>
