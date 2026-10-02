@@ -40,11 +40,20 @@
     @endif
 
     @if ($products->isNotEmpty())
+        {{-- A page can hold several of these sections, but only the first one
+             can carry the LCP image, so @once hands the flag to the first
+             slider rendered on the request and to no other. --}}
+        @php($isFirstSlider = false)
+        @once
+            @php($isFirstSlider = true)
+        @endonce
+
         <div class="overflow-x-hidden">
             <div class="events-swiper swiper bx-container! overflow-visible!" id="{{ $sliderId }}">
                 <div class="swiper-wrapper mb-3">
                     @foreach ($products as $item)
-                        @include('partials.product-card-slider', ['item' => $item])
+                        @include('partials.product-card-slider',
+                            ['item' => $item, 'isLcpCandidate' => $isFirstSlider && $loop->first])
                     @endforeach
                 </div>
                 <div class="mx-auto flex w-max items-center justify-center gap-5">

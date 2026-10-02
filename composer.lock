@@ -584,16 +584,16 @@
         },
         {
             "name": "frontenda/frontenda-blocks",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IvankoBoichuk/frontenda-blocks.git",
-                "reference": "bd86fdcc5da65ee5349dfbfbeaa0c378c800315f"
+                "reference": "910e24dc9d83788a5bf548a29cda341ac9ba9ead"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/bd86fdcc5da65ee5349dfbfbeaa0c378c800315f",
-                "reference": "bd86fdcc5da65ee5349dfbfbeaa0c378c800315f",
+                "url": "https://api.github.com/repos/IvankoBoichuk/frontenda-blocks/zipball/910e24dc9d83788a5bf548a29cda341ac9ba9ead",
+                "reference": "910e24dc9d83788a5bf548a29cda341ac9ba9ead",
                 "shasum": ""
             },
             "require": {
@@ -606,10 +606,10 @@
             ],
             "description": "Reusable dynamic Gutenberg section block",
             "support": {
-                "source": "https://github.com/IvankoBoichuk/frontenda-blocks/tree/v1.1.0",
+                "source": "https://github.com/IvankoBoichuk/frontenda-blocks/tree/v1.1.1",
                 "issues": "https://github.com/IvankoBoichuk/frontenda-blocks/issues"
             },
-            "time": "2026-10-01T18:23:02+00:00"
+            "time": "2026-10-02T11:25:11+00:00"
         },
         {
             "name": "fruitcake/php-cors",

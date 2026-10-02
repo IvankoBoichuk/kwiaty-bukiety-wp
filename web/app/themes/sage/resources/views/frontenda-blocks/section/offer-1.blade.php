@@ -90,6 +90,8 @@
                         src="{{ $featuredPost->thumbnail()?->src('large') ?: $productPlaceholderImage }}"
                         class="absolute inset-0 size-full object-cover lg:rounded-4xl"
                         alt="{{ $featuredPost->thumbnail()?->alt() ?: $postTitle($featuredPost) }}"
+                        @if (($featuredPost->thumbnail()?->width() ?? 0) > 0) width="{{ $featuredPost->thumbnail()->width() }}" @endif
+                        @if (($featuredPost->thumbnail()?->height() ?? 0) > 0) height="{{ $featuredPost->thumbnail()->height() }}" @endif
                     />
                     <span
                         class="text-background absolute bottom-1 left-1/2 flex w-max max-w-11/12 -translate-x-1/2 items-center rounded-2xl bg-black/60 px-2.5 py-1 text-center text-[14px] leading-4 md:px-4 md:py-2 md:text-[18px]"
@@ -105,6 +107,8 @@
                         src="{{ $post->thumbnail()?->src('medium') ?: $productPlaceholderImage }}"
                         class="w-12.5 h-full flex-none rounded-2xl object-cover md:w-26 lg:w-36 lg:rounded-4xl"
                         alt="{{ $post->thumbnail()?->alt() ?: $postTitle($post) }}"
+                        @if (($post->thumbnail()?->width() ?? 0) > 0) width="{{ $post->thumbnail()->width() }}" @endif
+                        @if (($post->thumbnail()?->height() ?? 0) > 0) height="{{ $post->thumbnail()->height() }}" @endif
                     />
                     <a
                         href="{{ $post->link() }}"
