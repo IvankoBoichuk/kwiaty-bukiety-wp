@@ -41,7 +41,8 @@
     "timber/timber": "^2.5",
     "frontenda/frontenda-blocks": "^1.1",
     "wp-plugin/wordpress-seo": "^28.6",
-    "wp-plugin/redirection": "^5.10"
+    "wp-plugin/redirection": "^5.10",
+    "wp-plugin/litespeed-cache": "^7.9"
   },
   "require-dev": {
     "laravel/pint": "^1.18",

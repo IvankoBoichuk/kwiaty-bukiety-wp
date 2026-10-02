@@ -142,14 +142,48 @@ add_action(
         $isWooCommerceView
             = is_woocommerce() || is_cart() || is_checkout() || is_account_page();
 
-        if (!$isWooCommerceView) {
+        /*
+         * jQuery is only kept where plugin code still depends on it:
+         *
+         * - the cart and checkout print the gateways' own payment fields, and
+         *   PayU's list of banks ships inline jQuery plus the payu-gateway
+         *   script that marks the chosen bank (the .active class app.css
+         *   styles);
+         * - the order-pay endpoint is WooCommerce's own form, driven by
+         *   wc-checkout;
+         * - the account screens are stock templates, where selectWoo and
+         *   wc-country-select swap the state field per country.
+         *
+         * Everything else -- the product, catalogue and content pages -- runs
+         * on Alpine and the Store API, so jQuery goes, along with the
+         * front-end scripts that declare it as a dependency and would
+         * otherwise pull it straight back in.
+         *
+         * The same views are the only ones that render payment fields, so
+         * PayU's own assets go with them. The plugin enqueues all three on
+         * every front-end request: payu-gateway's script is what pulled jQuery
+         * back in, its stylesheet only dresses the bank list, and the Google
+         * Pay SDK is a third-party request to pay.google.com that nothing
+         * outside the checkout can use.
+         */
+        $needsJQuery = is_cart() || is_checkout() || is_account_page();
+
+        if (!$needsJQuery) {
             wp_dequeue_script('jquery');
             wp_dequeue_script('jquery-core');
             wp_dequeue_script('jquery-migrate');
             wp_dequeue_script('wc-jquery-blockui');
-            wp_dequeue_script('wc-add-to-cart');
             wp_dequeue_script('wc-js-cookie');
+            wp_dequeue_script('wc-add-to-cart');
+            wp_dequeue_script('wc-single-product');
+            wp_dequeue_script('wc-cart-fragments');
             wp_dequeue_script('woocommerce');
+            wp_dequeue_script('payu-gateway');
+            wp_dequeue_script('google-pay');
+            wp_dequeue_style('payu-gateway');
+        }
+
+        if (!$isWooCommerceView) {
             wp_dequeue_style('woocommerce-layout');
             wp_dequeue_style('woocommerce-smallscreen');
             wp_dequeue_style('woocommerce-general');
@@ -173,8 +207,18 @@ add_action(
             $checkoutPageId,
         ]);
 
+        /*
+         * The custom cart and checkout have no stock checkout form for
+         * wc-checkout to drive, but the order-pay and order-received
+         * endpoints live under the same page and do render WooCommerce's own
+         * output, so they keep it -- checkout.js is what binds the payment
+         * method radios and the submit handler on form#order_review.
+         */
+        $isCheckoutEndpoint = is_checkout_pay_page() || is_order_received_page();
+
         if (
-            $customCartCheckoutPageIds !== []
+            !$isCheckoutEndpoint
+            && $customCartCheckoutPageIds !== []
             && is_page($customCartCheckoutPageIds)
         ) {
             wp_dequeue_script('wc-checkout');

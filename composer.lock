@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be862a38a4eb498d74930a96c48adb56",
+    "content-hash": "3716b2b0ce84b1404472b1be04388eff",
     "packages": [
         {
             "name": "brick/math",
@@ -7428,6 +7428,37 @@
                 }
             ],
             "time": "2026-04-26T05:33:54+00:00"
+        },
+        {
+            "name": "wp-plugin/litespeed-cache",
+            "version": "7.9.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/litespeed-cache/",
+                "reference": "tags/7.9.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/litespeed-cache.7.9.1.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0|~2.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://wp-packages.org/downloads",
+            "authors": [
+                {
+                    "name": "LiteSpeed Technologies"
+                }
+            ],
+            "description": "All-in-one unbeatable acceleration & PageSpeed improvement: caching, image/CSS/JS optimization...",
+            "homepage": "https://www.litespeedtech.com/products/cache-plugins/wordpress-acceleration",
+            "support": {
+                "changelog": "https://wordpress.org/plugins/litespeed-cache/#developers",
+                "issues": "https://wordpress.org/support/plugin/litespeed-cache",
+                "source": "https://plugins.svn.wordpress.org/litespeed-cache"
+            },
+            "time": "2026-09-01T21:21:06+00:00"
         },
         {
             "name": "wp-plugin/loco-translate",
