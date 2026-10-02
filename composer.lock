@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46cf8952a5cd747f5a02697e85404113",
+    "content-hash": "be862a38a4eb498d74930a96c48adb56",
     "packages": [
         {
             "name": "brick/math",
@@ -7459,6 +7459,37 @@
                 "source": "https://plugins.svn.wordpress.org/loco-translate"
             },
             "time": "2026-09-25T17:01:45+00:00"
+        },
+        {
+            "name": "wp-plugin/redirection",
+            "version": "5.10.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/redirection/",
+                "reference": "tags/5.10.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/redirection.5.10.1.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0|~2.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://wp-packages.org/downloads",
+            "authors": [
+                {
+                    "name": "John Godley"
+                }
+            ],
+            "description": "Manage 301 redirects, track 404 errors, and improve your site. No knowledge of Apache or Nginx required.",
+            "homepage": "https://redirection.me/",
+            "support": {
+                "changelog": "https://wordpress.org/plugins/redirection/#developers",
+                "issues": "https://wordpress.org/support/plugin/redirection",
+                "source": "https://plugins.svn.wordpress.org/redirection"
+            },
+            "time": "2026-09-19T13:51:12+00:00"
         },
         {
             "name": "wp-plugin/woo-payu-payment-gateway",

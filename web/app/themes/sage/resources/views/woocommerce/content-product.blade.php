@@ -8,7 +8,7 @@
   $item = \App\Catalog\Product::fromWooCommerce($product);
 @endphp
 
-@include('partials.product-card-slider',
+@include('partials.product-card-grid',
   [
     'item' => $item,
     'wrapperTag' => 'li'

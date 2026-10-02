@@ -40,7 +40,8 @@
     "generoi/sage-woocommerce": "^1.1",
     "timber/timber": "^2.5",
     "frontenda/frontenda-blocks": "^1.1",
-    "wp-plugin/wordpress-seo": "^28.6"
+    "wp-plugin/wordpress-seo": "^28.6",
+    "wp-plugin/redirection": "^5.10"
   },
   "require-dev": {
     "laravel/pint": "^1.18",

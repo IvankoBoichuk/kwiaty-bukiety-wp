@@ -3,12 +3,30 @@
 namespace App\Providers;
 
 use App\Admin\ContactSettingsPage;
+use App\Admin\CategoryFaqMetabox;
 use App\Admin\DeliveryTimerSettingsPage;
+use App\Admin\OrderNotificationsSettingsPage;
 use App\Admin\ProductAttributeIcons;
 use App\Api\Categories;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
+use App\Console\FaqImporter;
 use App\Console\LegacyBlockMigrator;
+use App\SEO\CityHub;
+use App\Shop\CatalogOrder;
+use App\Shop\CartReturn;
+use App\Shop\LeadTimeRules;
+use App\Shop\WholesaleDiscount;
+use App\Shop\PostalDelivery;
+use App\Shop\OrderNotifications;
+use App\Shop\OrderAdminColumns;
+use App\Shop\RestApiGuard;
+use App\Modules\LocalLinking\LocalLinking;
+use App\Modules\LocalLinking\PopularOrderAdmin;
+use App\SEO\OpenGraph;
+use App\SEO\ProductSchema;
+use App\SEO\Robots;
+use App\SEO\TermShortcodes;
 use App\Console\PostalCodeSchema;
 use App\Services\PostalCodeImporter;
 use App\Support\Context;
@@ -45,9 +63,26 @@ class ThemeServiceProvider extends SageServiceProvider
         Healthcheck::boot();
         ContactSettingsPage::boot();
         DeliveryTimerSettingsPage::boot();
+        OrderNotificationsSettingsPage::boot();
         ProductAttributeIcons::boot();
+        CategoryFaqMetabox::boot();
         DeliveryTimer::boot();
         PostalCode::boot();
+        CityHub::boot();
+        CatalogOrder::boot();
+        CartReturn::boot();
+        LeadTimeRules::boot();
+        WholesaleDiscount::boot();
+        PostalDelivery::boot();
+        OrderNotifications::boot();
+        OrderAdminColumns::boot();
+        RestApiGuard::boot();
+        LocalLinking::boot();
+        PopularOrderAdmin::boot();
+        Robots::boot();
+        TermShortcodes::boot();
+        OpenGraph::boot();
+        ProductSchema::boot();
         Blade::directive('id', function ($expression) {
             return "<?php if (!empty($expression)): ?>id=\"<?php echo e($expression); ?>\"<?php endif; ?>";
         });
@@ -77,6 +112,37 @@ class ThemeServiceProvider extends SageServiceProvider
                 $count = app(PostalCodeImporter::class)->import($path);
 
                 \WP_CLI::success("Imported {$count} postal codes.");
+            });
+
+            \WP_CLI::add_command('kb-faq import', function ($args, $assoc) {
+                $path = $args[0] ?? null;
+
+                if (! $path) {
+                    \WP_CLI::error('Path to faq-parsed.json is required.');
+                }
+
+                $dryRun = isset($assoc['dry-run']);
+
+                try {
+                    $result = (new FaqImporter())->import((string) $path, $dryRun);
+                } catch (\InvalidArgumentException $exception) {
+                    \WP_CLI::error($exception->getMessage());
+                }
+
+                foreach ($result['missing'] as $slug) {
+                    \WP_CLI::warning("No product_cat term with slug '{$slug}'; skipped.");
+                }
+
+                foreach ($result['empty'] as $slug) {
+                    \WP_CLI::warning("Category '{$slug}' has no usable questions; skipped.");
+                }
+
+                \WP_CLI::success(sprintf(
+                    '%s %d categories / %d questions.',
+                    $dryRun ? 'Would import' : 'Imported',
+                    $result['terms'],
+                    $result['questions'],
+                ));
             });
 
             \WP_CLI::add_command('blocks migrate', function ($args, $assoc) {

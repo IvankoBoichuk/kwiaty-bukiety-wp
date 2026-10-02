@@ -6,7 +6,6 @@
 
 namespace App;
 
-use App\Support\Markup;
 use App\Catalog\Settings;
 
 /**
@@ -877,6 +876,15 @@ add_action('woocommerce_before_add_to_cart_button', function () {
 remove_action('woocommerce_thankyou', 'woocommerce_order_details_table', 10);
 remove_action('woocommerce_after_shop_loop', 'woocommerce_pagination', 10);
 
+/* The catalogue design has neither a result counter nor a sorting control:
+   the grid starts straight under the page title. */
+remove_action('woocommerce_before_shop_loop', 'woocommerce_result_count', 20);
+remove_action(
+    'woocommerce_before_shop_loop',
+    'woocommerce_catalog_ordering',
+    30,
+);
+
 add_action('woocommerce_after_shop_loop', function () {
     global $wp_query;
 
@@ -901,14 +909,16 @@ add_action('woocommerce_after_shop_loop', function () {
         return;
     }
 
-    printf(
-        '<div class="mt-8 flex justify-center" data-products-load-more><button type="button" data-products-load-more-button data-next-url="%s" data-default-label="%s" data-loading-label="%s" class="%s"><span>%s</span></button></div>',
-        esc_url($nextPageUrl),
-        esc_attr__('Show more', 'sage-front'),
-        esc_attr__('Loading...', 'sage-front'),
-        esc_attr(Markup::buttonClasses('border', 'md', false)),
-        esc_html__('Show more', 'sage-front'),
-    );
+    echo view('partials.products-load-more', [
+        'nextUrl' => $nextPageUrl,
+    ])->render();
+});
+
+/* The account screens render through a shortcode inside the page content, so
+   nothing prints a heading. The logged-in half gets one from the my-account
+   template override; this covers the login and lost-password forms. */
+add_action('woocommerce_before_customer_login_form', function () {
+    echo view('partials.account-title')->render();
 });
 
 remove_action(

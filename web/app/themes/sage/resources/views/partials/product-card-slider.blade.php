@@ -24,7 +24,14 @@
       class="aspect-square size-full object-cover"
     />
 
-    @include('elements.badges', ['badges' => $item->badges])
+    {{-- The wrapper class has to be passed explicitly: @include hands the
+         partial every variable in this scope, so the card's own $wrapperClass
+         would otherwise win over the badge default. --}}
+    @include('elements.badges',
+      [
+        'badges' => $item->badges,
+        'wrapperClass' => 'absolute top-1 left-1 flex flex-wrap gap-1.5'
+      ])
   </div>
 
   <div class="text-dark-text px-1 pt-2 pb-3">
@@ -35,6 +42,6 @@
     >
       {{ $item->name }}
     </a>
-    <p class="text-body-13 font-light md:text-body-15">{!! $item->price !!}</p>
+    <p class="text-body-13 md:text-body-15 font-light">{!! $item->price !!}</p>
   </div>
 </{{ $wrapperTag }}>
