@@ -48,7 +48,7 @@
       </button>
     </form>
 
-    <div class="flex w-full max-w-130 flex-col items-stretch gap-3 md:flex-row md:justify-center">
+    <div class="flex w-full max-w-150 flex-col items-stretch gap-3 md:flex-row md:justify-center">
       @include('partials.button',
         [
           'text' => __('Back to Home Page', 'sage-front'),
