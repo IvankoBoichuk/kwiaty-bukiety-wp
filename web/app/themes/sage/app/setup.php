@@ -85,7 +85,21 @@ add_action(
             );
         }
 
-        echo Vite::withEntryPoints(['resources/js/app.ts'])->toHtml();
+        /*
+         * The my-account and order-pay screens are stock WooCommerce templates
+         * dressed by resources/css/account.css. That sheet is a separate entry
+         * so the pages that decide LCP do not block on rules they never use.
+         */
+        $entryPoints = ['resources/js/app.ts'];
+
+        if (
+            function_exists('is_account_page')
+            && (is_account_page() || is_checkout_pay_page())
+        ) {
+            $entryPoints[] = 'resources/css/account.css';
+        }
+
+        echo Vite::withEntryPoints($entryPoints)->toHtml();
     },
     100,
 );
