@@ -43,9 +43,12 @@
       <section
         class="relative -mt-2.5 flex flex-col gap-8 md:-mt-4 lg:mt-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12"
       >
+        {{-- The intrinsic size of resources/images/flowers-on-the-table.jpg. --}}
         <img
           src="{{ get_template_directory_uri() . '/resources/images/flowers-on-the-table.jpg' }}"
           alt="{{ esc_attr__('Order Confirmation', 'sage-front') }}"
+          width="805"
+          height="423"
           class="h-full w-screen max-w-max self-center object-cover lg:order-last lg:h-auto lg:w-full lg:max-w-full lg:self-auto"
         />
 

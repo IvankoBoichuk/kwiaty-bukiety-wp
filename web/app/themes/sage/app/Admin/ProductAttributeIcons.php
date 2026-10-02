@@ -121,7 +121,7 @@ class ProductAttributeIcons
     }
 
     /**
-     * @return array{src: string, alt: string}|null
+     * @return array{src: string, alt: string, width: int, height: int}|null
      */
     public static function getIconDataByTaxonomy(
         string $taxonomy,
@@ -139,9 +139,20 @@ class ProductAttributeIcons
             return null;
         }
 
+        /*
+         * The dimensions come from the thumbnail itself rather than from
+         * Timber's width()/height(), which report the full-size file. The
+         * thumbnail size is hard-cropped square by default, so the full-size
+         * ratio would not match what is actually served and the attributes
+         * would reserve the wrong box.
+         */
+        $thumbnail = wp_get_attachment_image_src($attachmentId, 'thumbnail');
+
         return [
             'src' => $image->src('thumbnail'),
             'alt' => $image->alt() ?: $fallbackAlt,
+            'width' => (int) ($thumbnail[1] ?? 0),
+            'height' => (int) ($thumbnail[2] ?? 0),
         ];
     }
 
@@ -303,7 +314,12 @@ class ProductAttributeIcons
                 class="sage-attribute-icon-field__preview<?php echo $imageUrl === '' ? ' is-empty' : ''; ?>"
                 data-sage-attribute-icon-preview
             >
-                <img src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($imageAlt); ?>" />
+                <img
+                    src="<?php echo esc_url($imageUrl); ?>"
+                    alt="<?php echo esc_attr($imageAlt); ?>"
+                    width="48"
+                    height="48"
+                />
             </div>
 
             <div class="sage-attribute-icon-field__actions">

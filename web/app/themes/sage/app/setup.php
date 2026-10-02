@@ -6,6 +6,7 @@
 
 namespace App;
 
+use _WP_Dependency;
 use Illuminate\Support\Facades\Vite;
 use WP_Customize_Image_Control;
 use WP_Customize_Manager;
@@ -225,6 +226,44 @@ add_action(
         }
     },
     100,
+);
+
+/**
+ * Drop the core block stylesheet once the page has finished rendering.
+ *
+ * wp_dequeue_style('wp-block-library') on wp_enqueue_scripts is not enough.
+ * Core registers block-style-variation-styles with wp-block-library and
+ * global-styles as its dependencies, then enqueues it while rendering any block
+ * that carries a theme.json style variation -- which happens after
+ * wp_enqueue_scripts has run, so the whole core stylesheet came back in as a
+ * dependency on every page holding such a block.
+ *
+ * Only the variation's own inline CSS is wanted there. The core blocks the
+ * content uses are styled by the theme (resources/css/buttons.css,
+ * typography.css), which is why every page without a style variation -- posts
+ * with images, lists and quotes included -- has always rendered without it.
+ *
+ * @return void
+ */
+add_action(
+    'wp_print_styles',
+    function (): void {
+        if (is_admin()) {
+            return;
+        }
+
+        $variationStyles = wp_styles()->query('block-style-variation-styles');
+
+        if ($variationStyles instanceof _WP_Dependency) {
+            $variationStyles->deps = array_values(
+                array_diff($variationStyles->deps, ['wp-block-library']),
+            );
+        }
+
+        wp_dequeue_style('wp-block-library');
+        wp_dequeue_style('wp-block-library-theme');
+    },
+    1,
 );
 
 /**

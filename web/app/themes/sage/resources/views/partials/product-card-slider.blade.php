@@ -5,6 +5,12 @@
     (string) ($wrapperClass ??
       'product-card-slider swiper-slide border-background bg-background max-lg:shadow-100 flex flex-col items-start justify-center border'),
   );
+
+  // The browser picks this card's image as the LCP element on pages that open
+  // with the slider, so the slide that holds it asks to be fetched first. The
+  // partial cannot tell where it sits, so the caller opts in -- and only for
+  // one image per page, or the hint is spread across several and helps none.
+  $isLcpCandidate = (bool) ($isLcpCandidate ?? false);
 @endphp
 
 <{{ $wrapperTag }}
@@ -21,6 +27,7 @@
       @if (($item->image?->height() ?? 0) > 0) height="{{ $item->image->height() }}" @endif
       @if ($item->image?->srcset('medium')) srcset="{{ esc_attr($item->image->srcset('medium')) }}" @endif
       @if ($item->image?->img_sizes('medium')) sizes="{{ esc_attr($item->image->img_sizes('medium')) }}" @endif
+      @if ($isLcpCandidate) fetchpriority="high" loading="eager" @endif
       class="aspect-square size-full object-cover"
     />
 
