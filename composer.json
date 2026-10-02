@@ -42,7 +42,8 @@
     "frontenda/frontenda-blocks": "^1.1",
     "wp-plugin/wordpress-seo": "^28.6",
     "wp-plugin/redirection": "^5.10",
-    "wp-plugin/litespeed-cache": "^7.9"
+    "wp-plugin/litespeed-cache": "^7.9",
+    "cweagans/composer-patches": "^1.7"
   },
   "require-dev": {
     "laravel/pint": "^1.18",
@@ -55,7 +56,8 @@
     "allow-plugins": {
       "composer/installers": true,
       "roots/wordpress-core-installer": true,
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "cweagans/composer-patches": true
     }
   },
   "autoload-dev": {
@@ -78,7 +80,13 @@
         "type:wordpress-theme"
       ]
     },
-    "wordpress-install-dir": "web/wp"
+    "wordpress-install-dir": "web/wp",
+    "composer-exit-on-patch-failure": true,
+    "patches": {
+      "frontenda/frontenda-blocks": {
+        "MediaRenderer: fall back to the attachment title, then the site name, so section images never render alt=\"\"": "patches/frontenda-blocks-media-alt-fallback.patch"
+      }
+    }
   },
   "scripts": {
     "lint": "pint --test",
