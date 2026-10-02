@@ -54,3 +54,88 @@
     @apply italic font-medium text-[32px] leading-tight md:text-[48px];
   }
 }
+/*
+ * The article body: editor content printed by the WordPress page template.
+ *
+ * Built on @tailwindcss/typography rather than from scratch, because the plugin
+ * is already in the bundle, so the markers, nested lists and table defaults
+ * come for free. Over it sits the design's own scale: Raleway 13/20 at phone
+ * width and 16/24 from md up, body copy in Green/Dark, headings in Gray 1,
+ * links in the same #0885CD the product description uses.
+ *
+ * This class holds only the deltas and is paired with `prose` in the markup
+ * (class="prose prose-content"). Pulling the plugin in here with @apply prose
+ * instead would emit a second full copy of its rule set -- 16KB of raw CSS, 2KB
+ * gzipped, on a stylesheet that blocks the first render of every page.
+ *
+ * It wins over the plugin without !important: the plugin scopes its own child
+ * rules with :where(), which carries no specificity, and lands them in the
+ * utilities layer, while this rule is unlayered.
+ */
+.prose-content {
+  @apply max-w-full text-[13px] leading-5 md:text-[16px] md:leading-6;
+
+  --tw-prose-body: var(--color-green-dark);
+  --tw-prose-headings: var(--color-gray-1);
+  --tw-prose-bold: var(--color-gray-1);
+  --tw-prose-links: #0885cd;
+  --tw-prose-bullets: var(--color-green-dark);
+  --tw-prose-counters: var(--color-green-dark);
+
+  /* The design gives the article one heading treatment at every level --
+     SemiBold 16 on mobile, Bold 22 from md up -- so the levels carry document
+     structure for SEO and screen readers without changing in size. */
+  :is(h1, h2, h3, h4, h5, h6) {
+    @apply mt-8 mb-[17px] text-[16px] leading-normal font-semibold md:text-[22px] md:font-bold;
+  }
+
+  :is(p, ul, ol, blockquote, figure, table) {
+    @apply my-5;
+  }
+
+  > :first-child {
+    @apply mt-0;
+  }
+
+  > :last-child {
+    @apply mb-0;
+  }
+
+  a {
+    @apply no-underline hover:underline;
+  }
+
+  img {
+    @apply rounded-2xl object-cover;
+  }
+
+  figcaption {
+    @apply text-body-13 text-gray-3 mt-2;
+  }
+
+  /* The design runs an image down the side of the copy at every breakpoint; in
+     editor content that arrives as the alignleft/alignright classes, which
+     carry no styling of their own once the core block stylesheet is dequeued
+     (app/setup.php). The share is a percentage on phones and the design's fixed
+     346px once there is room for it. */
+  :is(.alignleft, .alignright) {
+    @apply my-5 w-[48%];
+  }
+
+  .alignleft {
+    @apply float-left mt-0 mr-3 md:mr-5 md:w-[346px] md:max-w-[45%];
+  }
+
+  .alignright {
+    @apply float-right mt-0 ml-3 md:ml-5 md:w-[346px] md:max-w-[45%];
+  }
+
+  .aligncenter {
+    @apply mx-auto block;
+  }
+
+  /* Floats must not escape the article into the footer. */
+  &::after {
+    @apply block clear-both content-[''];
+  }
+}
