@@ -1,3 +1,4 @@
+import type { Strings } from '../strings'
 import type { CartResponse as WooStoreApiCartResponse } from '../woo-store-api'
 
 export interface CartCheckoutMoney {
@@ -52,6 +53,7 @@ export interface CartCheckoutConfig {
     recipientFullName?: string
     shippingFirstName?: string
     shippingLastName?: string
+    i18n?: Strings
 }
 
 export type CartCheckoutStoreApiCartResponse = WooStoreApiCartResponse

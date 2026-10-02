@@ -1,3 +1,5 @@
+import type { Strings } from '@/modules/strings'
+
 export interface ProductPurchaseConfig {
     productId: number
     basePrice: number
@@ -9,4 +11,5 @@ export interface ProductPurchaseConfig {
     currencyMinorUnit: number
     isVariable: boolean
     storeApiNonce: string
+    i18n?: Strings
 }

@@ -18,7 +18,7 @@ import type {
     StoreApiAddress,
 } from '../woo-store-api'
 
-import { __ } from '@wordpress/i18n'
+import { createTranslator } from '../strings'
 
 const DEFAULT_COUNTRY = 'PL'
 const PAYU_LIST_BANKS_METHOD = 'payulistbanks'
@@ -100,37 +100,46 @@ const SHIPPING_PLACE_TYPES = {
     SCHOOL: 'school',
 }
 
-const infoStepSchema = yup.object({
-    shipping_type_of_place: yup.string().trim().required(__('Select a delivery location.', 'sage-front')),
-    shipping_address_1: yup.string().trim().required(__('Enter the delivery address.', 'sage-front')),
+/*
+ * The validation copy now arrives in the config instead of the global wp.i18n,
+ * which was only reachable because two render-blocking scripts ran ahead of
+ * this module. The translator starts out fallback-only and CartCheckoutStore
+ * swaps the real strings in from its constructor, so the schema is built on
+ * demand rather than while this module is still evaluating.
+ */
+let t = createTranslator()
+
+const infoStepSchema = () => yup.object({
+    shipping_type_of_place: yup.string().trim().required(t('placeRequired', 'Select a delivery location.')),
+    shipping_address_1: yup.string().trim().required(t('addressRequired', 'Enter the delivery address.')),
     shipping_postcode: yup
         .string()
         .trim()
-        .matches(/^\d{2}-\d{3}$/, __('Postal code must use the format 00-000.', 'sage-front'))
-        .required(__('Enter the postal code.', 'sage-front')),
-    shipping_city: yup.string().trim().required(__('Enter the city.', 'sage-front')),
-    shipping_first_name: yup.string().trim().required(__('Enter the recipient full name.', 'sage-front')),
+        .matches(/^\d{2}-\d{3}$/, t('postcodeFormat', 'Postal code must use the format 00-000.'))
+        .required(t('postcodeRequired', 'Enter the postal code.')),
+    shipping_city: yup.string().trim().required(t('cityRequired', 'Enter the city.')),
+    shipping_first_name: yup.string().trim().required(t('recipientNameRequired', 'Enter the recipient full name.')),
     shipping_place_name: yup.string().trim().when('shipping_type_of_place', {
         is: SHIPPING_PLACE_TYPES.PRIVATE_ADDRESS,
-        then: (schema) => schema.required(__('Enter the location name.', 'sage-front')),
+        then: (schema) => schema.required(t('locationNameRequired', 'Enter the location name.')),
         otherwise: (schema) => schema,
     }),
-    shipping_phone: yup.string().trim().required(__('Enter the recipient phone number.', 'sage-front')),
-    billing_first_name: yup.string().trim().required(__('Enter the sender first name.', 'sage-front')),
-    billing_last_name: yup.string().trim().required(__('Enter the sender last name.', 'sage-front')),
-    billing_phone: yup.string().trim().required(__('Enter the sender phone number.', 'sage-front')),
+    shipping_phone: yup.string().trim().required(t('recipientPhoneRequired', 'Enter the recipient phone number.')),
+    billing_first_name: yup.string().trim().required(t('senderFirstNameRequired', 'Enter the sender first name.')),
+    billing_last_name: yup.string().trim().required(t('senderLastNameRequired', 'Enter the sender last name.')),
+    billing_phone: yup.string().trim().required(t('senderPhoneRequired', 'Enter the sender phone number.')),
     billing_email: yup
         .string()
         .trim()
         .matches(
             /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            __('Enter a valid email address.', 'sage-front')
+            t('emailInvalid', 'Enter a valid email address.')
         )
-        .required(__('Enter the email address.', 'sage-front')),
+        .required(t('emailRequired', 'Enter the email address.')),
     billing_nip: yup
         .string()
         .trim()
-        .test('nip-length', __('Tax ID must contain 10 digits.', 'sage-front'), (value) => {
+        .test('nip-length', t('taxIdLength', 'Tax ID must contain 10 digits.'), (value) => {
             if (!value) {
                 return true
             }
@@ -140,7 +149,7 @@ const infoStepSchema = yup.object({
     order_comments: yup.string().trim(),
 })
 
-type InfoStepFormData = yup.InferType<typeof infoStepSchema>
+type InfoStepFormData = yup.InferType<ReturnType<typeof infoStepSchema>>
 
 function stripHtml(value?: string): string {
     if (!value) {
@@ -200,19 +209,19 @@ function mapStoreApiCart(cart: CartCheckoutStoreApiCartResponse) {
         })),
         totals: {
             subtotal: {
-                label: __('Subtotal', 'sage-front'),
+                label: t('subtotal', 'Subtotal'),
                 amount: formatStoreApiMoney(cart.totals?.total_items || '0', cart.totals),
             },
             shipping: {
-                label: __('Delivery', 'sage-front'),
+                label: t('delivery', 'Delivery'),
                 amount: formatStoreApiMoney(cart.totals?.total_shipping || '0', cart.totals),
             },
             discount: {
-                label: __('Discount', 'sage-front'),
+                label: t('discount', 'Discount'),
                 amount: formatStoreApiMoney(cart.totals?.total_discount || '0', cart.totals),
             },
             total: {
-                label: __('Order total', 'sage-front'),
+                label: t('orderTotal', 'Order total'),
                 amount: formatStoreApiMoney(cart.totals?.total_price || '0', cart.totals),
             },
         },
@@ -269,12 +278,12 @@ function collectInfoStepData(container: ParentNode): InfoStepFormData {
 }
 
 function infoStepValidationSchema(container: ParentNode) {
-    return infoStepSchema.shape({
+    return infoStepSchema().shape({
         shipping_phone: yup
             .string()
             .trim()
-            .required(__('Enter the recipient phone number.', 'sage-front'))
-            .test('shipping-phone-valid', __('Enter a valid recipient phone number.', 'sage-front'), (value) => {
+            .required(t('recipientPhoneRequired', 'Enter the recipient phone number.'))
+            .test('shipping-phone-valid', t('recipientPhoneInvalid', 'Enter a valid recipient phone number.'), (value) => {
                 if (!value) {
                     return false
                 }
@@ -284,8 +293,8 @@ function infoStepValidationSchema(container: ParentNode) {
         billing_phone: yup
             .string()
             .trim()
-            .required(__('Enter the sender phone number.', 'sage-front'))
-            .test('billing-phone-valid', __('Enter a valid sender phone number.', 'sage-front'), (value) => {
+            .required(t('senderPhoneRequired', 'Enter the sender phone number.'))
+            .test('billing-phone-valid', t('senderPhoneInvalid', 'Enter a valid sender phone number.'), (value) => {
                 if (!value) {
                     return false
                 }
@@ -414,6 +423,8 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
     readonly checkoutUrl
 
     constructor(config: CartCheckoutConfig) {
+        t = createTranslator(config.i18n)
+
         this.items = config.items
         this.totals = config.totals
         this.paymentMethods = config.paymentMethods
@@ -604,7 +615,7 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
 
             window.location.href = this.checkoutUrl
         } catch (error) {
-            window.alert(error instanceof Error ? error.message : __('Unable to place the order.', 'sage-front'))
+            window.alert(error instanceof Error ? error.message : t('orderFailed', 'Unable to place the order.'))
         } finally {
             this.isSubmitting = false
         }

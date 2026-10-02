@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "translate:front": "wp i18n make-pot . ./languages/front/sage-front.pot --domain=sage-front --include=\"app,resources\" && for file in ./languages/front/*.po; do wp i18n update-po ./languages/front/sage-front.pot $file; done",
     "translate:back": "wp i18n make-pot . ./languages/back/sage-back.pot --domain=sage-back --include=\"app,resources\" && for file in ./languages/back/*.po; do wp i18n update-po ./languages/back/sage-back.pot $file; done",
-    "translate:compile": "wp i18n make-mo ./languages/front ./languages/front && wp i18n make-mo ./languages/back ./languages/back && wp i18n make-json ./languages/front --pretty-print --no-purge"
+    "translate:compile": "wp i18n make-mo ./languages/front ./languages/front && wp i18n make-mo ./languages/back ./languages/back && wp i18n make-php ./languages/front && wp i18n make-php ./languages/back"
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.25.0",
@@ -44,7 +44,6 @@
     "@alpinejs/mask": "^3.15.12",
     "@types/alpinejs": "^3.13.11",
     "@types/wordpress__server-side-render": "^6.15.0",
-    "@wordpress/i18n": "^6.20.0",
     "alpinejs": "^3.15.11",
     "animate.css": "^4.1.1",
     "intl-tel-input": "^28.1.0",

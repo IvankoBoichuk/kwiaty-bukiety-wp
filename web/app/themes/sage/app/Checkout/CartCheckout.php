@@ -34,6 +34,7 @@ class CartCheckout
                     => (string) ($checkout?->get_value('shipping_first_name')
                         ?? ''),
                 'shippingLastName' => '',
+                'i18n' => $this->strings(),
             ],
             'fields' => $this->fields(),
             'paymentGateways' => $this->availableGateways(),
@@ -41,6 +42,66 @@ class CartCheckout
             'cartUrl' => $this->cartUrl(),
             'checkoutUrl' => $this->checkoutUrl(),
             'deliverySummary' => $this->deliverySummary(),
+        ];
+    }
+
+    /**
+     * The copy the cart and checkout scripts show.
+     *
+     * It travels in the config rather than through @wordpress/i18n, so the
+     * bundle does not need the global wp.i18n and the two render-blocking
+     * scripts behind it (see resources/js/modules/strings.ts).
+     *
+     * @return array<string, string>
+     */
+    protected function strings(): array
+    {
+        return [
+            'placeRequired' => __('Select a delivery location.', 'sage-front'),
+            'addressRequired' => __('Enter the delivery address.', 'sage-front'),
+            'postcodeFormat' => __(
+                'Postal code must use the format 00-000.',
+                'sage-front',
+            ),
+            'postcodeRequired' => __('Enter the postal code.', 'sage-front'),
+            'cityRequired' => __('Enter the city.', 'sage-front'),
+            'recipientNameRequired' => __(
+                'Enter the recipient full name.',
+                'sage-front',
+            ),
+            'locationNameRequired' => __('Enter the location name.', 'sage-front'),
+            'recipientPhoneRequired' => __(
+                'Enter the recipient phone number.',
+                'sage-front',
+            ),
+            'recipientPhoneInvalid' => __(
+                'Enter a valid recipient phone number.',
+                'sage-front',
+            ),
+            'senderFirstNameRequired' => __(
+                'Enter the sender first name.',
+                'sage-front',
+            ),
+            'senderLastNameRequired' => __(
+                'Enter the sender last name.',
+                'sage-front',
+            ),
+            'senderPhoneRequired' => __(
+                'Enter the sender phone number.',
+                'sage-front',
+            ),
+            'senderPhoneInvalid' => __(
+                'Enter a valid sender phone number.',
+                'sage-front',
+            ),
+            'emailInvalid' => __('Enter a valid email address.', 'sage-front'),
+            'emailRequired' => __('Enter the email address.', 'sage-front'),
+            'taxIdLength' => __('Tax ID must contain 10 digits.', 'sage-front'),
+            'subtotal' => __('Subtotal', 'sage-front'),
+            'delivery' => __('Delivery', 'sage-front'),
+            'discount' => __('Discount', 'sage-front'),
+            'orderTotal' => __('Order total', 'sage-front'),
+            'orderFailed' => __('Unable to place the order.', 'sage-front'),
         ];
     }
 

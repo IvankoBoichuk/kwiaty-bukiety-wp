@@ -30,59 +30,24 @@ add_filter('block_editor_settings_all', function ($settings) {
 });
 
 /**
- * Feed the front-end bundle its translations.
+ * Emit the front-end bundle.
  *
- * The theme's scripts are emitted by Vite as bare module tags, not through
- * wp_enqueue_script, so there is no handle for wp_set_script_translations()
- * to hang the catalogue on -- and without it every __() call in the checkout
- * and product JS rendered in English, including the form validation messages.
- * Merge the generated JED catalogues by hand instead.
+ * The bundle used to need the wp-i18n script, because Vite externalizes
+ * @wordpress/i18n to the global wp.i18n -- and since it dereferences wp.i18n.__
+ * while the module is evaluating, wp-i18n and its wp-hooks dependency had to be
+ * blocking, which put two round trips in the critical request path for roughly
+ * two dozen validation messages. Those strings now travel in the config objects
+ * the pages already print (App\Checkout\CartCheckout::strings() and the product
+ * payload in content-single-product.blade.php), translated here on the server,
+ * so neither script is enqueued any more.
  *
- * @return string
+ * @return void
  */
-function scriptLocaleData(string $domain): string
-{
-    $locale = determine_locale();
-    $directory = get_template_directory() . '/languages/front';
-    $messages = [];
-
-    foreach (glob("{$directory}/{$domain}-{$locale}-*.json") ?: [] as $file) {
-        $decoded = json_decode((string) file_get_contents($file), true);
-        $data = $decoded['locale_data'][$domain] ?? null;
-
-        if (is_array($data)) {
-            $messages = array_merge($messages, $data);
-        }
-    }
-
-    return $messages === [] ? '' : (string) wp_json_encode([
-        'domain' => $domain,
-        'locale_data' => [$domain => $messages],
-    ]);
-}
-
 add_action(
     'wp_enqueue_scripts',
     function () {
         if (is_admin()) {
             return;
-        }
-
-        if (!wp_script_is('wp-i18n')) {
-            wp_enqueue_script('wp-i18n');
-        }
-
-        $localeData = scriptLocaleData('sage-front');
-
-        if ($localeData !== '') {
-            wp_add_inline_script(
-                'wp-i18n',
-                sprintf(
-                    'wp.i18n.setLocaleData( %s.locale_data["sage-front"], "sage-front" );',
-                    $localeData,
-                ),
-                'after',
-            );
         }
 
         /*
@@ -119,9 +84,10 @@ add_action(
  *   WP_Scripts to see, so core cannot know about it. Deferring jQuery moves it
  *   after that block and throws "jQuery is not defined" on the cart.
  * - payu-gateway: an IIFE that takes jQuery as its argument, same constraint.
- * - wp-i18n: carries the locale data as an inline "after" script, and
- *   WP_Scripts::filter_eligible_strategies() refuses to delay any handle that
- *   has one. It prints in the footer regardless, so it costs no render time.
+ * - wp-i18n: the theme no longer enqueues it, but WooCommerce still does on the
+ *   cart and checkout, and there it carries inline "after" data, which
+ *   WP_Scripts::filter_eligible_strategies() refuses to delay. It prints in the
+ *   footer regardless, so it costs no render time.
  *
  * google-pay is the one worth delaying: a blocking cross-origin request to
  * pay.google.com in the head of the cart, enqueued by the PayU Google Pay
