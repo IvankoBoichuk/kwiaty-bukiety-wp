@@ -289,7 +289,7 @@
    design only specifies the desktop size, so the word steps down on narrower
    screens. */
 .section__subtitle {
-  @apply font-deco pointer-events-none absolute -top-24 left-1/2 -z-10 -translate-x-1/2 text-[110px] leading-none whitespace-nowrap text-[#F6F1ED] uppercase select-none md:text-[180px] lg:text-[266px];
+  @apply hidden lg:block font-deco pointer-events-none absolute -top-24 left-1/2 -z-10 -translate-x-1/2 text-[110px] leading-none whitespace-nowrap text-[#F6F1ED] uppercase select-none md:text-[180px] lg:text-[266px];
 }
 section:has(.section__subtitle) {
   @apply relative isolate;
