@@ -129,10 +129,6 @@
   .woocommerce-error {
     @apply m-0 list-none flex-col items-start gap-1 border-[#E5B8B3] bg-[#FBEDEC] text-[#C6463D];
   }
-  .term-description {
-    @apply prose prose-a:text-[#2F80ED] prose-a:no-underline prose-a:hover:underline max-w-full;
-  }
-
   [x-cloak] {
     display: none !important;
   }

@@ -66,8 +66,17 @@ the readme will list any important changes.
       @endphp
     @endif
 
+    {{-- `prose` sits on this wrapper rather than on .term-description, the div
+         WooCommerce hardcodes around the text (wc-template-functions.php, no
+         filter for its class). Reaching it with @apply prose emitted a second
+         full copy of the plugin's rule set -- 14KB of raw CSS on the stylesheet
+         that blocks the first render of every page. The plugin scopes its rules
+         as :where() descendants, so dressing the ancestor reaches the same
+         elements and the copy is not needed. --}}
     @if ($archiveDescription !== '')
-      <div class="mt-12 lg:mt-25">{!! $archiveDescription !!}</div>
+      <div class="prose prose-a:text-[#2F80ED] prose-a:no-underline prose-a:hover:underline mt-12 max-w-full lg:mt-25">
+        {!! $archiveDescription !!}
+      </div>
     @endif
 
     {{-- Page 1 only, so the paged URLs stay free of duplicate FAQ markup. --}}
