@@ -114,15 +114,15 @@ final class OrderNotifications
     }
 
     /**
-     * @return array{partner_email: string, webhook_url: string}
+     * @return array{partner_email: string, webhook_url: string, sheets_url: string}
      */
     public static function defaultOptions(): array
     {
-        return ['partner_email' => '', 'webhook_url' => ''];
+        return ['partner_email' => '', 'webhook_url' => '', 'sheets_url' => ''];
     }
 
     /**
-     * @return array{partner_email: string, webhook_url: string}
+     * @return array{partner_email: string, webhook_url: string, sheets_url: string}
      */
     public static function settings(): array
     {
@@ -132,6 +132,7 @@ final class OrderNotifications
         return [
             'partner_email' => trim((string) ($stored['partner_email'] ?? '')),
             'webhook_url' => trim((string) ($stored['webhook_url'] ?? '')),
+            'sheets_url' => trim((string) ($stored['sheets_url'] ?? '')),
         ];
     }
 

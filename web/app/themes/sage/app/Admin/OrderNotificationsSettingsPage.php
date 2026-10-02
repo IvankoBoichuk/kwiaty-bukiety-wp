@@ -64,6 +64,7 @@ class OrderNotificationsSettingsPage
 
         $email = sanitize_email((string) ($input['partner_email'] ?? ''));
         $url = esc_url_raw(trim((string) ($input['webhook_url'] ?? '')), ['http', 'https']);
+        $sheetsUrl = esc_url_raw(trim((string) ($input['sheets_url'] ?? '')), ['http', 'https']);
 
         if ($email !== '' && ! is_email($email)) {
             add_settings_error(
@@ -85,9 +86,20 @@ class OrderNotificationsSettingsPage
             $url = '';
         }
 
+        if ($sheetsUrl !== '' && ! filter_var($sheetsUrl, FILTER_VALIDATE_URL)) {
+            add_settings_error(
+                OrderNotifications::OPTION_NAME,
+                'sheets_url',
+                __('The Google Sheets URL is not valid; the sync stays off.', 'sage-back'),
+            );
+
+            $sheetsUrl = '';
+        }
+
         return [
             'partner_email' => $email,
             'webhook_url' => $url,
+            'sheets_url' => $sheetsUrl,
         ];
     }
 
@@ -146,6 +158,26 @@ class OrderNotificationsSettingsPage
                             />
                             <p class="description">
                                 <?php echo esc_html__('The order is posted here as JSON.', 'sage-back'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="sage-sheets-url">
+                                <?php echo esc_html__('Google Sheets web app URL', 'sage-back'); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <input
+                                type="url"
+                                id="sage-sheets-url"
+                                class="large-text code"
+                                name="<?php echo esc_attr(OrderNotifications::OPTION_NAME); ?>[sheets_url]"
+                                value="<?php echo esc_attr($options['sheets_url']); ?>"
+                                placeholder="https://script.google.com/macros/s/…/exec"
+                            />
+                            <p class="description">
+                                <?php echo esc_html__('Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet.', 'sage-back'); ?>
                             </p>
                         </td>
                     </tr>

@@ -19,6 +19,7 @@ use App\Shop\LeadTimeRules;
 use App\Shop\WholesaleDiscount;
 use App\Shop\PostalDelivery;
 use App\Shop\OrderNotifications;
+use App\Shop\OrderSheetsSync;
 use App\Shop\OrderAdminColumns;
 use App\Shop\RestApiGuard;
 use App\Modules\LocalLinking\LocalLinking;
@@ -27,6 +28,7 @@ use App\SEO\OpenGraph;
 use App\SEO\ProductSchema;
 use App\SEO\Robots;
 use App\SEO\TermShortcodes;
+use App\Console\OrderSheetsResend;
 use App\Console\PostalCodeSchema;
 use App\Services\PostalCodeImporter;
 use App\Support\Context;
@@ -75,6 +77,7 @@ class ThemeServiceProvider extends SageServiceProvider
         WholesaleDiscount::boot();
         PostalDelivery::boot();
         OrderNotifications::boot();
+        OrderSheetsSync::boot();
         OrderAdminColumns::boot();
         RestApiGuard::boot();
         LocalLinking::boot();
@@ -88,6 +91,27 @@ class ThemeServiceProvider extends SageServiceProvider
         });
 
         if (defined('WP_CLI') && WP_CLI) {
+            \WP_CLI::add_command(
+                'kb sheets resend',
+                [OrderSheetsResend::class, 'handle'],
+                [
+                    'shortdesc' => 'Queues an order for the Google Sheets sync again.',
+                    'synopsis' => [
+                        [
+                            'type' => 'positional',
+                            'name' => 'order_id',
+                            'description' => 'The order to re-send.',
+                        ],
+                        [
+                            'type' => 'assoc',
+                            'name' => 'status',
+                            'optional' => true,
+                            'description' => "Status to send as. Defaults to the order's current one.",
+                        ],
+                    ],
+                ],
+            );
+
             \WP_CLI::add_command('postal-codes install', function () {
                 if (PostalCodeSchema::install()) {
                     \WP_CLI::success('Created the postal_codes table.');
