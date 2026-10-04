@@ -1,0 +1,451 @@
+{
+  "env": "dev",
+  "baseUrl": "https://dev.kwiaty-bukiety.com.pl",
+  "lighthouseVersion": "13.5.0",
+  "pages": {
+    "home": {
+      "url": "https://dev.kwiaty-bukiety.com.pl/",
+      "capturedAt": "2026-10-04T16:49:32.581Z",
+      "runs": 3,
+      "scores": {
+        "performance": {
+          "median": 100,
+          "min": 100,
+          "max": 100,
+          "samples": 3
+        },
+        "accessibility": {
+          "median": 96,
+          "min": 96,
+          "max": 96,
+          "samples": 3
+        },
+        "best-practices": {
+          "median": 96,
+          "min": 96,
+          "max": 96,
+          "samples": 3
+        },
+        "seo": {
+          "median": 63,
+          "min": 63,
+          "max": 63,
+          "samples": 3
+        }
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "median": 1096.3,
+          "min": 1096.22,
+          "max": 1142.18,
+          "samples": 3
+        },
+        "largest-contentful-paint": {
+          "median": 1119.8,
+          "min": 1118.72,
+          "max": 1165.18,
+          "samples": 3
+        },
+        "speed-index": {
+          "median": 1096.3,
+          "min": 1096.22,
+          "max": 1142.18,
+          "samples": 3
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "cumulative-layout-shift": {
+          "median": 0.02,
+          "min": 0.02,
+          "max": 0.02,
+          "samples": 3
+        },
+        "server-response-time": {
+          "median": 43,
+          "min": 42,
+          "max": 43,
+          "samples": 3
+        },
+        "bootup-time": {
+          "median": 29.42,
+          "min": 29.15,
+          "max": 33.88,
+          "samples": 3
+        },
+        "mainthread-work-breakdown": {
+          "median": 521.27,
+          "min": 500.94,
+          "max": 543.26,
+          "samples": 3
+        },
+        "total-byte-weight": {
+          "median": 147544,
+          "min": 147029,
+          "max": 147547,
+          "samples": 3
+        },
+        "unused-javascript": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "unused-css-rules": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "dom-size-insight": {
+          "median": 814,
+          "min": 814,
+          "max": 814,
+          "samples": 3
+        },
+        "requests": {
+          "median": 22,
+          "min": 22,
+          "max": 22,
+          "samples": 3
+        }
+      }
+    },
+    "product": {
+      "url": "https://dev.kwiaty-bukiety.com.pl/produkt/bukiet-morska-bryza/",
+      "capturedAt": "2026-10-04T16:50:23.015Z",
+      "runs": 3,
+      "scores": {
+        "performance": {
+          "median": 100,
+          "min": 81,
+          "max": 100,
+          "samples": 3
+        },
+        "accessibility": {
+          "median": 91,
+          "min": 91,
+          "max": 96,
+          "samples": 3
+        },
+        "best-practices": {
+          "median": 96,
+          "min": 96,
+          "max": 100,
+          "samples": 3
+        },
+        "seo": {
+          "median": 63,
+          "min": 63,
+          "max": 66,
+          "samples": 3
+        }
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "median": 1052.07,
+          "min": 959.35,
+          "max": 1611.41,
+          "samples": 3
+        },
+        "largest-contentful-paint": {
+          "median": 1173.07,
+          "min": 1099.35,
+          "max": 4486.41,
+          "samples": 3
+        },
+        "speed-index": {
+          "median": 1052.07,
+          "min": 959.35,
+          "max": 1611.41,
+          "samples": 3
+        },
+        "total-blocking-time": {
+          "median": 1,
+          "min": 0,
+          "max": 62,
+          "samples": 3
+        },
+        "cumulative-layout-shift": {
+          "median": 0.02,
+          "min": 0.02,
+          "max": 0.1,
+          "samples": 3
+        },
+        "server-response-time": {
+          "median": 43,
+          "min": 43,
+          "max": 43,
+          "samples": 3
+        },
+        "bootup-time": {
+          "median": 20.86,
+          "min": 18.05,
+          "max": 290.39,
+          "samples": 3
+        },
+        "mainthread-work-breakdown": {
+          "median": 460.68,
+          "min": 366.22,
+          "max": 1250.42,
+          "samples": 3
+        },
+        "total-byte-weight": {
+          "median": 96216,
+          "min": 96215,
+          "max": 1094543,
+          "samples": 3
+        },
+        "unused-javascript": {
+          "median": 0,
+          "min": 0,
+          "max": 150,
+          "samples": 3
+        },
+        "unused-css-rules": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "dom-size-insight": {
+          "median": 449,
+          "min": 449,
+          "max": 540,
+          "samples": 3
+        },
+        "requests": {
+          "median": 17,
+          "min": 17,
+          "max": 21,
+          "samples": 3
+        }
+      }
+    },
+    "category": {
+      "url": "https://dev.kwiaty-bukiety.com.pl/kategoria-produktu/wieniec-pogrzebowa/",
+      "capturedAt": "2026-10-04T16:51:19.553Z",
+      "runs": 3,
+      "scores": {
+        "performance": {
+          "median": 81,
+          "min": 81,
+          "max": 99,
+          "samples": 3
+        },
+        "accessibility": {
+          "median": 96,
+          "min": 96,
+          "max": 96,
+          "samples": 3
+        },
+        "best-practices": {
+          "median": 100,
+          "min": 100,
+          "max": 100,
+          "samples": 3
+        },
+        "seo": {
+          "median": 66,
+          "min": 66,
+          "max": 66,
+          "samples": 3
+        }
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "median": 1561.87,
+          "min": 1554.11,
+          "max": 1655.8,
+          "samples": 3
+        },
+        "largest-contentful-paint": {
+          "median": 5154.11,
+          "min": 2030.8,
+          "max": 5161.87,
+          "samples": 3
+        },
+        "speed-index": {
+          "median": 1561.87,
+          "min": 1554.11,
+          "max": 1655.8,
+          "samples": 3
+        },
+        "total-blocking-time": {
+          "median": 51,
+          "min": 41,
+          "max": 54,
+          "samples": 3
+        },
+        "cumulative-layout-shift": {
+          "median": 0.04,
+          "min": 0.02,
+          "max": 0.04,
+          "samples": 3
+        },
+        "server-response-time": {
+          "median": 43,
+          "min": 43,
+          "max": 44,
+          "samples": 3
+        },
+        "bootup-time": {
+          "median": 197.5,
+          "min": 183.88,
+          "max": 197.64,
+          "samples": 3
+        },
+        "mainthread-work-breakdown": {
+          "median": 1025.59,
+          "min": 1012.49,
+          "max": 1055.12,
+          "samples": 3
+        },
+        "total-byte-weight": {
+          "median": 1323173,
+          "min": 1323158,
+          "max": 1323418,
+          "samples": 3
+        },
+        "unused-javascript": {
+          "median": 300,
+          "min": 300,
+          "max": 300,
+          "samples": 3
+        },
+        "unused-css-rules": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "dom-size-insight": {
+          "median": 591,
+          "min": 591,
+          "max": 591,
+          "samples": 3
+        },
+        "requests": {
+          "median": 22,
+          "min": 22,
+          "max": 22,
+          "samples": 3
+        }
+      }
+    },
+    "post": {
+      "url": "https://dev.kwiaty-bukiety.com.pl/2025/09/12/kwiaty-w-astrologia-bukiet-idealny-dla-kazdego-znaku-zodiaku/",
+      "capturedAt": "2026-10-04T16:52:19.004Z",
+      "runs": 3,
+      "scores": {
+        "performance": {
+          "median": 85,
+          "min": 82,
+          "max": 88,
+          "samples": 3
+        },
+        "accessibility": {
+          "median": 97,
+          "min": 97,
+          "max": 97,
+          "samples": 3
+        },
+        "best-practices": {
+          "median": 100,
+          "min": 100,
+          "max": 100,
+          "samples": 3
+        },
+        "seo": {
+          "median": 66,
+          "min": 66,
+          "max": 66,
+          "samples": 3
+        }
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "median": 2014.46,
+          "min": 1589.61,
+          "max": 2380.72,
+          "samples": 3
+        },
+        "largest-contentful-paint": {
+          "median": 3589.46,
+          "min": 3574.61,
+          "max": 4271.72,
+          "samples": 3
+        },
+        "speed-index": {
+          "median": 2014.46,
+          "min": 1589.61,
+          "max": 2540.53,
+          "samples": 3
+        },
+        "total-blocking-time": {
+          "median": 84,
+          "min": 35,
+          "max": 96,
+          "samples": 3
+        },
+        "cumulative-layout-shift": {
+          "median": 0.02,
+          "min": 0,
+          "max": 0.13,
+          "samples": 3
+        },
+        "server-response-time": {
+          "median": 44,
+          "min": 43,
+          "max": 45,
+          "samples": 3
+        },
+        "bootup-time": {
+          "median": 159.12,
+          "min": 152.63,
+          "max": 170.74,
+          "samples": 3
+        },
+        "mainthread-work-breakdown": {
+          "median": 1105.54,
+          "min": 923.11,
+          "max": 1169.7,
+          "samples": 3
+        },
+        "total-byte-weight": {
+          "median": 754566,
+          "min": 754566,
+          "max": 754567,
+          "samples": 3
+        },
+        "unused-javascript": {
+          "median": 300,
+          "min": 300,
+          "max": 300,
+          "samples": 3
+        },
+        "unused-css-rules": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "samples": 3
+        },
+        "dom-size-insight": {
+          "median": 584,
+          "min": 584,
+          "max": 584,
+          "samples": 3
+        },
+        "requests": {
+          "median": 17,
+          "min": 17,
+          "max": 17,
+          "samples": 3
+        }
+      }
+    }
+  }
+}
