@@ -64,6 +64,34 @@ export interface CartResponse {
     cartUrl?: string
 }
 
+export interface DeliveryTimeSlot {
+    value?: string
+    label?: string
+    start: number
+    end: number
+}
+
+export interface DeliveryDateOption {
+    value: string
+    label: string
+}
+
+export interface DeliverySchedule {
+    dateOptions?: DeliveryDateOption[]
+    timeOptions?: DeliveryTimeSlot[]
+    timeOptionsByDate?: Record<string, DeliveryTimeSlot[]>
+}
+
+/**
+ * What the product page cannot be rendered with, because the page cache would
+ * then serve it for a week: the schedule as of now and a fresh Store API
+ * nonce. See App\Api\DeliverySchedule.
+ */
+export interface DeliveryContext {
+    schedule: DeliverySchedule
+    storeApiNonce: string
+}
+
 export interface ProductPlugin {
     pluginName: string
     init(store: ProductPurchaseStore): void

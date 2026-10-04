@@ -1,16 +1,10 @@
-import type { ProductPlugin, ProductPurchaseStore } from '../types'
-
-interface TimeSlot {
-    value?: string
-    label?: string
-    start: number
-    end: number
-}
-
-interface DeliverySchedule {
-    dateOptions?: Array<{ value: string, label: string }>
-    timeOptionsByDate?: Record<string, TimeSlot[]>
-}
+import type {
+    DeliverySchedule,
+    DeliveryTimeSlot,
+    ProductPlugin,
+    ProductPurchaseStore,
+} from '../types'
+import { fetchDeliveryContext } from '../api'
 
 function formatDateValue(date: Date): string {
     const year = date.getFullYear()
@@ -30,7 +24,7 @@ function toDateKey(date: Date): string {
     return formatDateValue(date)
 }
 
-function getAvailableTimeSlots(schedule: DeliverySchedule, deliveryDate: Date | null): TimeSlot[] {
+function getAvailableTimeSlots(schedule: DeliverySchedule, deliveryDate: Date | null): DeliveryTimeSlot[] {
     if (!deliveryDate) {
         return []
     }
@@ -41,6 +35,13 @@ function getAvailableTimeSlots(schedule: DeliverySchedule, deliveryDate: Date | 
 export class DeliveryPlugin implements ProductPlugin {
     pluginName = 'delivery'
     private selectedDate: Date | null = null
+    private schedule: DeliverySchedule = {}
+    private store: ProductPurchaseStore | null = null
+    private dateInput: HTMLInputElement | null = null
+    private dateLabel: HTMLSpanElement | null = null
+    private customDateLabel = ''
+    private funeralDateInput: HTMLInputElement | null = null
+    private funeralTimeInput: HTMLInputElement | null = null
 
     private clearInputError(input: HTMLInputElement): void {
         input.setCustomValidity('')
@@ -55,7 +56,7 @@ export class DeliveryPlugin implements ProductPlugin {
         return `${String(hour).padStart(2, '0')}:00`
     }
 
-    private matchesAvailableSlot(value: string, selectedDate: Date, schedule: DeliverySchedule): boolean {
+    private matchesAvailableSlot(value: string, selectedDate: Date): boolean {
         const [hours, minutes] = value.split(':').map(Number)
 
         if (Number.isNaN(hours) || Number.isNaN(minutes)) {
@@ -63,7 +64,7 @@ export class DeliveryPlugin implements ProductPlugin {
         }
 
         const totalMinutes = (hours * 60) + minutes
-        const availableSlots = getAvailableTimeSlots(schedule, selectedDate)
+        const availableSlots = getAvailableTimeSlots(this.schedule, selectedDate)
 
         return availableSlots.some((slot) => {
             const slotStartMinutes = slot.start * 60
@@ -92,17 +93,14 @@ export class DeliveryPlugin implements ProductPlugin {
             return
         }
 
-        const schedule = JSON.parse(rawSchedule) as DeliverySchedule
-        const availableDateKeys = Object.keys(schedule.timeOptionsByDate ?? {})
-        const lastAvailableDate = availableDateKeys[availableDateKeys.length - 1] ?? ''
+        this.schedule = JSON.parse(rawSchedule) as DeliverySchedule
+        this.store = store
+        this.dateInput = dateInput
+        this.dateLabel = dateLabel
+        this.funeralDateInput = funeralDateInput
+        this.funeralTimeInput = funeralTimeInput
 
-        if (dateInput && lastAvailableDate) {
-            dateInput.max = lastAvailableDate
-        }
-
-        if (funeralDateInput && lastAvailableDate) {
-            funeralDateInput.max = lastAvailableDate
-        }
+        this.applyScheduleBounds()
 
         setHiddenValue('[data-delivery-date-hidden]', '')
         setHiddenValue('[data-delivery-time-hidden]', '')
@@ -111,14 +109,21 @@ export class DeliveryPlugin implements ProductPlugin {
         store.setDeliveryTime('')
         store.setCardMessage(cardMessageField?.value ?? '')
 
+        // The markup above was rendered before the page cache stored it, so
+        // its calendar can be up to a week old -- "Dziś" carrying the date the
+        // page was generated on, and today's slots as they stood that minute.
+        // The fresh copy replaces it as soon as it arrives.
+        void this.refreshSchedule()
+
         if (funeralDateInput && funeralTimeInput) {
-            this.initFuneralNativeInputs(store, funeralDateInput, funeralTimeInput, schedule)
+            this.initFuneralNativeInputs(store, funeralDateInput, funeralTimeInput)
             return
         }
 
-        this.updateTimeSlotAvailability(store, this.selectedDate, schedule)
+        this.updateTimeSlotAvailability(store, this.selectedDate)
 
-        const customDateLabel = dateLabel?.textContent ?? ''
+        this.customDateLabel = dateLabel?.textContent ?? ''
+        const customDateLabel = this.customDateLabel
 
         dateOptions.forEach((btn) => {
             btn.addEventListener('click', () => {
@@ -139,7 +144,7 @@ export class DeliveryPlugin implements ProductPlugin {
                     }
 
                     this.selectedDate = new Date(`${dateValue}T00:00:00`)
-                    this.syncSelectedDate(store, this.selectedDate, schedule)
+                    this.syncSelectedDate(store, this.selectedDate)
 
                     return
                 }
@@ -178,7 +183,7 @@ export class DeliveryPlugin implements ProductPlugin {
                     month: '2-digit',
                 })
 
-                this.syncSelectedDate(store, this.selectedDate, schedule)
+                this.syncSelectedDate(store, this.selectedDate)
             })
         }
 
@@ -206,32 +211,146 @@ export class DeliveryPlugin implements ProductPlugin {
         })
     }
 
-    private initFuneralNativeInputs(store: ProductPurchaseStore, dateInput: HTMLInputElement, timeInput: HTMLInputElement, schedule: DeliverySchedule): void {
-        this.updateFuneralTimeOptions(store, timeInput, null, schedule)
+    /**
+     * Swaps the rendered calendar for the one the server has right now, and
+     * drops a selection the customer made against the stale one. Does nothing
+     * when the request fails: the server refuses a slot that is no longer
+     * offered either way, so a stale pick ends in an error rather than an
+     * order nobody can deliver.
+     */
+    private async refreshSchedule(): Promise<void> {
+        const context = await fetchDeliveryContext()
+
+        if (!context || !this.store) {
+            return
+        }
+
+        this.schedule = context.schedule
+
+        this.applyScheduleBounds()
+        this.applyDateOptions()
+        this.revalidateSelectedDate(this.store)
+    }
+
+    /**
+     * The custom-date picker may not offer a day the schedule has no slots
+     * for, at either end.
+     */
+    private applyScheduleBounds(): void {
+        const availableDateKeys = Object.keys(this.schedule.timeOptionsByDate ?? {})
+        const firstAvailableDate = availableDateKeys[0] ?? ''
+        const lastAvailableDate = availableDateKeys[availableDateKeys.length - 1] ?? ''
+
+        const dateInputs = [this.dateInput, this.funeralDateInput]
+
+        dateInputs.forEach((input) => {
+            if (!input) {
+                return
+            }
+
+            if (firstAvailableDate) {
+                input.min = firstAvailableDate
+            }
+
+            if (lastAvailableDate) {
+                input.max = lastAvailableDate
+            }
+        })
+    }
+
+    /**
+     * Rewrites the "Dziś"/"Jutro" presets. There are never more than two, and
+     * a day that has run out of slots leaves one fewer, so the spare button is
+     * hidden rather than left pointing at a date the server would refuse.
+     */
+    private applyDateOptions(): void {
+        const freshOptions = this.schedule.dateOptions ?? []
+        const presetButtons = document.querySelectorAll<HTMLButtonElement>('.delivery-date-option[data-date-value]')
+
+        presetButtons.forEach((btn, index) => {
+            const option = freshOptions[index]
+
+            if (!option) {
+                btn.hidden = true
+                btn.classList.remove('active')
+
+                return
+            }
+
+            btn.hidden = false
+            btn.dataset.dateValue = option.value
+            btn.textContent = option.label
+        })
+    }
+
+    private revalidateSelectedDate(store: ProductPurchaseStore): void {
+        if (!this.selectedDate) {
+            return
+        }
+
+        if (getAvailableTimeSlots(this.schedule, this.selectedDate).length > 0) {
+            // Still deliverable, but its slots may have moved on.
+            if (this.funeralDateInput && this.funeralTimeInput) {
+                this.updateFuneralTimeOptions(store, this.funeralTimeInput, this.selectedDate)
+            } else {
+                this.updateTimeSlotAvailability(store, this.selectedDate)
+            }
+
+            return
+        }
+
+        this.selectedDate = null
+        setHiddenValue('[data-delivery-date-hidden]', '')
+        store.setDeliveryDate('')
+
+        if (this.funeralDateInput && this.funeralTimeInput) {
+            this.funeralDateInput.value = ''
+            this.updateFuneralTimeOptions(store, this.funeralTimeInput, null)
+
+            return
+        }
+
+        if (this.dateInput) {
+            this.dateInput.value = ''
+        }
+
+        if (this.dateLabel) {
+            this.dateLabel.textContent = this.customDateLabel
+        }
+
+        document.querySelectorAll<HTMLButtonElement>('.delivery-date-option').forEach((btn) => {
+            btn.classList.remove('active')
+        })
+
+        this.updateTimeSlotAvailability(store, null)
+    }
+
+    private initFuneralNativeInputs(store: ProductPurchaseStore, dateInput: HTMLInputElement, timeInput: HTMLInputElement): void {
+        this.updateFuneralTimeOptions(store, timeInput, null)
 
         dateInput.addEventListener('change', () => {
             if (!dateInput.value) {
                 this.selectedDate = null
                 setHiddenValue('[data-delivery-date-hidden]', '')
                 store.setDeliveryDate('')
-                this.updateFuneralTimeOptions(store, timeInput, null, schedule)
+                this.updateFuneralTimeOptions(store, timeInput, null)
                 return
             }
 
             this.selectedDate = new Date(`${dateInput.value}T00:00:00`)
 
-            if (Number.isNaN(this.selectedDate.getTime()) || getAvailableTimeSlots(schedule, this.selectedDate).length === 0) {
+            if (Number.isNaN(this.selectedDate.getTime()) || getAvailableTimeSlots(this.schedule, this.selectedDate).length === 0) {
                 dateInput.value = ''
                 this.selectedDate = null
                 setHiddenValue('[data-delivery-date-hidden]', '')
                 store.setDeliveryDate('')
-                this.updateFuneralTimeOptions(store, timeInput, null, schedule)
+                this.updateFuneralTimeOptions(store, timeInput, null)
                 return
             }
 
             setHiddenValue('[data-delivery-date-hidden]', dateInput.value)
             store.setDeliveryDate(dateInput.value)
-            this.updateFuneralTimeOptions(store, timeInput, this.selectedDate, schedule)
+            this.updateFuneralTimeOptions(store, timeInput, this.selectedDate)
         })
 
         timeInput.addEventListener('change', () => {
@@ -245,7 +364,7 @@ export class DeliveryPlugin implements ProductPlugin {
                 return
             }
 
-            if (!this.matchesAvailableSlot(value, this.selectedDate, schedule)) {
+            if (!this.matchesAvailableSlot(value, this.selectedDate)) {
                 timeInput.value = ''
                 setHiddenValue('[data-delivery-time-hidden]', '')
                 store.setDeliveryTime('')
@@ -285,15 +404,15 @@ export class DeliveryPlugin implements ProductPlugin {
         }
     }
 
-    private syncSelectedDate(store: ProductPurchaseStore, selectedDate: Date, schedule: DeliverySchedule): void {
-        this.updateTimeSlotAvailability(store, selectedDate, schedule)
+    private syncSelectedDate(store: ProductPurchaseStore, selectedDate: Date): void {
+        this.updateTimeSlotAvailability(store, selectedDate)
 
         const value = formatDateValue(selectedDate)
         setHiddenValue('[data-delivery-date-hidden]', value)
         store.setDeliveryDate(value)
     }
 
-    private updateTimeSlotAvailability(store: ProductPurchaseStore, selectedDate: Date | null, schedule: DeliverySchedule): void {
+    private updateTimeSlotAvailability(store: ProductPurchaseStore, selectedDate: Date | null): void {
         const timeOptions = document.querySelectorAll<HTMLButtonElement>('.delivery-time-option')
 
         if (!selectedDate) {
@@ -310,7 +429,7 @@ export class DeliveryPlugin implements ProductPlugin {
         }
 
         let activeSlotStillAvailable = false
-        const availableSlots = getAvailableTimeSlots(schedule, selectedDate)
+        const availableSlots = getAvailableTimeSlots(this.schedule, selectedDate)
 
         timeOptions.forEach((btn) => {
             const slotStart = Number(btn.dataset.slotStart)
@@ -348,11 +467,10 @@ export class DeliveryPlugin implements ProductPlugin {
         store: ProductPurchaseStore,
         timeInput: HTMLInputElement,
         selectedDate: Date | null,
-        schedule: DeliverySchedule,
     ): void {
         this.clearInputError(timeInput)
 
-        const availableSlots = getAvailableTimeSlots(schedule, selectedDate)
+        const availableSlots = getAvailableTimeSlots(this.schedule, selectedDate)
 
         if (availableSlots.length === 0) {
             timeInput.disabled = true
@@ -370,7 +488,7 @@ export class DeliveryPlugin implements ProductPlugin {
         timeInput.max = this.toTimeValue(availableSlots[availableSlots.length - 1].end)
         timeInput.step = '1800'
 
-        if (timeInput.value && selectedDate && !this.matchesAvailableSlot(timeInput.value, selectedDate, schedule)) {
+        if (timeInput.value && selectedDate && !this.matchesAvailableSlot(timeInput.value, selectedDate)) {
             timeInput.value = ''
             setHiddenValue('[data-delivery-time-hidden]', '')
             store.setDeliveryTime('')

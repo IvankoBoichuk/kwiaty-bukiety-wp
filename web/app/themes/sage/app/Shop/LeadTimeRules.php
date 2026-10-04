@@ -14,7 +14,10 @@ use DateTimeZone;
  * Rewritten rather than copied. The originals read $_REQUEST['datadostav'],
  * a field name from the Storefront checkout; this theme posts `delivery_date`
  * (Y-m-d) and `delivery_time` (HH-HH) from the add-to-cart form -- see
- * app/filters.php, woocommerce_before_add_to_cart_button.
+ * app/filters.php, woocommerce_before_add_to_cart_button -- or sends them as
+ * camelCase JSON through the Store API, which is why the request is read
+ * through PurchaseRequest rather than from $_REQUEST: that superglobal is
+ * empty on every Store API call, so this rule used to reject every date.
  *
  * Behaviour change worth knowing: snippet #66 raised an error notice and then
  * returned the unchanged $passed, so the wreath still went into the cart. Here
@@ -81,12 +84,9 @@ final class LeadTimeRules
             return $passed;
         }
 
-        $date = isset($_REQUEST['delivery_date'])
-            ? sanitize_text_field(wp_unslash($_REQUEST['delivery_date']))
-            : '';
-        $time = isset($_REQUEST['delivery_time'])
-            ? sanitize_text_field(wp_unslash($_REQUEST['delivery_time']))
-            : '';
+        $payload = PurchaseRequest::payload();
+        $date = $payload['delivery_date'];
+        $time = $payload['delivery_time'];
 
         if ($date === '' || $time === '') {
             wc_add_notice(

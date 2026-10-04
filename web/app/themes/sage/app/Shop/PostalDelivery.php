@@ -59,9 +59,9 @@ final class PostalDelivery
             return $passed;
         }
 
-        $date = isset($_REQUEST['delivery_date'])
-            ? sanitize_text_field(wp_unslash($_REQUEST['delivery_date']))
-            : '';
+        // Read through PurchaseRequest, not $_REQUEST: the Store API posts the
+        // date as JSON, which never reaches that superglobal.
+        $date = PurchaseRequest::deliveryDate();
 
         if ($date === '') {
             wc_add_notice(__('Proszę wybrać datę dostawy.', 'sage-front'), 'error');

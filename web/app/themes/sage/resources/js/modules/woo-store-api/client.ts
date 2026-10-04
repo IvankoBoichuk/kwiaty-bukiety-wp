@@ -72,7 +72,40 @@ export class WooStoreApiClient {
         body?: TBody,
         options: StoreApiRequestOptions = {},
     ): Promise<TResponse> {
+        const sentNonce = this.nonce
+        let attempt = await this.send<TResponse, TBody>(method, path, body, options)
 
+        // The nonce the page was rendered with expires after 24 hours, and the
+        // product pages are page cached for a week, so a first click on a
+        // cached page used to fail with "Nonce is invalid." and only work on
+        // the second. The rejection itself carries a usable nonce, which
+        // captureResponseTokens() has already stored, so the retry below is
+        // what the customer's second click used to be. Retrying cannot double
+        // up: the nonce is checked before the route touches the cart, so the
+        // rejected attempt changed nothing.
+        if (this.shouldRetryWithFreshNonce(attempt, sentNonce)) {
+            attempt = await this.send<TResponse, TBody>(method, path, body, options)
+        }
+
+        if (!attempt.response.ok) {
+            const errorPayload = (attempt.payload || {}) as StoreApiErrorResponse
+
+            throw new WooStoreApiError(errorPayload.message || 'Woo Store API request failed.', {
+                code: errorPayload.code,
+                status: this.resolveStatus(attempt.response.status, errorPayload.data),
+                data: errorPayload.data,
+            })
+        }
+
+        return attempt.payload as TResponse
+    }
+
+    protected async send<TResponse, TBody = undefined>(
+        method: StoreApiMethod,
+        path: string,
+        body?: TBody,
+        options: StoreApiRequestOptions = {},
+    ): Promise<{ response: Response, payload?: StoreApiErrorResponse | TResponse }> {
         const response = await this.fetchImpl(this.buildUrl(path, options.query), {
             method,
             credentials: 'same-origin',
@@ -83,19 +116,24 @@ export class WooStoreApiClient {
 
         this.captureResponseTokens(response)
 
-        const payload = await this.parseJson<StoreApiErrorResponse | TResponse>(response)
+        return {
+            response,
+            payload: await this.parseJson<StoreApiErrorResponse | TResponse>(response),
+        }
+    }
 
-        if (!response.ok) {
-            const errorPayload = (payload || {}) as StoreApiErrorResponse
-
-            throw new WooStoreApiError(errorPayload.message || 'Woo Store API request failed.', {
-                code: errorPayload.code,
-                status: this.resolveStatus(response.status, errorPayload.data),
-                data: errorPayload.data,
-            })
+    protected shouldRetryWithFreshNonce<TResponse>(
+        attempt: { response: Response, payload?: StoreApiErrorResponse | TResponse },
+        sentNonce: string,
+    ): boolean {
+        if (attempt.response.ok || this.nonce === '' || this.nonce === sentNonce) {
+            return false
         }
 
-        return payload as TResponse
+        const code = (attempt.payload as StoreApiErrorResponse | undefined)?.code
+
+        return code === 'woocommerce_rest_invalid_nonce'
+            || code === 'woocommerce_rest_missing_nonce'
     }
 
     protected buildUrl(path: string, query?: StoreApiQuery): string {

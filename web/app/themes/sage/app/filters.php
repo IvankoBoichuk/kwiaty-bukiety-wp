@@ -7,6 +7,7 @@
 namespace App;
 
 use App\Catalog\Settings;
+use App\Shop\PurchaseRequest;
 
 /**
  * Add "… Continued" to the excerpt.
@@ -238,67 +239,14 @@ add_filter(
     20,
 );
 
+/**
+ * Kept as the name the rest of this file calls; the reading itself lives in
+ * App\Shop\PurchaseRequest, which the add-to-cart validation rules share.
+ */
 function getAddToCartRequestPayload(
     \WP_REST_Request|array|null $request = null,
 ): array {
-    static $jsonPayload;
-
-    $source = [];
-
-    if ($request instanceof \WP_REST_Request) {
-        $source = $request->get_params();
-    } elseif (is_array($request)) {
-        $source = $request;
-    } elseif ($_POST !== []) {
-        $source = wp_unslash($_POST);
-    } else {
-        if ($jsonPayload === null) {
-            $rawPayload = file_get_contents('php://input');
-            $decodedPayload = is_string($rawPayload)
-                ? json_decode($rawPayload, true)
-                : null;
-
-            $jsonPayload = is_array($decodedPayload) ? $decodedPayload : [];
-        }
-
-        $source = $jsonPayload;
-    }
-
-    return [
-        'delivery_date' => sanitize_text_field(
-            (string) ($source['delivery_date']
-                ?? ($source['deliveryDate'] ?? '')),
-        ),
-        'delivery_time' => sanitize_text_field(
-            (string) ($source['delivery_time']
-                ?? ($source['deliveryTime'] ?? '')),
-        ),
-        'delivery_location' => sanitize_text_field(
-            (string) ($source['delivery_location']
-                ?? ($source['deliveryLocation'] ?? '')),
-        ),
-        'delivery_type' => sanitize_text_field(
-            (string) ($source['delivery_type']
-                ?? ($source['deliveryType'] ?? '')),
-        ),
-        'deceased_full_name' => sanitize_text_field(
-            (string) ($source['deceased_full_name']
-                ?? ($source['deceasedFullName'] ?? '')),
-        ),
-        'card_message' => sanitize_textarea_field(
-            (string) ($source['card_message']
-                ?? ($source['cardMessage'] ?? '')),
-        ),
-        'addition_ids' => array_values(
-            array_filter(
-                array_map(
-                    'absint',
-                    (array) ($source['addition_ids']
-                        ?? ($source['additionIds'] ?? [])),
-                ),
-            ),
-        ),
-    ];
+    return PurchaseRequest::payload($request);
 }
 
 function formatDeliveryLocationValue(string $value): string

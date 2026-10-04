@@ -283,3 +283,24 @@ if (! function_exists('wp_remote_retrieve_response_code')) {
         return (int) ($response['response']['code'] ?? 0);
     }
 }
+
+if (! function_exists('sanitize_textarea_field')) {
+    function sanitize_textarea_field(string $value): string
+    {
+        return trim(strip_tags($value));
+    }
+}
+
+if (! function_exists('absint')) {
+    function absint(mixed $value): int
+    {
+        return abs((int) $value);
+    }
+}
+
+if (! function_exists('wp_unslash')) {
+    function wp_unslash(mixed $value): mixed
+    {
+        return is_array($value) ? array_map('wp_unslash', $value) : stripslashes((string) $value);
+    }
+}
