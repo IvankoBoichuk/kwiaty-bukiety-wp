@@ -25,9 +25,9 @@
                 <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </a>
-          @elseif (in_array('promo', $item['classes'] ?? [], true))
-            {{-- A promoted category: filled pill instead of a plain link. Give
-                 the menu item the `promo` CSS class in Appearance > Menus. --}}
+          @elseif (!empty($item['accent']))
+            {{-- A promoted category: filled pill instead of a plain link. Tick
+                 "Accent item" on the menu item in Appearance > Menus. --}}
             <a
               href="{{ $item['url'] }}"
               class="bg-accent text-purple-dark block rounded-full px-5 py-3 transition-opacity duration-200 hover:opacity-80 focus:opacity-80 focus:outline-none"

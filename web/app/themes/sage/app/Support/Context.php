@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Admin\ContactSettingsPage;
+use App\Admin\NavMenuAccent;
 use Timber\Timber;
 
 class Context
@@ -294,12 +295,11 @@ class Context
                 'title' => $item->title,
                 'url' => $item->url,
                 'target' => $item->target,
-                /* The menu item's own CSS classes from the admin screen. The
-                   header reads them to single out an item: the design marks a
-                   promoted category with a filled pill, which is editorial, not
-                   structural, so it is carried by a `promo` class rather than
-                   by a position in the tree. */
-                'classes' => array_values(array_filter((array) $item->classes)),
+                /* The design marks one promoted category with a filled pill.
+                   That is editorial, not structural, so it is carried by the
+                   "Accent item" checkbox on the menu screen rather than by a
+                   position in the tree. */
+                'accent' => NavMenuAccent::isAccent((int) $item->ID),
                 'children' => $children,
             ];
         }

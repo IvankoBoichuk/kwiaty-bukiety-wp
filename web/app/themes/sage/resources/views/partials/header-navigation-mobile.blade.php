@@ -110,6 +110,18 @@
                 @endforeach
               </div>
             </div>
+          @elseif (!empty($item['accent']))
+            {{-- The accented item keeps its pill in the drawer, where the
+                 header's own one has no room. --}}
+            <div class="py-2">
+              <a
+                href="{{ $item['url'] }}"
+                class="bg-accent text-purple-dark inline-block rounded-full px-5 py-2 font-medium transition-opacity duration-200 hover:opacity-80"
+                @click="closeMenu()"
+              >
+                {{ $item['title'] }}
+              </a>
+            </div>
           @else
             <a href="{{ $item['url'] }}" class="block py-3 font-medium" @click="closeMenu()"> {{ $item['title'] }} </a>
           @endif

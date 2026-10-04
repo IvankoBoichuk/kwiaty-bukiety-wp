@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Admin\ContactSettingsPage;
 use App\Admin\CategoryFaqMetabox;
 use App\Admin\DeliveryTimerSettingsPage;
+use App\Admin\NavMenuAccent;
 use App\Admin\OrderNotificationsSettingsPage;
 use App\Admin\ProductAttributeIcons;
 use App\Api\Categories;
@@ -71,6 +72,7 @@ class ThemeServiceProvider extends SageServiceProvider
         OrderNotificationsSettingsPage::boot();
         ProductAttributeIcons::boot();
         CategoryFaqMetabox::boot();
+        NavMenuAccent::boot();
         DeliveryTimer::boot();
         PostalCode::boot();
         CityHub::boot();
