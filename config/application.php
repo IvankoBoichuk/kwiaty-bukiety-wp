@@ -156,6 +156,9 @@ Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?? true);
 // Disable script concatenation
 Config::define('CONCATENATE_SCRIPTS', false);
 
+// Mail for letters from non-production env
+Config::define('MAIL_REDIRECT_TO', env('MAIL_REDIRECT_TO') ?: '');
+
 /**
  * Debugging Settings
  */
