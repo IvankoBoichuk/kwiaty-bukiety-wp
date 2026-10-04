@@ -1,0 +1,19 @@
+# Lint the PHP files going into this commit. CI (.woodpecker/ci.yaml) runs
+# `pint --test` over the whole tree, so formatting them here is what keeps that
+# step green. lint-staged re-stages whatever pint rewrites.
+#
+# pint is a composer dev dependency, so a tree installed with --no-dev has no
+# linter: warn and let the commit through instead of blocking it.
+if [ ! -x vendor/bin/pint ]; then
+  echo "pre-commit: vendor/bin/pint missing, skipping lint (run 'composer install')"
+  exit 0
+fi
+
+if command -v bunx >/dev/null 2>&1; then
+  bunx lint-staged
+elif command -v npx >/dev/null 2>&1; then
+  npx lint-staged
+else
+  echo "pre-commit: neither bun nor npm found; install one, or commit with --no-verify"
+  exit 1
+fi

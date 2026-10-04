@@ -1,0 +1,17 @@
+{
+  "name": "kwiaty-bukiety-wp",
+  "private": true,
+  "description": "Root package: git hooks only. The theme has its own package.json in web/app/themes/sage.",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "vendor/bin/pint --test",
+    "lint:fix": "vendor/bin/pint"
+  },
+  "lint-staged": {
+    "*.php": "vendor/bin/pint"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6"
+  }
+}
