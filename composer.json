@@ -43,7 +43,9 @@
     "wp-plugin/wordpress-seo": "^28.6",
     "wp-plugin/redirection": "^5.10",
     "wp-plugin/litespeed-cache": "^7.9",
-    "cweagans/composer-patches": "^1.7"
+    "cweagans/composer-patches": "^1.7",
+    "wp-plugin/wp-mail-smtp": "^4.10",
+    "wp-plugin/cookie-law-info": "^3.5"
   },
   "require-dev": {
     "laravel/pint": "^1.18",

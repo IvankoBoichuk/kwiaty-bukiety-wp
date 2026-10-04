@@ -34,7 +34,7 @@ final class PartnerOrder
      */
     public const DATE_KEYS = [
         'delivery_date', '_delivery_date', 'delivery-date',
-        'datadostav', 'data_dostawy', 'Data dostawy',
+        'datadostav', 'data_dostawy', 'Data dostawy', 'Date dostawy',
     ];
 
     /**
@@ -250,24 +250,47 @@ final class PartnerOrder
     }
 
     /**
+     * Order meta first, then the line items.
+     *
+     * The current checkout writes the delivery date and hour onto the order.
+     * Orders carried over from production carry them on the line item instead,
+     * under the label the old checkout printed -- including `Date dostawy`,
+     * with the typo -- so an order-only lookup finds nothing for those.
+     *
      * @param  array<int, string>  $keys
      */
     protected function firstMeta(array $keys): string
     {
         foreach ($keys as $key) {
-            $value = $this->order->get_meta($key, true);
-
-            if (is_array($value) || is_object($value)) {
-                continue;
-            }
-
-            $value = trim((string) $value);
+            $value = self::scalarMeta($this->order->get_meta($key, true));
 
             if ($value !== '') {
                 return sanitize_text_field($value);
             }
         }
 
+        foreach ($this->order->get_items('line_item') as $item) {
+            foreach ($keys as $key) {
+                $value = self::scalarMeta($item->get_meta($key, true));
+
+                if ($value !== '') {
+                    return sanitize_text_field($value);
+                }
+            }
+        }
+
         return '';
+    }
+
+    /**
+     * Meta can come back as an array or an object; neither is a date.
+     */
+    protected static function scalarMeta(mixed $value): string
+    {
+        if (is_array($value) || is_object($value)) {
+            return '';
+        }
+
+        return trim((string) $value);
     }
 }

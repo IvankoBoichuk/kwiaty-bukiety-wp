@@ -3,6 +3,12 @@
 use Tests\TestCase;
 
 /*
+ * The suite boots vendor/autoload.php and no WordPress, so the handful of WP
+ * and WooCommerce symbols the order sync touches are stubbed here.
+ */
+require_once __DIR__ . '/wp-stubs.php';
+
+/*
 |--------------------------------------------------------------------------
 | Test Case
 |--------------------------------------------------------------------------

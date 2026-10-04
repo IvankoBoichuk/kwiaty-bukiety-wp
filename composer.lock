@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f19a22970d593ae865823b89b0c5ad2d",
+    "content-hash": "24318e56074d47157a86f95631bee652",
     "packages": [
         {
             "name": "brick/math",
@@ -7478,6 +7478,37 @@
             "time": "2026-04-26T05:33:54+00:00"
         },
         {
+            "name": "wp-plugin/cookie-law-info",
+            "version": "3.5.6",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/cookie-law-info/",
+                "reference": "tags/3.5.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/cookie-law-info.3.5.6.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0|~2.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://wp-packages.org/downloads",
+            "authors": [
+                {
+                    "name": "CookieYes"
+                }
+            ],
+            "description": "Cookie banner, cookie consent and cookie notice plugin for GDPR and CCPA. Auto cookie blocking, Consent Mode v2, policy pages and preference center.",
+            "homepage": "https://www.cookieyes.com/",
+            "support": {
+                "changelog": "https://wordpress.org/plugins/cookie-law-info/#developers",
+                "issues": "https://wordpress.org/support/plugin/cookie-law-info",
+                "source": "https://plugins.svn.wordpress.org/cookie-law-info"
+            },
+            "time": "2026-09-10T06:41:18+00:00"
+        },
+        {
             "name": "wp-plugin/litespeed-cache",
             "version": "7.9.1",
             "source": {
@@ -7693,6 +7724,37 @@
                 "source": "https://plugins.svn.wordpress.org/wordpress-seo"
             },
             "time": "2026-09-29T09:36:43+00:00"
+        },
+        {
+            "name": "wp-plugin/wp-mail-smtp",
+            "version": "4.10.0",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/wp-mail-smtp/",
+                "reference": "tags/4.10.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/wp-mail-smtp.4.10.0.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0|~2.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://wp-packages.org/downloads",
+            "authors": [
+                {
+                    "name": "Syed Balkhi"
+                }
+            ],
+            "description": "Make email delivery easy for WordPress. Connect with SMTP, Gmail, Outlook, SendGrid, Mailgun, SES, Zoho, + more. Rated #1 WordPress SMTP Email plugin.",
+            "homepage": "https://wpmailsmtp.com/",
+            "support": {
+                "changelog": "https://wordpress.org/plugins/wp-mail-smtp/#developers",
+                "issues": "https://wordpress.org/support/plugin/wp-mail-smtp",
+                "source": "https://plugins.svn.wordpress.org/wp-mail-smtp"
+            },
+            "time": "2026-09-30T08:01:41+00:00"
         }
     ],
     "packages-dev": [
