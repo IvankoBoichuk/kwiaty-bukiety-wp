@@ -38,6 +38,18 @@ variables:
   - &bun_env
     BUN_INSTALL_CACHE_DIR: /woodpecker/cache/bun
 
+  # The perf gate needs the same bun cache plus its own knobs. It cannot merge
+  # with the anchor above -- a step carries exactly one `environment` -- so the
+  # cache path is repeated here rather than referenced.
+  - &perf_env
+    BUN_INSTALL_CACHE_DIR: /woodpecker/cache/bun
+    PERF_RUNS: "3"
+    # Reports instead of gating. tests/perf/config.ts documents why in full:
+    # the deployed site does not serve a stable document, so nothing measured
+    # there is comparable run to run. Remove this line to turn the step into a
+    # gate once that is fixed.
+    PERF_REPORT_ONLY: "1"
+
   # The Hostinger credentials sit here rather than in their own anchor because a
   # step can only carry one `environment`, and validate-secrets has to see them
   # too. They are account-wide, so dev and prod share them -- only the domain
@@ -340,6 +352,35 @@ steps:
       - apk add --no-cache curl
       - *site_domain
       - curl --fail --silent --show-error --retry 3 --retry-delay 2 "https://$${SITE_DOMAIN}" > /dev/null
+
+  # Lighthouse report, from tests/perf, against the site this pipeline just
+  # deployed. Last on purpose: the numbers only mean anything once the LiteSpeed
+  # and Hostinger caches have been purged and smoke-test has proved the site
+  # answers at all -- a 503 from a stuck maintenance flag would score as the
+  # fastest page ever shipped.
+  #
+  # Prints a comparison against tests/perf/baseline/dev.json and does not fail
+  # on it, because the deployed site serves two different documents depending on
+  # cache state -- see PERF_REPORT_ONLY above. The real gate is `bun run perf`
+  # locally, where the numbers hold still. tests/perf/README.md has the detail.
+  #
+  # The image tag has to track the @playwright/test version in package.json:
+  # the browsers come from the image, and a version mismatch makes Playwright
+  # ask for a download that --ignore-scripts has deliberately skipped. bun is
+  # installed through npm because the image ships node, and bun.lock is what
+  # pins these dependencies.
+  - name: perf
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    depends_on: [smoke-test]
+    when: *deploy_when
+    environment: *perf_env
+    commands:
+      - *site_domain
+      - npm install --global --no-fund --no-audit bun
+      - bun install --frozen-lockfile --ignore-scripts
+      - |
+        PERF_BASE_URL="https://$${SITE_DOMAIN}" \
+          npx playwright test --config tests/perf/playwright.config.ts
 
 # Production deploy for `main`. To enable: uncomment the step below, create the
 # prod_* secrets in Woodpecker, and give the deploy steps a prod `when` branch
