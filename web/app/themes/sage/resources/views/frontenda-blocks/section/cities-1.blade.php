@@ -50,7 +50,7 @@
                             <li class="{{ $widthPattern[$loop->index % count($widthPattern)] }}">
                                 <a
                                     href="{{ esc_url($city->link()) }}"
-                                    class="bg-green-easy text-h4 flex h-full items-center justify-center rounded-2xl px-4 py-4.5 text-center text-white lg:px-20"
+                                    class="bg-green-easy-dark text-h4 flex h-full items-center justify-center rounded-2xl px-4 py-4.5 text-center text-white lg:px-20"
                                 >
                                     {{ $city->title() }}
                                 </a>

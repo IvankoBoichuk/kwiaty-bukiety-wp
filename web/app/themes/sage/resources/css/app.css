@@ -25,6 +25,9 @@
   --color-green-default: #0c4a2c;
   --color-green-dark: #0c3421;
   --color-green-easy: #6d9586;
+  /* Darkened green-easy: white text on --color-green-easy is only 3.34:1 and
+     fails WCAG AA; this shade keeps the hue at 5.91:1. */
+  --color-green-easy-dark: #4a6b5d;
 
   /* Neutral colors */
   --color-background: #fcf9f6;
@@ -261,10 +264,10 @@
   .single-product-settings-option {
     @apply disabled:text-gray-3 cursor-pointer rounded-xl border border-[#E0E0D7] bg-white px-3 py-2 text-nowrap transition-all disabled:cursor-not-allowed disabled:bg-[#F4F3EE] disabled:opacity-60;
     &.active {
-      @apply border-green-easy bg-green-easy text-white;
+      @apply border-green-easy-dark bg-green-easy-dark text-white;
     }
     &:has(*:checked) {
-      @apply border-green-easy bg-green-easy text-white;
+      @apply border-green-easy-dark bg-green-easy-dark text-white;
     }
   }
 
