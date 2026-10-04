@@ -26,12 +26,16 @@
   <div class="lg:grid lg:grid-cols-[1116fr_499fr] lg:items-start lg:gap-16">
     <div class="min-w-0">
       <header class="flex flex-col gap-2">
-        <p class="flex items-center gap-1 text-[13px] leading-5 font-semibold text-[#969998] md:gap-1.5 md:text-[16px] md:leading-6">
-          <svg class="size-4 shrink-0" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-            <use href="{{ $sprite }}#calendar"></use>
-          </svg>
-          <time class="dt-published" datetime="{{ get_post_time('c', true) }}">{{ get_the_date('d.m.Y') }}</time>
-        </p>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p class="flex items-center gap-1 text-[13px] leading-5 font-semibold text-[#969998] md:gap-1.5 md:text-[16px] md:leading-6">
+            <svg class="size-4 shrink-0" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <use href="{{ $sprite }}#calendar"></use>
+            </svg>
+            <time class="dt-published" datetime="{{ get_post_time('c', true) }}">{{ get_the_date('d.m.Y') }}</time>
+          </p>
+
+          @include('partials.article-terms', ['taxonomy' => 'category'])
+        </div>
 
         <h1
           class="p-name text-gray-1 text-[16px] leading-normal font-semibold md:text-[32px] lg:text-[40px] lg:font-bold"
@@ -78,18 +82,21 @@
           {!! $pagination !!}
         </nav>
       @endif
+
+      @include('partials.article-terms', ['taxonomy' => 'post_tag', 'wrapperClass' => 'mt-8'])
+
+      @include('partials.article-nav')
+
+      {{-- The design stops at the related block, but the posts carry 185
+           approved comments between them, so the comments stay and only get the
+           spacing that keeps them off the links above. They sit in the copy
+           column rather than under the whole article, so the thread keeps the
+           measure the article body was drawn at. --}}
+      @php(comments_template())
     </div>
 
     <aside class="mt-14 md:mt-20 lg:mt-0 lg:pt-8">
       @include('partials.article-related')
     </aside>
-  </div>
-
-  {{-- The design stops at the related block, but the posts carry 185 approved
-       comments between them, so the template stays and only gets the spacing
-       that keeps it off the block above. Its own styling is whatever
-       partials/comments.blade.php prints -- there is no design for it. --}}
-  <div class="mt-12 lg:mt-16">
-    @php(comments_template())
   </div>
 </article>
