@@ -110,12 +110,24 @@ add_action('wp_enqueue_scripts', function (): void {
  *   WP_Scripts::filter_eligible_strategies() refuses to delay. It prints in the
  *   footer regardless, so it costs no render time.
  *
- * google-pay is the one worth delaying: a blocking cross-origin request to
- * pay.google.com in the head of the cart, enqueued by the PayU Google Pay
- * gateway with no dependents and no strategy of its own. payu-gateway.js only
- * reaches for window.google.payments inside validate_payu_google_pay(), which
- * runs when the order is placed and guards the lookup with optional chaining,
- * so the deferred pay.js is in place long before anything reads it.
+ * Two handles are worth delaying:
+ *
+ * - google-pay: a blocking cross-origin request to pay.google.com in the head
+ *   of the cart, enqueued by the PayU Google Pay gateway with no dependents
+ *   and no strategy of its own. payu-gateway.js only reaches for
+ *   window.google.payments inside validate_payu_google_pay(), which runs when
+ *   the order is placed and guards the lookup with optional chaining, so the
+ *   deferred pay.js is in place long before anything reads it.
+ * - cookie-law-info: the CookieYes banner, which the plugin enqueues into the
+ *   head of every page with its $in_footer argument left false. Nothing
+ *   depends on it, and its config travels through wp_localize_script(), which
+ *   prints as its own blocking -js-extra tag ahead of the file rather than as
+ *   an inline script in the "after" position -- the one thing that would make
+ *   WP_Scripts refuse to delay it -- so _ckyConfig is defined by the time the
+ *   deferred script reads it. The plugin already hides the banner behind an
+ *   inline [data-cky-tag]{visibility:hidden} rule until its script paints it,
+ *   so deferring moves when the banner appears without changing how the page
+ *   settles around it.
  *
  * @return void
  */
@@ -126,7 +138,7 @@ add_action(
             return;
         }
 
-        foreach (['google-pay'] as $handle) {
+        foreach (['google-pay', 'cookie-law-info'] as $handle) {
             if (wp_script_is($handle, 'enqueued')) {
                 wp_script_add_data($handle, 'strategy', 'defer');
             }
