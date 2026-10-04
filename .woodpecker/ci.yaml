@@ -38,6 +38,10 @@ variables:
   - &bun_env
     BUN_INSTALL_CACHE_DIR: /woodpecker/cache/bun
 
+  # The Hostinger credentials sit here rather than in their own anchor because a
+  # step can only carry one `environment`, and validate-secrets has to see them
+  # too. They are account-wide, so dev and prod share them -- only the domain
+  # differs, and that comes from the branch below.
   - &deploy_env
     SSH_HOST:
       from_secret: ssh_host
@@ -49,12 +53,28 @@ variables:
       from_secret: ssh_private_key
     DEPLOY_PATH:
       from_secret: deploy_path
+    HOSTINGER_ACCOUNT:
+      from_secret: hostinger_account
+    HOSTINGER_API_TOKEN:
+      from_secret: hostinger_api_token
 
   - &deploy_when
     - event: push
       branch: dev
     - event: manual
       branch: dev
+
+  # dev and prod are separate domains, so every step that talks to the live site
+  # resolves one from the branch instead of hardcoding it. Woodpecker injects
+  # CI_COMMIT_BRANCH into every step; on a manual run it is the branch picked in
+  # the UI. Commands in a step share one shell, so SITE_DOMAIN survives into the
+  # next command.
+  - &site_domain |
+    case "$${CI_COMMIT_BRANCH}" in
+      main) SITE_DOMAIN=kwiaty-bukiety.com.pl ;;
+      dev) SITE_DOMAIN=dev.kwiaty-bukiety.com.pl ;;
+      *) echo "no site domain mapped for branch '$${CI_COMMIT_BRANCH}'" >&2; exit 1 ;;
+    esac
 
   # `patch` is what cweagans/composer-patches shells out to. It only uses
   # `git apply` when the package directory is itself a git repo, and
@@ -94,6 +114,10 @@ steps:
       - test -n "$${SSH_USER}"
       - test -n "$${SSH_PRIVATE_KEY}"
       - test -n "$${DEPLOY_PATH}"
+      # The Hostinger credentials are deliberately not checked here: the purge
+      # step skips itself when they are absent, so a repo without them can still
+      # deploy. They are the only deploy secrets that are optional.
+      - *site_domain
 
   # Dev dependencies, because pint and pest live there. composer-prod prunes
   # them again before the tree is shipped.
@@ -157,11 +181,21 @@ steps:
   # an old autoloader. WP serves web/app/maintenance.php for the whole window
   # once ABSPATH/.maintenance exists.
   #
-  # The timestamp is produced on the server, inside single quotes, so neither
-  # Woodpecker's substitution pass nor the agent's shell touches it. It has to
-  # be a literal int: `$upgrading = time()` would never satisfy WP's own
-  # 10-minute expiry, which is the only thing that unsticks the site if this
-  # pipeline dies between here and maintenance-off.
+  # wp-cli owns this when it is installed: it resolves ABSPATH through
+  # wp-cli.yml rather than hardcoding web/wp, and WP_Upgrader::maintenance_mode()
+  # writes the same literal `<?php $upgrading = <int>; ?>` the fallback does.
+  #
+  # --force is not optional. `activate` exits 1 with "Maintenance mode already
+  # activated" if the file is still there from a killed run, which would fail
+  # the deploy before it starts; --force also refreshes the timestamp, which is
+  # what we want.
+  #
+  # The fallback is the same guard clear-cache uses -- wp-cli may be absent --
+  # and it also covers the command's hard dependency on a bootable WP: it
+  # builds a WP_Upgrader, so it loads WordPress and connects to the database.
+  # The timestamp has to stay a literal int; `$upgrading = time()` would never
+  # satisfy WP's own 10-minute expiry, which is the only thing that unsticks
+  # the site if this pipeline dies between here and maintenance-off.
   - name: maintenance-on
     image: alpine:3
     depends_on: [composer-prod, build-theme, build-plugin]
@@ -171,7 +205,13 @@ steps:
       - *ssh_setup
       - |
         ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
-          'printf "<?php \$upgrading = %s;\n" "$(date +%s)" > '"$${DEPLOY_PATH}"'/web/wp/.maintenance'
+          "DEPLOY_PATH=$${DEPLOY_PATH} sh -s" <<'REMOTE'
+        cd "$DEPLOY_PATH" || exit 1
+        if command -v wp >/dev/null 2>&1 && wp maintenance-mode activate --force; then
+          exit 0
+        fi
+        printf '<?php $upgrading = %s; ?>' "$(date +%s)" > web/wp/.maintenance
+        REMOTE
 
   # Acorn caches discovered packages and services under web/app/cache/acorn,
   # which rsync excludes, so a plugin added or removed by this deploy would not
@@ -220,6 +260,13 @@ steps:
   # before a single file moved, and leaving a 503 up for WP's 10-minute expiry
   # would be downtime for nothing. A genuinely half-synced tree is the case this
   # uncovers early -- smoke-test below is what reports it.
+  #
+  # `deactivate` exits 1 on "Maintenance mode already deactivated", so it cannot
+  # be the last word here: this step has to survive a run where maintenance-on
+  # never got that far. The rm is what actually guarantees the site comes back.
+  # It matters more than it looks -- this runs *after* rsync, the one moment the
+  # new code or the database may be broken, and that is exactly when wp-cli
+  # cannot boot WordPress to clear the flag itself.
   - name: maintenance-off
     image: alpine:3
     depends_on: [deploy]
@@ -235,16 +282,65 @@ steps:
       - *ssh_setup
       - |
         ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
-          "rm -f $${DEPLOY_PATH}/web/wp/.maintenance"
+          "DEPLOY_PATH=$${DEPLOY_PATH} sh -s" <<'REMOTE'
+        cd "$DEPLOY_PATH" || exit 1
+        if command -v wp >/dev/null 2>&1; then
+          wp maintenance-mode deactivate || true
+        fi
+        rm -f web/wp/.maintenance
+        REMOTE
+
+  # Hostinger's own page cache sits in front of PHP, so the LiteSpeed purge in
+  # the deploy step never reaches it -- and where the Hostinger CDN is on, this
+  # is also what drops the edge copy. Worth a red pipeline if it fails: stale
+  # HTML here still references the previous build's hashed asset filenames,
+  # which rsync --delete has just removed.
+  #
+  # Deliberately after maintenance-off. Clearing while the 503 is still up
+  # invites the cache to repopulate from the maintenance page and then serve it
+  # for the whole TTL, which is the one failure this step is meant to prevent.
+  #
+  # The optional `?directory=` parameter targets a WordPress install in a
+  # subdirectory; without it the call clears the whole website, which is what we
+  # want -- worth knowing if a purge ever looks like it missed Bedrock's web/wp.
+  #
+  # Skips itself, loudly, when the credentials are not configured, so adding
+  # this step did not block deploys on creating two secrets first -- and so it
+  # starts working on its own once they exist. A real HTTP failure still fails
+  # the step: only the absence of credentials is tolerated, never a purge that
+  # was attempted and did not land.
+  - name: purge-hostinger-cache
+    image: alpine:3
+    depends_on: [maintenance-off]
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - |
+        if [ -z "$${HOSTINGER_ACCOUNT}" ] || [ -z "$${HOSTINGER_API_TOKEN}" ]; then
+          echo "SKIPPED: hostinger_account / hostinger_api_token are not set." >&2
+          echo "SKIPPED: the edge cache may keep serving HTML that references asset" >&2
+          echo "SKIPPED: filenames this deploy just removed. Add both secrets to fix." >&2
+          exit 0
+        fi
+      - apk add --no-cache curl
+      - *site_domain
+      - |
+        curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+          --request DELETE \
+          --header "Authorization: Bearer $${HOSTINGER_API_TOKEN}" \
+          --header 'Accept: application/json' \
+          "https://developers.hostinger.com/api/hosting/v1/accounts/$${HOSTINGER_ACCOUNT}/websites/$${SITE_DOMAIN}/cache/clear" \
+          > /dev/null
 
   # --fail covers the maintenance page too: a leftover .maintenance answers 503.
   - name: smoke-test
     image: alpine:3
-    depends_on: [maintenance-off]
+    depends_on: [purge-hostinger-cache]
     when: *deploy_when
     commands:
       - apk add --no-cache curl
-      - curl --fail --silent --show-error --retry 3 --retry-delay 2 https://dev.kwiaty-bukiety.com.pl > /dev/null
+      - *site_domain
+      - curl --fail --silent --show-error --retry 3 --retry-delay 2 "https://$${SITE_DOMAIN}" > /dev/null
 
 # Production deploy for `main`. To enable: uncomment the step below, create the
 # prod_* secrets in Woodpecker, and give the deploy steps a prod `when` branch
