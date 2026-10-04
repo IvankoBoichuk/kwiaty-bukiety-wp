@@ -3,7 +3,7 @@
     <h3 class="text-green-dark mb-3 text-[20px] leading-tight font-bold">
       {{
         trim(
-          sprintf(__('Popularne w %s', 'sage-front'), $woj),
+          sprintf(__('Popular in %s', 'sage-front'), $woj),
         )
       }}
     </h3>

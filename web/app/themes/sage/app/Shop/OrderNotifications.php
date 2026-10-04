@@ -58,7 +58,7 @@ final class OrderNotifications
             $recipient,
             sprintf(
                 /* translators: %s: order number. */
-                __('Nowe zamówienie do realizacji #%s', 'sage-front'),
+                __('New order to fulfil #%s', 'sage-front'),
                 $order->get_order_number(),
             ),
             view('emails.partner-order', ['order' => $partnerOrder])->render(),

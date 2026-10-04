@@ -88,7 +88,7 @@ final class CityHub
         $graph = [
             [
                 '@type' => 'ItemList',
-                'name' => __('Województwa', 'sage-front'),
+                'name' => __('Voivodeships', 'sage-front'),
                 'itemListOrder' => 'https://schema.org/ItemListOrderAscending',
                 'numberOfItems' => count($items),
                 'itemListElement' => array_values(array_map(

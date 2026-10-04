@@ -464,7 +464,7 @@ class CartCheckout
         if (!($cart instanceof WC_Cart)) {
             return [
                 'subtotal' => $this->totalLine(__('Subtotal', 'sage-front'), 0),
-                'shipping' => $this->totalLine(__('Dostawa', 'sage-front'), 0),
+                'shipping' => $this->totalLine(__('Delivery', 'sage-front'), 0),
                 'discount' => $this->totalLine(__('Discount', 'sage-front'), 0),
                 'total' => $this->totalLine(__('Order Total', 'sage-front'), 0),
             ];
@@ -476,7 +476,7 @@ class CartCheckout
                 (float) $cart->get_subtotal(),
             ),
             'shipping' => $this->totalLine(
-                __('Dostawa', 'sage-front'),
+                __('Delivery', 'sage-front'),
                 (float) $cart->get_shipping_total(),
             ),
             'discount' => $this->totalLine(

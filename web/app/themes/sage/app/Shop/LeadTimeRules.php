@@ -69,7 +69,7 @@ final class LeadTimeRules
 
         return sprintf(
             /* translators: %d: hours of notice required before delivery. */
-            __('Zamówienia z tej kategorii realizujemy wyłącznie z minimum %d-godzinnym wyprzedzeniem.', 'sage-front'),
+            __('Orders from this category are fulfilled with at least %d hours notice.', 'sage-front'),
             $hours,
         );
     }
@@ -90,7 +90,7 @@ final class LeadTimeRules
 
         if ($date === '' || $time === '') {
             wc_add_notice(
-                __('Dla tego produktu należy wybrać datę i godzinę dostawy.', 'sage-front'),
+                __('Select a delivery date and time for this product.', 'sage-front'),
                 'error',
             );
 
@@ -101,7 +101,7 @@ final class LeadTimeRules
 
         if ($deliversAt === null) {
             wc_add_notice(
-                __('Nie udało się odczytać wybranego terminu dostawy.', 'sage-front'),
+                __('Could not read the selected delivery time.', 'sage-front'),
                 'error',
             );
 
@@ -114,7 +114,7 @@ final class LeadTimeRules
             wc_add_notice(
                 sprintf(
                     /* translators: %d: hours of notice required before delivery. */
-                    __('Uwaga: zamówienia z tej kategorii realizujemy wyłącznie z minimum %d-godzinnym wyprzedzeniem.', 'sage-front'),
+                    __('Note: orders from this category are fulfilled with at least %d hours notice.', 'sage-front'),
                     $hours,
                 ),
                 'error',

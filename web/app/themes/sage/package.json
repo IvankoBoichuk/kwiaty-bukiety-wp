@@ -11,7 +11,7 @@
     "format:blade": "prettier --write \"resources/views/**/*.blade.php\"",
     "format:blade:check": "prettier --check \"resources/views/**/*.blade.php\"",
     "typecheck": "tsc --noEmit",
-    "translate:front": "wp i18n make-pot . ./languages/front/sage-front.pot --domain=sage-front --include=\"app,resources\" && for file in ./languages/front/*.po; do wp i18n update-po ./languages/front/sage-front.pot $file; done",
+    "translate:front": "wp i18n make-pot . ./languages/front/sage-front.pot --domain=sage-front --include=\"app,resources,public/build/assets/theme.json\" && for file in ./languages/front/*.po; do wp i18n update-po ./languages/front/sage-front.pot $file; done",
     "translate:back": "wp i18n make-pot . ./languages/back/sage-back.pot --domain=sage-back --include=\"app,resources\" && for file in ./languages/back/*.po; do wp i18n update-po ./languages/back/sage-back.pot $file; done",
     "translate:compile": "wp i18n make-mo ./languages/front ./languages/front && wp i18n make-mo ./languages/back ./languages/back && wp i18n make-php ./languages/front && wp i18n make-php ./languages/back"
   },

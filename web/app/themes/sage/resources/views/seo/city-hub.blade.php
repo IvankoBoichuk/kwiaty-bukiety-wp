@@ -8,7 +8,7 @@
 --}}
 <section class="kb-voivodeships flex flex-col gap-5">
   <h2 class="text-green-dark text-[20px] leading-tight font-bold md:text-[22px]">
-    {{ __('Wybierz województwo', 'sage-front') }}
+    {{ __('Choose a voivodeship', 'sage-front') }}
   </h2>
 
   <ul class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">

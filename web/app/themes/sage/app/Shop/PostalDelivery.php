@@ -64,7 +64,7 @@ final class PostalDelivery
         $date = PurchaseRequest::deliveryDate();
 
         if ($date === '') {
-            wc_add_notice(__('Proszę wybrać datę dostawy.', 'sage-front'), 'error');
+            wc_add_notice(__('Please select a delivery date.', 'sage-front'), 'error');
 
             return false;
         }
@@ -72,13 +72,13 @@ final class PostalDelivery
         $selected = DateTimeImmutable::createFromFormat('!Y-m-d', $date, self::timezone());
 
         if (! $selected) {
-            wc_add_notice(__('Nie udało się odczytać wybranej daty dostawy.', 'sage-front'), 'error');
+            wc_add_notice(__('Could not read the selected delivery date.', 'sage-front'), 'error');
 
             return false;
         }
 
         if ((int) $selected->format('N') === 7) {
-            wc_add_notice(__('Nie realizujemy dostaw w niedziele.', 'sage-front'), 'error');
+            wc_add_notice(__('We do not deliver on Sundays.', 'sage-front'), 'error');
 
             return false;
         }
@@ -89,8 +89,8 @@ final class PostalDelivery
         if ($selected < $earliest) {
             wc_add_notice(
                 $daysAhead === 1
-                    ? __('Najwcześniejszy możliwy termin dostawy to jutro.', 'sage-front')
-                    : __('Dla zamówień złożonych po 15:00 czasu polskiego, najbliższy termin to pojutrze.', 'sage-front'),
+                    ? __('The earliest possible delivery date is tomorrow.', 'sage-front')
+                    : __('For orders placed after 15:00 Polish time, the earliest date is the day after tomorrow.', 'sage-front'),
                 'error',
             );
 

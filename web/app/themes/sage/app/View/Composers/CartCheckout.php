@@ -25,7 +25,7 @@ class CartCheckout extends Composer
             'checkoutInstance' => $checkout->checkout(),
             'orderButtonText' => apply_filters(
                 'woocommerce_order_button_text',
-                __('Kupuję i płacę', 'sage-front'),
+                __('Buy and pay', 'sage-front'),
             ),
         ];
     }

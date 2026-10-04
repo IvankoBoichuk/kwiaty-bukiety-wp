@@ -109,14 +109,14 @@
 
       {{-- Product Description --}}
       @if ($productData['description'])
-        <div class="mb-12 lg:col-start-1 lg:row-start-2 lg:mb-0">
+        <div class="lg:col-start-1 lg:row-start-2">
           @include('woocommerce.single-product.description', ['description' => $productData['description']])
         </div>
       @endif
 
       {{-- Products Reviews --}}
       @if (!empty($productData['reviews']))
-        <div class="mb-12 lg:col-start-1 lg:row-start-3 lg:mb-0">
+        <div class="mt-12 lg:col-start-1 lg:row-start-3 lg:mt-0">
           @include('woocommerce.single-product.reviews', ['reviews' => $productData['reviews']])
         </div>
       @endif

@@ -17,19 +17,19 @@
   <div class="flex flex-col gap-3">
     @if ($leadTimeNotice !== '')
       <p class="text-body-14 text-green-default rounded-xl border border-[#E0D7B8] bg-[#FBF6E7] px-4 py-3">
-        <strong>{{ __('Ważne:', 'sage-front') }}</strong> {{ $leadTimeNotice }}
+        <strong>{{ __('Important:', 'sage-front') }}</strong> {{ $leadTimeNotice }}
       </p>
     @endif
 
     @if ($wholesaleTiers !== [])
       <div class="text-body-14 text-green-default rounded-xl border border-[#E0E0D7] bg-white px-4 py-3">
-        <p class="text-green-dark mb-1 font-semibold">{{ __('Rabat ilościowy', 'sage-front') }}</p>
+        <p class="text-green-dark mb-1 font-semibold">{{ __('Bulk discount', 'sage-front') }}</p>
         <ul class="flex flex-col gap-1">
           @foreach ($wholesaleTiers as $threshold => $discount)
             <li>
               {{
                 sprintf(
-                  __('od %1$d szt. — %2$d%% taniej', 'sage-front'),
+                  __('from %1$d pcs. — %2$d%% off', 'sage-front'),
                   (int) $threshold,
                   (int) round($discount * 100),
                 )
@@ -40,7 +40,7 @@
         <p class="text-gray-3 mt-2">
           {{
             sprintf(
-              __('Minimalna ilość zamówienia: %d szt.', 'sage-front'),
+              __('Minimum order quantity: %d pcs.', 'sage-front'),
               WholesaleDiscount::minimumQuantity(),
             )
           }}

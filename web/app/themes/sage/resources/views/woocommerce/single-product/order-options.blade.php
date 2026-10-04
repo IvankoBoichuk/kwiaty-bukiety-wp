@@ -2,7 +2,7 @@
   class="grid gap-8 lg:gap-6 2xl:grid-cols-2"
   data-delivery-schedule="{!! esc_attr(wp_json_encode($deliverySchedule, JSON_UNESCAPED_UNICODE)) !!}"
 >
-  <div class="2xl:col-span-2">
+  <div class="2xl:col-span-2 empty:hidden">
     @include('woocommerce.single-product.shop-notices')
   </div>
 
@@ -13,7 +13,6 @@
         'label' => __('Delivery date', 'sage-front'),
         'icon' => 'calendar'
       ])
-
     <div
       class="flex gap-1.5"
       :class="$store.productPurchase.deliveryDateError ? 'rounded-2xl ring-1 ring-[#D54C4C] p-1' : ''"

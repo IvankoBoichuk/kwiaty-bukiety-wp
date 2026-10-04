@@ -285,7 +285,7 @@ final class OrderSheetsSync
             return $actions;
         }
 
-        $actions[self::ORDER_ACTION] = __('Wyślij do Google Sheets', 'sage-back');
+        $actions[self::ORDER_ACTION] = __('Send to Google Sheets', 'sage-back');
 
         return $actions;
     }

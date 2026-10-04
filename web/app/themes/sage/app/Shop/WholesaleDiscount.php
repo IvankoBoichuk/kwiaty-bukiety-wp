@@ -107,7 +107,7 @@ final class WholesaleDiscount
             wc_add_notice(
                 sprintf(
                     /* translators: %d: minimum number of stems. */
-                    __('Minimalna ilość zamówienia dla tego produktu to %d szt.', 'sage-front'),
+                    __('The minimum order quantity for this product is %d pcs.', 'sage-front'),
                     $min,
                 ),
                 'error',

@@ -138,7 +138,7 @@ final class DeliveryWindowRules
     protected static function staleScheduleNotice(): string
     {
         return __(
-            'Wybrany termin dostawy jest już niedostępny. Prosimy odświeżyć stronę i wybrać nowy termin.',
+            'The selected delivery time is no longer available. Please refresh the page and choose a new time.',
             'sage-front',
         );
     }

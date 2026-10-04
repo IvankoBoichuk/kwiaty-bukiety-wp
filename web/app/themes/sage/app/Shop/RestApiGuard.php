@@ -30,7 +30,7 @@ final class RestApiGuard
 
         return new WP_Error(
             'rest_forbidden_users',
-            __('Dostęp do listy użytkowników jest zabroniony.', 'sage-front'),
+            __('Access to the user list is forbidden.', 'sage-front'),
             ['status' => 403],
         );
     }

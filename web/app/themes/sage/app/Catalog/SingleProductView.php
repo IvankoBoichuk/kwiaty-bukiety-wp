@@ -222,7 +222,7 @@ final class SingleProductView
                             ? wp_strip_all_tags(
                                 $this->product->get_short_description(),
                             )
-                            : __('Gotowy do zamowienia od razu.', 'sage-front'),
+                            : __('Ready to order right away.', 'sage-front'),
                 ],
             ];
 

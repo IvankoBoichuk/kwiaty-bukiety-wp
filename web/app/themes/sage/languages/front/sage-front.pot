@@ -1,463 +1,70 @@
-#, fuzzy
+# Copyright (C) 2026 Roots
+# This file is distributed under the MIT License.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kwiaty Bukiety\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-11 21:38+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Kwiaty Bukiety 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/sage\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: \n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.5; wp-7.0; php-8.2.29\n"
-"X-Domain: sage-front"
+"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: sage-front\n"
 
-#: app/View/Composers/Comments.php:63
-msgid "&larr; Older comments"
+#. Theme Name of the theme
+#: style.css
+msgid "Kwiaty Bukiety"
 msgstr ""
 
-#: app/filters.php:786 app/filters.php:954 app/filters.php:954
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:82
-msgid "Add-ons"
+#. Theme URI of the theme
+#: style.css
+msgid "https://roots.io/sage/"
 msgstr ""
 
-#: resources/views/woocommerce/single-product/cross-sell-products.blade.php:1
-msgid "Additions to flowers"
+#. Description of the theme
+#: style.css
+msgid "Sage is a WordPress starter theme."
 msgstr ""
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:80
-#: resources/views/woocommerce/checkout/thankyou.blade.php:106
-msgid "Back to Home Page"
+#. Author of the theme
+#: style.css
+msgid "Roots"
 msgstr ""
 
-#: public/build/assets/theme.json:1
-msgctxt "Border radius size name"
-msgid "2xl"
+#. Author URI of the theme
+#: style.css
+msgid "https://roots.io/"
 msgstr ""
 
-#: public/build/assets/theme.json:1
-msgctxt "Border radius size name"
-msgid "xl"
+#: app/Catalog/ProductData.php:28
+msgid "Promotion"
 msgstr ""
 
-#: resources/views/sections/footer.blade.php:3
-#: resources/views/woocommerce/cart/cart.blade.php:37
-msgid "Buy and pay"
+#: app/Catalog/ProductData.php:32
+msgid "Bestseller"
 msgstr ""
 
-#: resources/views/partials/entry-meta.blade.php:4
-msgid "By"
+#: app/Catalog/ProductData.php:36
+msgid "Free delivery"
 msgstr ""
 
-#: resources/views/woocommerce/single-product/order-options.blade.php:93
-msgid "Card message"
-msgstr ""
-
-#: app/filters.php:769 app/filters.php:950 app/filters.php:950
-msgid "Card message content"
-msgstr ""
-
-#: resources/js/modules/product-core/ProductStore.ts:236
-msgid "Choose a delivery date"
-msgstr ""
-
-#: resources/js/modules/product-core/ProductStore.ts:243
-msgid "Choose a delivery time"
-msgstr ""
-
-#: app/Catalog/Settings.php:15
-msgid "Church"
-msgstr ""
-
-#: app/filters.php:263
-msgid "City"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Accent"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Background"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Black"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Dark (Text)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (1)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (2)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (200)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (3)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (300)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (4)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (6)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Gray (600)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Green (400)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Green (50)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Green (Dark)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Green (Default)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Green (Easy)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Indigo (400)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Indigo (50)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Primary"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Purple"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Purple (Dark)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Purple (Easy)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Red (400)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Red (50)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "White"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Yellow (400)"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Color name"
-msgid "Yellow (50)"
-msgstr ""
-
-#: resources/views/partials/comments.blade.php:24
-msgid "Comments are closed."
-msgstr ""
-
-#. %1$s is replaced with the number of comments and %2$s with the post title
-#: app/View/Composers/Comments.php:23
-#, php-format
-msgctxt "comments title"
-msgid "%1$s response to &ldquo;%2$s&rdquo;"
-msgid_plural "%1$s responses to &ldquo;%2$s&rdquo;"
-msgstr[0] ""
-msgstr[1] ""
-
-#: app/View/Composers/Comments.php:31
-msgctxt "comments title"
-msgid "One"
+#: app/Catalog/Settings.php:13
+msgid "Private address"
 msgstr ""
 
 #: app/Catalog/Settings.php:14
 msgid "Company"
 msgstr ""
 
-#: app/filters.php:25
-msgid "Continued"
-msgstr ""
-
-#. Name of the template
-#: resources/views/template-custom.blade.php:1
-msgid "Custom Template"
-msgstr ""
-
-#: app/filters.php:763 app/filters.php:946 app/filters.php:946
-msgid "Deceased's full name"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:204
-msgid "Delivery"
-msgstr ""
-
-#: app/filters.php:936 app/Checkout/CartCheckout.php:222
-msgid "Delivery date"
-msgstr ""
-
-#: app/filters.php:441 app/filters.php:751 app/filters.php:938
-#: app/filters.php:938
-msgid "Delivery location"
-msgstr ""
-
-#: app/filters.php:290 app/filters.php:291
-msgid "Delivery place"
-msgstr ""
-
-#: app/filters.php:816 app/filters.php:890
-msgid "Delivery place type"
-msgstr ""
-
-#: app/filters.php:937 app/Checkout/CartCheckout.php:230
-msgid "Delivery time"
-msgstr ""
-
-#: app/filters.php:443 app/filters.php:757 app/filters.php:942
-#: app/filters.php:942
-msgid "Delivery type"
-msgstr ""
-
-#: app/Checkout/CartCheckout.php:368 app/Checkout/CartCheckout.php:383
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:208
-msgid "Discount"
-msgstr ""
-
-#: app/Checkout/CartCheckout.php:367 app/Checkout/CartCheckout.php:379
-msgid "Dostawa"
-msgstr ""
-
-#: app/filters.php:245
-msgid "e.g. 00-001"
-msgstr ""
-
-#: app/filters.php:216 app/filters.php:238
-msgid "e.g. 123 456 789"
-msgstr ""
-
-#: app/filters.php:227
-msgid "e.g. 1234567890"
-msgstr ""
-
-#: app/filters.php:211
-msgid "e.g. Doe"
-msgstr ""
-
-#: app/filters.php:272
-msgid "e.g. Hotel Marriott"
-msgstr ""
-
-#: app/filters.php:206
-msgid "e.g. John"
-msgstr ""
-
-#: app/filters.php:188
-msgid "e.g. John Doe"
-msgstr ""
-
-#: app/filters.php:196
-msgid "e.g. john.doe@example.com"
-msgstr ""
-
-#: app/filters.php:281
-msgid "e.g. ul. Marszałkowska 1/5"
-msgstr ""
-
-#: app/filters.php:259
-msgid "e.g. Warsaw"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:125
-msgid "Enter a valid email address."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:274
-msgid "Enter a valid recipient phone number."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:285
-msgid "Enter a valid sender phone number."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:111
-msgid "Enter the city."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:105
-msgid "Enter the delivery address."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:126
-msgid "Enter the email address."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:115
-msgid "Enter the location name."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:110
-msgid "Enter the postal code."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:112
-msgid "Enter the recipient full name."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:118
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:273
-msgid "Enter the recipient phone number."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:119
-msgid "Enter the sender first name."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:120
-msgid "Enter the sender last name."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:121
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:284
-msgid "Enter the sender phone number."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:63
-msgid "Expected delivery"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font family name"
-msgid "deco"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font family name"
-msgid "heading"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font family name"
-msgid "main"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font family name"
-msgid "mono"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font family name"
-msgid "sans"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font size name"
-msgid "5xl"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font size name"
-msgid "base"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font size name"
-msgid "lg"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font size name"
-msgid "sm"
-msgstr ""
-
-#: public/build/assets/theme.json:1
-msgctxt "Font size name"
-msgid "xs"
-msgstr ""
-
-#: app/filters.php:149
-#, php-format
-msgid "from %s"
-msgstr ""
-
-#: app/filters.php:184
-msgid "Full name"
+#: app/Catalog/Settings.php:15
+msgid "Church"
 msgstr ""
 
 #: app/Catalog/Settings.php:16
 msgid "Funeral home"
-msgstr ""
-
-#: app/Catalog/SingleProductView.php:119
-msgid "Gotowy do zamowienia od razu."
-msgstr ""
-
-#: app/Catalog/Settings.php:29
-msgid "Hand delivery"
 msgstr ""
 
 #: app/Catalog/Settings.php:17
@@ -468,220 +75,486 @@ msgstr ""
 msgid "Hotel"
 msgstr ""
 
-#. Author URI of the theme
-msgid "https://roots.io/"
-msgstr ""
-
-#. URI of the theme
-msgid "https://roots.io/sage/"
-msgstr ""
-
-#: app/View/Composers/CartCheckout.php:28
-msgid "Kupuję i płacę"
-msgstr ""
-
-#. Name of the theme
-msgid "Kwiaty Bukiety"
-msgstr ""
-
-#: resources/views/forms/search.blade.php:3
-msgctxt "label"
-msgid "Search for:"
-msgstr ""
-
-#: app/View/Composers/Post.php:34
-msgid "Latest Posts"
+#: app/Catalog/Settings.php:19
+msgid "School"
 msgstr ""
 
 #: app/Catalog/Settings.php:28
 msgid "Leave at the door"
 msgstr ""
 
-#: app/filters.php:1027
-msgid "Loading..."
+#: app/Catalog/Settings.php:29
+msgid "Hand delivery"
 msgstr ""
 
-#: resources/views/blocks/cities.blade.php:75
-msgid "More cities"
+#: app/Catalog/SingleProductView.php:216
+msgid "Standard"
 msgstr ""
 
-#: app/View/Composers/Comments.php:77
+#: app/Catalog/SingleProductView.php:225
+msgid "Ready to order right away."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:61
+msgid "Select a delivery location."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:62
+msgid "Enter the delivery address."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:63
+msgid "Postal code must use the format 00-000."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:67
+msgid "Enter the postal code."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:68
+msgid "Enter the city."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:69
+msgid "Enter the recipient full name."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:73
+msgid "Enter the location name."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:74
+msgid "Enter the recipient phone number."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:78
+msgid "Enter a valid recipient phone number."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:82
+msgid "Enter the sender first name."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:86
+msgid "Enter the sender last name."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:90
+msgid "Enter the sender phone number."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:94
+msgid "Enter a valid sender phone number."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:98
+msgid "Enter a valid email address."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:99
+msgid "Enter the email address."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:100
+msgid "Tax ID must contain 10 digits."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:101
+#: app/Checkout/CartCheckout.php:466
+#: app/Checkout/CartCheckout.php:475
+msgid "Subtotal"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:102
+#: app/Checkout/CartCheckout.php:467
+#: app/Checkout/CartCheckout.php:479
+msgid "Delivery"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:103
+#: app/Checkout/CartCheckout.php:468
+#: app/Checkout/CartCheckout.php:483
+msgid "Discount"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:104
+msgid "Order total"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:105
+msgid "Unable to place the order."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:106
+msgid "Enter a coupon code."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:107
+msgid "We could not apply this coupon."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:111
+msgid "We could not remove this coupon."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:294
+#: app/filters.php:764
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:15
+#: resources/views/woocommerce/single-product/order-options.blade.php:13
+msgid "Delivery date"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:302
+#: app/filters.php:765
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:30
+#: resources/views/woocommerce/single-product/order-options.blade.php:73
+msgid "Delivery time"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:469
+#: app/Checkout/CartCheckout.php:487
+msgid "Order Total"
+msgstr ""
+
+#: app/filters.php:21
+msgid "Continued"
+msgstr ""
+
+#: app/filters.php:28
+#, php-format
+msgid "from %s"
+msgstr ""
+
+#: app/filters.php:63
+msgid "Full name"
+msgstr ""
+
+#: app/filters.php:67
+msgid "e.g. John Doe"
+msgstr ""
+
+#: app/filters.php:75
+msgid "e.g. john.doe@example.com"
+msgstr ""
+
+#: app/filters.php:85
+msgid "e.g. John"
+msgstr ""
+
+#: app/filters.php:90
+msgid "e.g. Doe"
+msgstr ""
+
+#: app/filters.php:95
+#: app/filters.php:117
+msgid "e.g. 123 456 789"
+msgstr ""
+
+#: app/filters.php:105
+#: app/filters.php:652
+#: app/filters.php:725
+#: app/Shop/OrderAdminColumns.php:75
+msgid "NIP"
+msgstr ""
+
+#: app/filters.php:106
+msgid "e.g. 1234567890"
+msgstr ""
+
+#: app/filters.php:116
+msgid "Phone number"
+msgstr ""
+
+#: app/filters.php:124
+msgid "e.g. 00-001"
+msgstr ""
+
+#: app/filters.php:128
+msgid "Postal code"
+msgstr ""
+
+#: app/filters.php:138
+msgid "e.g. Warsaw"
+msgstr ""
+
+#: app/filters.php:142
+msgid "City"
+msgstr ""
+
+#: app/filters.php:150
+#: app/filters.php:650
+#: app/filters.php:723
+msgid "Place name"
+msgstr ""
+
+#: app/filters.php:151
+msgid "e.g. Hotel Marriott"
+msgstr ""
+
+#: app/filters.php:156
+msgid "Street and number"
+msgstr ""
+
+#: app/filters.php:160
+msgid "e.g. ul. Marszałkowska 1/5"
+msgstr ""
+
+#: app/filters.php:169
+#: app/filters.php:170
+msgid "Delivery place"
+msgstr ""
+
+#: app/filters.php:203
+msgid "Notes about your order, e.g. specials notes for delivery"
+msgstr ""
+
+#: app/filters.php:266
+#: app/filters.php:581
+#: app/filters.php:766
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:45
+msgid "Delivery location"
+msgstr ""
+
+#: app/filters.php:268
+#: app/filters.php:587
+#: app/filters.php:770
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:55
+msgid "Delivery type"
+msgstr ""
+
+#: app/filters.php:476
+msgid "One of the additions was not found."
+msgstr ""
+
+#: app/filters.php:540
+msgid "Unable to add one of the additions to cart."
+msgstr ""
+
+#: app/filters.php:593
+#: app/filters.php:774
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:65
+msgid "Deceased's full name"
+msgstr ""
+
+#: app/filters.php:599
+#: app/filters.php:778
+msgid "Card message content"
+msgstr ""
+
+#: app/filters.php:616
+#: app/filters.php:782
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:84
+msgid "Add-ons"
+msgstr ""
+
+#: app/filters.php:646
+#: app/filters.php:719
+msgid "Delivery place type"
+msgstr ""
+
+#: app/filters.php:651
+#: app/filters.php:724
+msgid "Recipient phone"
+msgstr ""
+
+#: app/filters.php:704
+msgid "Please provide the place name."
+msgstr ""
+
+#: app/SEO/CityHub.php:91
+msgid "Voivodeships"
+msgstr ""
+
+#: app/Shop/DeliveryWindowRules.php:140
+msgid "The selected delivery time is no longer available. Please refresh the page and choose a new time."
+msgstr ""
+
+#. translators: %d: hours of notice required before delivery.
+#: app/Shop/LeadTimeRules.php:72
+#, php-format
+msgid "Orders from this category are fulfilled with at least %d hours notice."
+msgstr ""
+
+#: app/Shop/LeadTimeRules.php:93
+msgid "Select a delivery date and time for this product."
+msgstr ""
+
+#: app/Shop/LeadTimeRules.php:104
+msgid "Could not read the selected delivery time."
+msgstr ""
+
+#. translators: %d: hours of notice required before delivery.
+#: app/Shop/LeadTimeRules.php:117
+#, php-format
+msgid "Note: orders from this category are fulfilled with at least %d hours notice."
+msgstr ""
+
+#. translators: %s: order number.
+#: app/Shop/OrderNotifications.php:61
+#, php-format
+msgid "New order to fulfil #%s"
+msgstr ""
+
+#: app/Shop/PostalDelivery.php:67
+msgid "Please select a delivery date."
+msgstr ""
+
+#: app/Shop/PostalDelivery.php:75
+msgid "Could not read the selected delivery date."
+msgstr ""
+
+#: app/Shop/PostalDelivery.php:81
+msgid "We do not deliver on Sundays."
+msgstr ""
+
+#: app/Shop/PostalDelivery.php:92
+msgid "The earliest possible delivery date is tomorrow."
+msgstr ""
+
+#: app/Shop/PostalDelivery.php:93
+msgid "For orders placed after 15:00 Polish time, the earliest date is the day after tomorrow."
+msgstr ""
+
+#: app/Shop/RestApiGuard.php:33
+msgid "Access to the user list is forbidden."
+msgstr ""
+
+#. translators: %d: minimum number of stems.
+#: app/Shop/WholesaleDiscount.php:110
+#, php-format
+msgid "The minimum order quantity for this product is %d pcs."
+msgstr ""
+
+#: app/Support/Context.php:162
+msgid "Opening hours"
+msgstr ""
+
+#. translators: %s is an hour range, e.g. 9:00 - 18:00
+#: app/Support/DeliveryTimer.php:160
+#, php-format
+msgid "Mon-Fri: %s"
+msgstr ""
+
+#. translators: %s is an hour range, e.g. 10:00 - 16:00
+#: app/Support/DeliveryTimer.php:165
+#, php-format
+msgid "Sat-Sun: %s"
+msgstr ""
+
+#: app/Support/DeliveryTimer.php:293
+msgid "Today"
+msgstr ""
+
+#: app/Support/DeliveryTimer.php:297
+msgid "Tomorrow"
+msgstr ""
+
+#: app/View/Composers/CartCheckout.php:28
+#: resources/views/sections/footer.blade.php:3
+#: resources/views/woocommerce/cart/cart.blade.php:37
+msgid "Buy and pay"
+msgstr ""
+
+#. translators: %1$s is replaced with the number of comments and %2$s with the post title
+#: app/View/Composers/Comments.php:37
+#, php-format
+msgctxt "comments title"
+msgid "%1$s response to &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s responses to &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/View/Composers/Comments.php:45
+msgctxt "comments title"
+msgid "One"
+msgstr ""
+
+#: app/View/Composers/Comments.php:98
+msgid "&larr; Older comments"
+msgstr ""
+
+#: app/View/Composers/Comments.php:112
 msgid "Newer comments &rarr;"
 msgstr ""
 
-#: app/filters.php:226 app/filters.php:822 app/filters.php:896
-msgid "NIP"
+#: app/View/Composers/Comments.php:159
+msgid "Leave a comment"
+msgstr ""
+
+#. translators: %s is replaced with the name of the comment author being replied to
+#: app/View/Composers/Comments.php:161
+#: resources/views/partials/comment.blade.php:38
+#, php-format
+msgid "Reply to %s"
+msgstr ""
+
+#: app/View/Composers/Comments.php:164
+msgid "Cancel reply"
+msgstr ""
+
+#: app/View/Composers/Comments.php:165
+msgid "Publish comment"
+msgstr ""
+
+#: app/View/Composers/Comments.php:171
+msgid "Your e-mail address will not be published. The fields marked with an asterisk are required."
+msgstr ""
+
+#: app/View/Composers/Comments.php:183
+msgid "Name"
+msgstr ""
+
+#: app/View/Composers/Comments.php:191
+msgid "E-mail"
+msgstr ""
+
+#: app/View/Composers/Comments.php:242
+msgid "Comment"
+msgstr ""
+
+#: app/View/Composers/Comments.php:245
+msgid "Share your thoughts about this article"
+msgstr ""
+
+#: app/View/Composers/Comments.php:281
+msgid "Save my name and e-mail in this browser for my next comment."
+msgstr ""
+
+#. translators: %s is replaced with the display name of the logged-in user
+#: app/View/Composers/Comments.php:304
+#, php-format
+msgid "Commenting as %s."
+msgstr ""
+
+#: app/View/Composers/Comments.php:316
+msgid "Log out"
+msgstr ""
+
+#: app/View/Composers/Comments.php:329
+msgid "You have to be logged in to post a comment."
+msgstr ""
+
+#: app/View/Composers/Post.php:34
+msgid "Latest Posts"
+msgstr ""
+
+#. translators: %s is replaced with the search query
+#: app/View/Composers/Post.php:44
+#: resources/views/search.blade.php:49
+#, php-format
+msgid "Search Results for %s"
 msgstr ""
 
 #: app/View/Composers/Post.php:50
 msgid "Not Found"
 msgstr ""
 
-#: app/filters.php:325
-msgid "Notes about your order, e.g. specials notes for delivery"
-msgstr ""
-
-#: app/filters.php:651
-msgid "One of the additions was not found."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:51
-msgid "Order Successful!"
-msgstr ""
-
-#: app/Checkout/CartCheckout.php:369 app/Checkout/CartCheckout.php:387
-msgid "Order Total"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:212
-msgid "Order total"
-msgstr ""
-
 #: app/View/Composers/Post.php:63
 msgid "Pages:"
 msgstr ""
 
-#: app/filters.php:237
-msgid "Phone number"
-msgstr ""
-
-#: app/filters.php:271 app/filters.php:820 app/filters.php:894
-msgid "Place name"
-msgstr ""
-
-#: app/filters.php:875
-msgid "Please provide the place name."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:24
-msgid ""
-"Please try to pay for the order again or choose a different payment method."
-msgstr ""
-
-#: app/filters.php:249
-msgid "Postal code"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:109
-msgid "Postal code must use the format 00-000."
-msgstr ""
-
-#: app/Catalog/Settings.php:13
-msgid "Private address"
-msgstr ""
-
-#: resources/views/woocommerce/single-product/description.blade.php:8
-msgid "Product description"
-msgstr ""
-
-#: app/Catalog/ProductData.php:28
-msgid "Promotion"
-msgstr ""
-
-#: app/filters.php:821 app/filters.php:895
-msgid "Recipient phone"
-msgstr ""
-
-#: app/Catalog/ProductData.php:32
-msgid "Bestseller"
-msgstr ""
-
-#. Author of the theme
-msgid "Roots"
-msgstr ""
-
-#. Description of the theme
-msgid "Sage is a WordPress starter theme."
-msgstr ""
-
-#: app/Catalog/Settings.php:19
-msgid "School"
-msgstr ""
-
-#. %s is replaced with the search query
-#: app/View/Composers/Post.php:44
-#, php-format
-msgid "Search Results for %s"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:104
-msgid "Select a delivery location."
-msgstr ""
-
-#: app/filters.php:1026 app/filters.php:1029
-msgid "Show more"
-msgstr ""
-
-#: resources/views/woocommerce/content-single-product.blade.php:119
-msgid "Similar products"
-msgstr ""
-
-#: resources/views/layouts/app.blade.php:26
-msgid "Skip to content"
-msgstr ""
-
-#: resources/views/404.blade.php:9
-msgid "Sorry, but the page you are trying to view does not exist."
-msgstr ""
-
-#: resources/views/index.blade.php:7 resources/views/search.blade.php:7
-msgid "Sorry, no results were found."
-msgstr ""
-
-#: app/Catalog/SingleProductView.php:110
-msgid "Standard"
-msgstr ""
-
-#: app/filters.php:277
-msgid "Street and number"
-msgstr ""
-
-#: resources/views/forms/search.blade.php:13
-msgctxt "submit button"
-msgid "Search"
-msgstr ""
-
-#: app/Checkout/CartCheckout.php:366 app/Checkout/CartCheckout.php:375
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:200
-msgid "Subtotal"
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:130
-msgid "Tax ID must contain 10 digits."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:55
-msgid "Thank you for choosing us for your flower delivery."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:96
-msgid "Thank You for Your Order"
-msgstr ""
-
-#: app/Support/DeliveryTimer.php:291
-msgid "Today"
-msgstr ""
-
-#: app/Support/DeliveryTimer.php:295
-msgid "Tomorrow"
-msgstr ""
-
-#: app/filters.php:715
-msgid "Unable to add one of the additions to cart."
-msgstr ""
-
-#: resources/js/modules/cart-checkout/CartCheckoutStore.ts:604
-msgid "Unable to place the order."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:98
-msgid "Your order confirmation has been saved."
-msgstr ""
-
-#: resources/views/woocommerce/checkout/thankyou.blade.php:56
-msgid ""
-"Your order has been successfully placed, and a confirmation has been sent to "
-"your email address."
+#. Template Name of the theme
+msgid "Custom Template"
 msgstr ""
 
 #: resources/views/404.blade.php:18
@@ -692,16 +565,153 @@ msgstr ""
 msgid "The page you were looking for has been moved or never existed. Search for a bouquet below, or start again from the home page."
 msgstr ""
 
+#: resources/views/404.blade.php:31
+#: resources/views/forms/search.blade.php:3
+#: resources/views/partials/header-search.blade.php:25
+msgctxt "label"
+msgid "Search for:"
+msgstr ""
+
+#: resources/views/404.blade.php:38
+#: resources/views/forms/search.blade.php:7
+#: resources/views/partials/header-search.blade.php:32
+msgctxt "placeholder"
+msgid "Search &hellip;"
+msgstr ""
+
+#: resources/views/404.blade.php:46
+#: resources/views/forms/search.blade.php:13
+#: resources/views/partials/header-search.blade.php:45
+msgctxt "submit button"
+msgid "Search"
+msgstr ""
+
+#: resources/views/404.blade.php:54
+#: resources/views/woocommerce/checkout/thankyou.blade.php:86
+#: resources/views/woocommerce/checkout/thankyou.blade.php:110
+msgid "Back to Home Page"
+msgstr ""
+
 #: resources/views/404.blade.php:65
 msgid "Browse bouquets"
 msgstr ""
 
-#: resources/views/partials/blog-card-featured.blade.php:78 resources/views/partials/blog-card.blade.php:68
+#: resources/views/emails/partner-order.blade.php:14
+msgid "New order to fulfil"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:16
+msgid "Order number:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:17
+msgid "Recipient:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:18
+msgid "Recipient phone:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:19
+msgid "Delivery address:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:23
+msgid "Delivery date and time:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:32
+msgid "Order notes:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:35
+msgid "Products:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:51
+msgid "Amount:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:57
+msgid "Card message:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:61
+msgid "Notes:"
+msgstr ""
+
+#: resources/views/emails/partner-order.blade.php:67
+msgid "Total amount:"
+msgstr ""
+
+#: resources/views/frontenda-blocks/section/cities-1.blade.php:80
+msgid "More cities"
+msgstr ""
+
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:31
+msgid "Bouquet"
+msgstr ""
+
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:47
+#: resources/views/frontenda-blocks/section/products-1.blade.php:66
+msgid "Previous"
+msgstr ""
+
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:54
+msgid "Gallery navigation"
+msgstr ""
+
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:60
+#: resources/views/frontenda-blocks/section/products-1.blade.php:76
+msgid "Next"
+msgstr ""
+
+#: resources/views/index.blade.php:40
+#: resources/views/search.blade.php:57
+msgid "Sorry, no results were found."
+msgstr ""
+
+#: resources/views/layouts/app.blade.php:30
+msgid "Skip to content"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:22
+msgid "Previous article"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:28
+msgid "Next article"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:41
+msgid "Articles"
+msgstr ""
+
+#: resources/views/partials/article-related.blade.php:40
+msgid "You may also like"
+msgstr ""
+
+#: resources/views/partials/article-terms.blade.php:21
+msgid "Tags"
+msgstr ""
+
+#: resources/views/partials/article-terms.blade.php:21
+msgid "Categories"
+msgstr ""
+
+#: resources/views/partials/blog-card-featured.blade.php:78
+#: resources/views/partials/blog-card.blade.php:70
 msgid "Read more"
 msgstr ""
 
-#: resources/views/partials/blog-pagination.blade.php:80
-msgid "More articles"
+#: resources/views/partials/blog-header.blade.php:11
+msgid "Blog"
+msgstr ""
+
+#. translators: %d is the page number.
+#: resources/views/partials/blog-pagination.blade.php:47
+#, php-format
+msgid "Page %d"
 msgstr ""
 
 #: resources/views/partials/blog-pagination.blade.php:52
@@ -724,131 +734,570 @@ msgstr ""
 msgid "Blog pages"
 msgstr ""
 
-#. translators: %d is the page number.
-#: resources/views/partials/blog-pagination.blade.php:47
-msgid "Page %d"
+#: resources/views/partials/blog-pagination.blade.php:80
+msgid "More articles"
 msgstr ""
 
-#: resources/views/partials/blog-header.blade.php:11
-msgid "Blog"
+#: resources/views/partials/cart-coupon.blade.php:8
+#: resources/views/partials/cart-coupon.blade.php:33
+msgid "Coupon code"
 msgstr ""
 
-#: resources/views/partials/article-related.blade.php:39
-msgid "You may also like"
+#: resources/views/partials/cart-coupon.blade.php:22
+msgid "Remove coupon"
 msgstr ""
 
-#: resources/views/partials/content-single.blade.php:77
-msgid "Page"
+#: resources/views/partials/cart-coupon.blade.php:40
+msgid "Enter your code"
 msgstr ""
 
-#: resources/views/partials/article-terms.blade.php:21
-msgid "Categories"
-msgstr ""
-
-#: resources/views/partials/article-terms.blade.php:21
-msgid "Tags"
-msgstr ""
-
-#: resources/views/partials/article-nav.blade.php:22
-msgid "Previous article"
-msgstr ""
-
-#: resources/views/partials/article-nav.blade.php:28
-msgid "Next article"
-msgstr ""
-
-#: resources/views/partials/article-nav.blade.php:41
-msgid "Articles"
-msgstr ""
-
-#: resources/views/partials/comments.blade.php:32
-msgid "Comments"
-msgstr ""
-
-#: resources/views/partials/comment.blade.php:42
-msgid "Your comment is awaiting moderation."
+#: resources/views/partials/cart-coupon.blade.php:53
+msgid "Apply"
 msgstr ""
 
 #: resources/views/partials/comment.blade.php:35
 msgid "Reply"
 msgstr ""
 
-#: app/View/Composers/Comments.php:159
-msgid "Leave a comment"
+#: resources/views/partials/comment.blade.php:42
+msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#. %s is replaced with the name of the comment author being replied to
-#: resources/views/partials/comment.blade.php:38 app/View/Composers/Comments.php:161
+#: resources/views/partials/comments.blade.php:34
+msgid "Comments"
+msgstr ""
+
+#: resources/views/partials/comments.blade.php:51
+msgid "Comments are closed."
+msgstr ""
+
+#: resources/views/partials/content-single.blade.php:82
+msgid "Page"
+msgstr ""
+
+#: resources/views/partials/delivery-timer.blade.php:17
+msgid "Flower delivery even today"
+msgstr ""
+
+#: resources/views/partials/delivery-timer.blade.php:20
+msgid "Order within:"
+msgstr ""
+
+#: resources/views/partials/entry-meta.blade.php:4
+msgid "By"
+msgstr ""
+
+#: resources/views/partials/header-search.blade.php:52
+msgid "Close"
+msgstr ""
+
+#: resources/views/partials/products-load-more.blade.php:7
+msgid "Show more"
+msgstr ""
+
+#: resources/views/partials/products-load-more.blade.php:17
+msgid "Loading..."
+msgstr ""
+
+#: resources/views/sections/header.blade.php:68
+msgid "Search"
+msgstr ""
+
+#: resources/views/sections/header.blade.php:80
+#: resources/views/woocommerce/cart/cart.blade.php:62
+#: resources/views/woocommerce/cart/cart.blade.php:117
+msgid "Cart"
+msgstr ""
+
+#: resources/views/seo/city-hub.blade.php:11
+msgid "Choose a voivodeship"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:72
+msgid "Info"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:82
+msgid "Payment"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:119
+#: resources/views/woocommerce/cart/cart.blade.php:508
+msgid "Checkout"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:120
+msgid "Your order"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:139
+msgid "Image"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:140
+msgid "Details"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:141
+msgid "Quantity"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:142
+msgid "Price"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:143
+#: resources/views/woocommerce/cart/cart.blade.php:438
+msgid "Total"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:178
+#: resources/views/woocommerce/cart/cart.blade.php:260
+msgid "Remove item"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:271
+msgid "Your cart is empty"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:276
+msgid "Back to shop"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:300
+msgid "Recipient details"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:308
+msgid "Sender details"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:316
+msgid "Delivery notes"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:372
+msgid "Payment method"
+msgstr ""
+
+#: resources/views/woocommerce/cart/cart.blade.php:491
 #, php-format
-msgid "Reply to %s"
+msgid "Total: %s"
 msgstr ""
 
-#: app/View/Composers/Comments.php:164
-msgid "Cancel reply"
+#: resources/views/woocommerce/cart/cart.blade.php:522
+msgid "Continue to payment"
 msgstr ""
 
-#: app/View/Composers/Comments.php:165
-msgid "Publish comment"
+#: resources/views/woocommerce/cart/cart.blade.php:534
+msgid "Processing..."
 msgstr ""
 
-#: app/View/Composers/Comments.php:172
-msgid "Your e-mail address will not be published. The fields marked with an asterisk are required."
+#: resources/views/woocommerce/category-faq.blade.php:14
+msgid "FAQ"
 msgstr ""
 
-#: app/View/Composers/Comments.php:183
-msgid "Name"
+#: resources/views/woocommerce/checkout/thankyou.blade.php:24
+msgid "Please try to pay for the order again or choose a different payment method."
 msgstr ""
 
-#: app/View/Composers/Comments.php:191
-msgid "E-mail"
+#: resources/views/woocommerce/checkout/thankyou.blade.php:49
+msgid "Order Confirmation"
 msgstr ""
 
-#: app/View/Composers/Comments.php:242
-msgid "Comment"
+#: resources/views/woocommerce/checkout/thankyou.blade.php:58
+msgid "Order Successful!"
 msgstr ""
 
-#: app/View/Composers/Comments.php:245
-msgid "Share your thoughts about this article"
+#: resources/views/woocommerce/checkout/thankyou.blade.php:62
+msgid "Thank you for choosing us for your flower delivery."
 msgstr ""
 
-#: app/View/Composers/Comments.php:282
-msgid "Save my name and e-mail in this browser for my next comment."
+#: resources/views/woocommerce/checkout/thankyou.blade.php:63
+msgid "Your order has been successfully placed, and a confirmation has been sent to your email address."
 msgstr ""
 
-#. %s is replaced with the display name of the logged-in user
-#: app/View/Composers/Comments.php:304
+#: resources/views/woocommerce/checkout/thankyou.blade.php:69
+msgid "Expected delivery"
+msgstr ""
+
+#: resources/views/woocommerce/checkout/thankyou.blade.php:102
+msgid "Thank You for Your Order"
+msgstr ""
+
+#: resources/views/woocommerce/checkout/thankyou.blade.php:103
+msgid "Your order confirmation has been saved."
+msgstr ""
+
+#: resources/views/woocommerce/content-single-product.blade.php:52
+msgid "Choose a delivery date"
+msgstr ""
+
+#: resources/views/woocommerce/content-single-product.blade.php:53
+msgid "Choose a delivery time"
+msgstr ""
+
+#: resources/views/woocommerce/content-single-product.blade.php:127
+msgid "Similar products"
+msgstr ""
+
+#: resources/views/woocommerce/local-linking/back.blade.php:2
+#: resources/views/woocommerce/local-linking/back.blade.php:4
+msgid "Back to the voivodeship"
+msgstr ""
+
+#: resources/views/woocommerce/local-linking/back.blade.php:9
 #, php-format
-msgid "Commenting as %s."
+msgid "← Back to %s voivodeship"
 msgstr ""
 
-#: app/View/Composers/Comments.php:316
-msgid "Log out"
+#: resources/views/woocommerce/local-linking/near.blade.php:3
+msgid "Nearby cities"
 msgstr ""
 
-#: app/View/Composers/Comments.php:330
-msgid "You have to be logged in to post a comment."
+#: resources/views/woocommerce/local-linking/popular.blade.php:5
+#, php-format
+msgid "Popular in %s"
 msgstr ""
 
-#: resources/views/partials/cart-coupon.blade.php:57
-msgid "Apply"
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:2
+msgid "Decrease quantity"
 msgstr ""
 
-#: app/Checkout/CartCheckout.php:106
-msgid "Enter a coupon code."
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:3
+msgid "Increase quantity"
 msgstr ""
 
-#: resources/views/partials/cart-coupon.blade.php:44
-msgid "Enter your code"
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:4
+msgid "Adding..."
 msgstr ""
 
-#: resources/views/partials/cart-coupon.blade.php:26
-msgid "Remove coupon"
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:5
+msgid "Add to cart"
 msgstr ""
 
-#: app/Checkout/CartCheckout.php:107
-msgid "We could not apply this coupon."
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:11
+msgid "Total price:"
 msgstr ""
 
-#: app/Checkout/CartCheckout.php:111
-msgid "We could not remove this coupon."
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:68
+msgid "Free shipping"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:75
+msgid "Same day"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/add-to-cart-bar/desktop.blade.php:82
+msgid "Online payment"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/cross-sell-products.blade.php:4
+msgid "Additions to flowers"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/description.blade.php:8
+msgid "Product description"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/gallery.blade.php:5
+msgid "Close gallery"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/gallery.blade.php:6
+#: resources/views/woocommerce/single-product/gallery.blade.php:34
+msgid "Previous image"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/gallery.blade.php:7
+#: resources/views/woocommerce/single-product/gallery.blade.php:45
+msgid "Next image"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:75
+msgid "Ribbon message (20 PLN)"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/order-options.blade.php:46
+#: resources/views/woocommerce/single-product/order-options.blade.php:56
+msgid "Custom date"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/order-options.blade.php:107
+msgid "Card message"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/order-options.blade.php:113
+msgid "Leave empty if you don't need a card"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/reviews.blade.php:2
+msgid "Reviews"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/reviews.blade.php:16
+msgid "More Reviews"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:20
+msgid "Important:"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:27
+msgid "Bulk discount"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:33
+#, php-format
+msgid "from %1$d pcs. — %2$d%% off"
+msgstr ""
+
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:43
+#, php-format
+msgid "Minimum order quantity: %d pcs."
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Red (50)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Red (400)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Red (500)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Yellow (50)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Yellow (400)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (50)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (400)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (500)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Indigo (50)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Indigo (400)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (200)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (300)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (600)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Black"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "White"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Primary"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Primary (Dark)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Secondary"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Accent"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Purple"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Purple (Dark)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Purple (Easy)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (Default)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (Dark)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (Easy)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Green (Easy Dark)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Background"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (6)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (4)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (3)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (2)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Gray (1)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Color name"
+msgid "Dark (Text)"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font family name"
+msgid "sans"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font family name"
+msgid "mono"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font family name"
+msgid "main"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font family name"
+msgid "deco"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font family name"
+msgid "heading"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font size name"
+msgid "xs"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font size name"
+msgid "sm"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font size name"
+msgid "base"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font size name"
+msgid "lg"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Font size name"
+msgid "5xl"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "sm"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "lg"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "xl"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "2xl"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "3xl"
+msgstr ""
+
+#: public/build/assets/theme.json
+msgctxt "Border radius size name"
+msgid "4xl"
 msgstr ""
