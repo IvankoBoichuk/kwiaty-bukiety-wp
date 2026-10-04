@@ -33,6 +33,10 @@
       'count' => 0,
     ],
   ];
+
+  // Same as the header: no self-referencing logo link on the front page.
+  $isHome = is_front_page();
+  $logoTag = $isHome ? 'span' : 'a';
 @endphp
 <footer class="bx-container grid gap-12 bg-primary-dark py-5 pt-8 text-white">
   <div
@@ -40,7 +44,7 @@
   >
     <div class="order-1 flex items-center gap-8.75 md:flex-col md:items-start md:gap-3.5 lg:w-47">
       @if (!empty($logos->light))
-        <a href="{{ home_url('/') }}" aria-label="{{ $siteName }}">
+        <{{ $logoTag }} @unless ($isHome) href="{{ home_url('/') }}" @endunless aria-label="{{ $siteName }}">
           <picture>
             @if (!empty($logos->lightLg))
               <source
@@ -58,15 +62,15 @@
               class="h-auto w-22.5 2xl:w-auto"
             />
           </picture>
-        </a>
+        </{{ $logoTag }}>
       @else
-        <a
-          href="{{ home_url('/') }}"
+        <{{ $logoTag }}
+          @unless ($isHome) href="{{ home_url('/') }}" @endunless
           class="text-[22px] leading-none font-semibold text-white"
           aria-label="{{ $siteName }}"
         >
           {{ $siteName }}
-        </a>
+        </{{ $logoTag }}>
       @endif
 
       <p class="text-gray-4 text-[15px] leading-4.5 text-balance">Kwiaty Bukiety - dostawa na terenie calej Polski</p>

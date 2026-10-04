@@ -1,6 +1,11 @@
 @php
   $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
   $isMobileNavigation = wp_is_mobile();
+
+  // On the front page the logo would link to the page it sits on, so it is
+  // rendered as plain markup there instead of a self-referencing link.
+  $isHome = is_front_page();
+  $logoTag = $isHome ? 'span' : 'a';
 @endphp
 <header id="header" class="bg-background sticky top-0 z-60 border-b border-[#426E59]">
   {{-- The dark bar: delivery promise and countdown on the left, the secondary
@@ -19,7 +24,10 @@
   <div class="bg-background bx-container flex items-center justify-between gap-4 py-3 lg:h-23 lg:gap-12 lg:py-0">
     <div class="flex min-w-0 items-center gap-4 lg:gap-12">
       @if (!empty($logos?->dark))
-        <a href="{{ home_url('/') }}" class="shrink-0 text-lg font-semibold tracking-[0.16em] text-[#244734] uppercase">
+        <{{ $logoTag }}
+          @unless ($isHome) href="{{ home_url('/') }}" @endunless
+          class="shrink-0 text-lg font-semibold tracking-[0.16em] text-[#244734] uppercase"
+        >
           <picture>
             @if (!empty($logos->darkLg))
               <source
@@ -37,7 +45,7 @@
               class="h-auto w-16.5 2xl:w-auto"
             />
           </picture>
-        </a>
+        </{{ $logoTag }}>
       @endif
 
       @if ($menu)
