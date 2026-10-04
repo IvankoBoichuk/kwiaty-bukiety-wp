@@ -695,3 +695,48 @@ msgstr ""
 #: resources/views/404.blade.php:65
 msgid "Browse bouquets"
 msgstr ""
+
+#: resources/views/partials/blog-card-featured.blade.php:78 resources/views/partials/blog-card.blade.php:68
+msgid "Read more"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:80
+msgid "More articles"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:52
+msgid "First page"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:56
+msgid "Previous page"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:62
+msgid "Next page"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:65
+msgid "Last page"
+msgstr ""
+
+#: resources/views/partials/blog-pagination.blade.php:70
+msgid "Blog pages"
+msgstr ""
+
+#. translators: %d is the page number.
+#: resources/views/partials/blog-pagination.blade.php:47
+msgid "Page %d"
+msgstr ""
+
+#: resources/views/partials/blog-header.blade.php:11
+msgid "Blog"
+msgstr ""
+
+#: resources/views/partials/article-related.blade.php:39
+msgid "You may also like"
+msgstr ""
+
+#: resources/views/partials/content-single.blade.php:77
+msgid "Page"
+msgstr ""

@@ -89,6 +89,26 @@ final class Markup
         return $openingTag . $spans . $closingTag;
     }
 
+    /**
+     * The listing excerpt of the post in the loop.
+     *
+     * get_the_excerpt() ends an auto-generated excerpt with the "... Continued"
+     * link that app/filters.php installs on excerpt_more. That belongs under a
+     * full post listing; a blog card already carries its own Read more control
+     * and the design ends the copy on an ellipsis, so the filter is swapped out
+     * for the length of the call.
+     */
+    public static function excerpt(): string
+    {
+        $ellipsis = static fn(): string => "\u{2026}";
+
+        add_filter('excerpt_more', $ellipsis, 99);
+        $excerpt = (string) get_the_excerpt();
+        remove_filter('excerpt_more', $ellipsis, 99);
+
+        return trim(wp_strip_all_tags($excerpt));
+    }
+
     public static function buttonClasses(
         string $variant = 'purple',
         string $size = 'md',
