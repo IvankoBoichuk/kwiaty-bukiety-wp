@@ -20,6 +20,7 @@ class CartCheckout
                 'checkoutUrl' => $this->checkoutUrl(),
                 'items' => $this->items(),
                 'totals' => $this->totals(),
+                'coupons' => $this->coupons(),
                 'paymentMethods' => $this->paymentMethods(),
                 'selectedPaymentMethod' => $this->selectedPaymentMethod(),
                 'routes' => [
@@ -102,6 +103,15 @@ class CartCheckout
             'discount' => __('Discount', 'sage-front'),
             'orderTotal' => __('Order total', 'sage-front'),
             'orderFailed' => __('Unable to place the order.', 'sage-front'),
+            'couponRequired' => __('Enter a coupon code.', 'sage-front'),
+            'couponApplyFailed' => __(
+                'We could not apply this coupon.',
+                'sage-front',
+            ),
+            'couponRemoveFailed' => __(
+                'We could not remove this coupon.',
+                'sage-front',
+            ),
         ];
     }
 
@@ -110,6 +120,7 @@ class CartCheckout
         return [
             'items' => $this->items(),
             'totals' => $this->totals(),
+            'coupons' => $this->coupons(),
         ];
     }
 
@@ -416,6 +427,34 @@ class CartCheckout
         $normalized = trim($normalized);
 
         return $normalized !== '' ? ucfirst($normalized) : '';
+    }
+
+    /**
+     * The coupons already on the cart, shaped like the Store API sends them so
+     * the first paint and every later apply/remove render from one mapper.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function coupons(): array
+    {
+        $cart = $this->cart();
+
+        if (!($cart instanceof WC_Cart)) {
+            return [];
+        }
+
+        $coupons = [];
+
+        foreach ($cart->get_applied_coupons() as $code) {
+            $coupons[] = [
+                'code' => (string) $code,
+                'discount' => $this->money(
+                    (float) $cart->get_coupon_discount_amount((string) $code),
+                ),
+            ];
+        }
+
+        return $coupons;
     }
 
     protected function totals(): array

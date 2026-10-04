@@ -326,12 +326,7 @@
           x-transition:leave-end="-translate-y-3 scale-[0.99] opacity-0"
         >
           @if ($canUseCoupons)
-            <div class="card mb-4 lg:hidden">
-              <h2 class="text-green-default h3-mobile md:h4-desktop mb-5">{{ __('Coupon code', 'sage-front') }}</h2>
-              @php
-                woocommerce_checkout_coupon_form();
-              @endphp
-            </div>
+            @include('partials.cart-coupon')
           @endif
 
           <div class="mb-5 lg:hidden">

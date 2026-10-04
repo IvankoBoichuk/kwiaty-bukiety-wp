@@ -207,6 +207,10 @@ function mapStoreApiCart(cart: CartCheckoutStoreApiCartResponse) {
             imageAlt: item.images?.[0]?.alt,
             summary: variationSummary(item),
         })),
+        coupons: (cart.coupons || []).map((coupon) => ({
+            code: coupon.code,
+            discount: formatStoreApiMoney(coupon.totals?.total_discount || '0', coupon.totals || cart.totals),
+        })),
         totals: {
             subtotal: {
                 label: t('subtotal', 'Subtotal'),
@@ -412,6 +416,10 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
     validationErrors: Record<string, string> = {}
     items
     totals
+    coupons
+    couponCode = ''
+    couponError = ''
+    isCouponLoading = false
     paymentMethods
     selectedPaymentMethod
     recipientFullName
@@ -427,6 +435,7 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
 
         this.items = config.items
         this.totals = config.totals
+        this.coupons = config.coupons || []
         this.paymentMethods = config.paymentMethods
         this.selectedPaymentMethod = config.selectedPaymentMethod
         this.recipientFullName = config.recipientFullName || ''
@@ -580,6 +589,68 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
         }))
     }
 
+    async applyCoupon(): Promise<void> {
+        const code = this.couponCode.trim()
+
+        if (code === '') {
+            this.couponError = t('couponRequired', 'Enter a coupon code.')
+            return
+        }
+
+        const applied = await this.mutateCoupon(
+            () => this.wooStoreApi.cartCoupons.apply({ code }),
+            t('couponApplyFailed', 'We could not apply this coupon.'),
+        )
+
+        if (applied) {
+            this.couponCode = ''
+        }
+    }
+
+    async removeCoupon(code: string): Promise<void> {
+        await this.mutateCoupon(
+            () => this.wooStoreApi.cartCoupons.remove({ code }),
+            t('couponRemoveFailed', 'We could not remove this coupon.'),
+        )
+    }
+
+    /**
+     * Coupon mistypes are routine, so unlike the cart mutations these keep
+     * their own loading flag and report the rejection next to the field --
+     * Woo's own message ("Coupon does not exist!", "already applied") is more
+     * use than a window.alert with the fallback copy.
+     */
+    async mutateCoupon(
+        runRequest: () => Promise<CartCheckoutStoreApiCartResponse>,
+        fallbackMessage: string,
+    ): Promise<boolean> {
+        if (this.isCouponLoading) {
+            return false
+        }
+
+        this.isCouponLoading = true
+        this.couponError = ''
+
+        try {
+            this.syncCart(await runRequest())
+
+            return true
+        } catch (error) {
+            const nextCart = cartFromError(error)
+
+            if (nextCart) {
+                this.syncCart(nextCart)
+            }
+
+            const message = error instanceof Error ? stripHtml(error.message) : ''
+            this.couponError = message || fallbackMessage
+
+            return false
+        } finally {
+            this.isCouponLoading = false
+        }
+    }
+
     async submitOrder(event: SubmitEvent): Promise<void> {
         event.preventDefault()
 
@@ -629,10 +700,7 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
         this.isLoading = true
 
         try {
-            const nextCart = mapStoreApiCart(await runRequest())
-
-            this.items = nextCart.items
-            this.totals = nextCart.totals
+            this.syncCart(await runRequest())
 
             if (this.isCartEmpty) {
                 this.currentStep = 1
@@ -643,15 +711,21 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
             const nextCart = cartFromError(error)
 
             if (nextCart) {
-                const syncedCart = mapStoreApiCart(nextCart)
-                this.items = syncedCart.items
-                this.totals = syncedCart.totals
+                this.syncCart(nextCart)
             }
 
             window.alert(error instanceof Error ? error.message : 'Unable to update the cart.')
         } finally {
             this.isLoading = false
         }
+    }
+
+    syncCart(cart: CartCheckoutStoreApiCartResponse): void {
+        const nextCart = mapStoreApiCart(cart)
+
+        this.items = nextCart.items
+        this.totals = nextCart.totals
+        this.coupons = nextCart.coupons
     }
 
     resolveInitialStep(): number {

@@ -24,6 +24,11 @@ export interface CartCheckoutItem {
     summary?: string
 }
 
+export interface CartCheckoutCoupon {
+    code: string
+    discount: CartCheckoutMoney
+}
+
 export interface CartCheckoutPaymentMethod {
     id: string
     title: string
@@ -46,6 +51,7 @@ export interface CartCheckoutConfig {
         discount: CartCheckoutTotalLine
         total: CartCheckoutTotalLine
     }
+    coupons?: CartCheckoutCoupon[]
     paymentMethods: CartCheckoutPaymentMethod[]
     selectedPaymentMethod: string
     routes: CartCheckoutRoutes
@@ -65,6 +71,10 @@ export interface CartCheckoutStoreContract {
     validationErrors: Record<string, string>
     items: CartCheckoutItem[]
     totals: CartCheckoutConfig['totals']
+    coupons: CartCheckoutCoupon[]
+    couponCode: string
+    couponError: string
+    isCouponLoading: boolean
     paymentMethods: CartCheckoutPaymentMethod[]
     selectedPaymentMethod: string
     recipientFullName: string
@@ -81,5 +91,7 @@ export interface CartCheckoutStoreContract {
     syncRecipientName(value: string): void
     updateQuantity(itemKey: string, quantity: number, productId?: number): Promise<void>
     removeItem(itemKey: string, productId?: number): Promise<void>
+    applyCoupon(): Promise<void>
+    removeCoupon(code: string): Promise<void>
     submitOrder(event: SubmitEvent): Promise<void>
 }
