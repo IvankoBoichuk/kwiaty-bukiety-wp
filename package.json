@@ -1,17 +1,23 @@
 {
   "name": "kwiaty-bukiety-wp",
   "private": true,
-  "description": "Root package: git hooks only. The theme has its own package.json in web/app/themes/sage.",
+  "type": "module",
+  "description": "Root package: git hooks and the Lighthouse performance gate. The theme has its own package.json in web/app/themes/sage.",
   "scripts": {
     "prepare": "husky",
     "lint": "vendor/bin/pint --test",
-    "lint:fix": "vendor/bin/pint"
+    "lint:fix": "vendor/bin/pint",
+    "perf": "node node_modules/@playwright/test/cli.js test --config tests/perf/playwright.config.ts",
+    "perf:update": "PERF_UPDATE_BASELINE=1 node node_modules/@playwright/test/cli.js test --config tests/perf/playwright.config.ts",
+    "perf:report": "node node_modules/@playwright/test/cli.js show-report tests/perf/.reports/playwright"
   },
   "lint-staged": {
     "*.php": "vendor/bin/pint"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "husky": "^9.1.7",
+    "lighthouse": "^13.5.0",
     "lint-staged": "^16.2.6"
   }
 }
