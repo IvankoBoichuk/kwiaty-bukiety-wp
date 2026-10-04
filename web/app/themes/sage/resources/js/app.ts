@@ -12,6 +12,7 @@ import setScrollBarWidth from './modules/set-scrollbar-width';
 import { initDeliveryTimers } from './modules/delivery-timer';
 import { initMenu } from './modules/menu';
 import { initCounterAnimation } from './modules/counter-animation';
+import { initCartCount } from './modules/cart-count';
 import collapse from '@alpinejs/collapse';
 import mask from '@alpinejs/mask';
 
@@ -24,5 +25,6 @@ setScrollBarWidth();
 initMenu();
 initCounterAnimation();
 initDeliveryTimers();
+void initCartCount();
 void initIntlTelInputs();
 Alpine.start();

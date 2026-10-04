@@ -9,7 +9,7 @@ import type {
 } from './types'
 import { createTranslator } from '../strings'
 import type { ProductVariation } from '@/types/ProductVariations'
-import { animateCSS } from '../animate'
+import { announceCartCount } from '../cart-count'
 
 export class ProductStore implements ProductPurchaseStore {
     _basePrice: number
@@ -275,10 +275,7 @@ export class ProductStore implements ProductPurchaseStore {
 
         try {
             const result = await addProductToCart(this.getCartPayload())
-            document.querySelectorAll<HTMLElement>('.counter-for-cart').forEach((element) => {
-                element.querySelector('[data-count]')?.setAttribute('data-count', String(result.cartCount || 0));
-                animateCSS(element, 'heartBeat')
-            })
+            announceCartCount(result.cartCount || 0)
         } catch (error) {
             window.alert(error instanceof Error ? error.message : 'Unable to add product to cart.')
         } finally {

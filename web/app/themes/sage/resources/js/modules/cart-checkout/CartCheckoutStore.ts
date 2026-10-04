@@ -7,6 +7,7 @@ import {
     createWooStoreApiToolkit,
     WooStoreApiError,
 } from '../woo-store-api'
+import { setCartCount } from '../cart-count'
 import { formatStoreApiMoney } from '../money'
 import { isIntlTelInputValid, normalizeIntlTelInputValue } from '../intl-tel-input'
 import * as yup from 'yup'
@@ -726,6 +727,10 @@ export class CartCheckoutStore implements CartCheckoutStoreContract {
         this.items = nextCart.items
         this.totals = nextCart.totals
         this.coupons = nextCart.coupons
+
+        // The header and bottom-bar badges are part of the cached page shell,
+        // so nothing else would move them when an item is removed here.
+        setCartCount(cart.items_count ?? nextCart.items.reduce((total, item) => total + item.quantity, 0))
     }
 
     resolveInitialStep(): number {

@@ -1,5 +1,8 @@
 @php
-  $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+  // The header is part of every page and therefore part of the page cache, so
+  // the badge cannot carry a real count: the cached copy would hand the count
+  // it was generated with to every later visitor. It renders empty and
+  // resources/js/modules/cart-count.ts fills it in per request.
   $isMobileNavigation = wp_is_mobile();
 
   // On the front page the logo would link to the page it sits on, so it is
@@ -85,7 +88,7 @@
           <path d="M2.0498 2.05H4.0498L6.7098 14.47C6.80738 14.9249 7.06048 15.3315 7.42552 15.6199C7.79056 15.9082 8.24471 16.0604 8.7098 16.05H18.4898C18.945 16.0493 19.3863 15.8933 19.7408 15.6078C20.0954 15.3224 20.3419 14.9245 20.4398 14.48L22.0898 7.05H5.1198" stroke="#0C3421" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <span
-          data-count="{{ $cartCount }}"
+          data-count="0"
           class="text-background absolute bottom-2 left-2 flex size-5.5 items-center justify-center rounded-full bg-[#EB5757] text-center text-[13px] leading-none font-semibold before:content-[attr(data-count)] data-[count='0']:hidden"
         ></span>
       </a>

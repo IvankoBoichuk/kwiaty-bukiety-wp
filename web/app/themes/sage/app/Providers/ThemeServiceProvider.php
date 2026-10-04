@@ -8,6 +8,7 @@ use App\Admin\DeliveryTimerSettingsPage;
 use App\Admin\NavMenuAccent;
 use App\Admin\OrderNotificationsSettingsPage;
 use App\Admin\ProductAttributeIcons;
+use App\Api\CartCount;
 use App\Api\Categories;
 use App\Api\DeliverySchedule;
 use App\Api\Healthcheck;
@@ -64,6 +65,7 @@ class ThemeServiceProvider extends SageServiceProvider
     {
         parent::boot();
         Timber::init();
+        CartCount::boot();
         Categories::boot();
         DeliverySchedule::boot();
         Healthcheck::boot();

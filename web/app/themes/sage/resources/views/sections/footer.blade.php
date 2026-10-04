@@ -1,5 +1,4 @@
 @php
-  $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
   $orderButtonText = apply_filters('woocommerce_order_button_text', __('Buy and pay', 'sage-front'));
   $bottomNavigation = [
     [
@@ -23,7 +22,9 @@
       'type' => 'link',
       'url' => function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/cart'),
       'target' => '_self',
-      'count' => $cartCount,
+      // Rendered empty on purpose: the bottom bar is cached with the page, so
+      // cart-count.ts fills the badge in per request. See sections/header.
+      'count' => 0,
     ],
     [
       'id' => 'menu',
