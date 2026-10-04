@@ -160,6 +160,20 @@ Config::define('CONCATENATE_SCRIPTS', false);
 Config::define('MAIL_REDIRECT_TO', env('MAIL_REDIRECT_TO') ?: '');
 
 /**
+ * Hostinger API, for the mu-plugin that mirrors Redirection's plain 301s into
+ * server-level redirects. An empty token switches that off; the username is
+ * looked up from the API when it is not set, and the domain defaults to the
+ * host of WP_HOME. HOSTINGER_REDIRECTS_ENABLED overrides the production-only
+ * default, which is what keeps a copy of this database from rewriting the live
+ * server's redirects.
+ */
+Config::define('HOSTINGER_API_TOKEN', env('HOSTINGER_API_TOKEN') ?: '');
+// Same value as the deploy pipeline's `hostinger_account` secret.
+Config::define('HOSTINGER_ACCOUNT', env('HOSTINGER_ACCOUNT') ?: '');
+Config::define('HOSTINGER_SITE_DOMAIN', env('HOSTINGER_SITE_DOMAIN') ?: '');
+Config::define('HOSTINGER_REDIRECTS_ENABLED', env('HOSTINGER_REDIRECTS_ENABLED') ?? '');
+
+/**
  * Debugging Settings
  */
 Config::define('WP_DEBUG_DISPLAY', false);

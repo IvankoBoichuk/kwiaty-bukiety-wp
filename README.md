@@ -160,6 +160,60 @@ DELETE https://developers.hostinger.com/api/hosting/v1/accounts/{username}/websi
 запускається сам** — у кожного тільки `workflow_dispatch`. Push-роботу тримає
 Woodpecker, а GitHub Actions лишився ручним запасним варіантом.
 
+### Редіректи на рівні сервера
+
+`web/app/mu-plugins/hostinger-redirects/` віддзеркалює прості 301 із
+Redirection у редіректи Hostinger — ті самі, що в hPanel. Сенс той самий, що в
+кеші вище: редірект, який віддає сервер, не піднімає PHP, а після міграції
+таких URL бувають сотні.
+
+```
+GET    /api/hosting/v1/accounts/{username}/websites/{domain}/redirects
+POST   /api/hosting/v1/accounts/{username}/websites/{domain}/redirects  {from, to}
+DELETE /api/hosting/v1/accounts/{username}/websites/{domain}/redirects  {from}
+```
+
+Що важливо знати:
+
+- **Redirection лишається єдиним місцем, де редірект створюють.** Плагін сюди
+  нічого не пише, а якщо виключити mu-plugin, усі редіректи далі працюють —
+  просто в PHP. Тому найгірше, що може зробити помилка в діфі, — повернути
+  частину URL у PHP, а не загубити їх.
+- На сервер іде тільки те, що сервер може віддати сам: `enabled`, `action_type`
+  і `match_type` = `url`, без regex, код 301, джерело — звичайний шлях без
+  query і без `*`. Усе інше (302, regex, умови по ролі чи агенту, pass-through,
+  404/410) лишається Redirection, і воно працює, бо PHP запускається на все, що
+  сервер не віддав сам. Tools → Hostinger Redirects показує списком, що саме
+  лишилося в PHP і чому.
+- **Видаляється тільки своє.** Модуль веде журнал того, що створив
+  (`kb_hostinger_redirects_managed`), і редірект, зроблений руками в hPanel,
+  не чіпає — якщо він конфліктує з рядком Redirection, це видно в звіті як
+  конфлікт. Понад 25 видалень за раз не йдуть без підтвердження: так зміна
+  схеми в Redirection або недовідновлена база не можуть знести дзеркало
+  кроном.
+- Токен — у `.env` (`HOSTINGER_API_TOKEN`, той самий, що секрет
+  `hostinger_api_token` у Woodpecker), і запис **увімкнений тільки на
+  production**. Копія бази на dev або staging інакше перезаписала б редіректи
+  живого сайту з того стану, у якому ця копія застигла;
+  `HOSTINGER_REDIRECTS_ENABLED=true` знімає запобіжник навмисно.
+
+Синхронізація сама запускається після будь-якої зміни в Redirection (її
+хуки + будь-який не-GET до `/redirection/v1`) і раз на годину як підмітання.
+Окремого «імпорту того, що вже є» не потрібно: діф проти пустого сервера і є
+первинне наповнення — на першому ж прогоні. Руками:
+
+```bash
+wp hostinger-redirects status          # що налаштовано і що зробив останній прогін
+wp hostinger-redirects sync --dry-run  # що зміниться, без запису
+wp hostinger-redirects sync            # зробити
+wp hostinger-redirects sync --force    # разом із видаленнями, які стримав запобіжник
+wp hostinger-redirects purge           # зняти з Hostinger усе, що створив модуль
+```
+
+За один прогін іде не більше 100 запитів на запис — решта стає в чергу й
+доїжджає наступними прогонами, тож перший імпорт великого набору не б'є в
+rate limit.
+
 ### Чому один файл, а не два
 
 Раніше було два конвеєри — `test.yaml` і `deploy.yaml` із `depends_on: test`.

@@ -1,7 +1,10 @@
 # Application
 web/app/plugins/*
 !web/app/plugins/.gitkeep
+# Composer installs vendor mu-plugins as directories; ours are single files,
+# except the Hostinger redirect mirror, which is too big for one.
 web/app/mu-plugins/*/
+!web/app/mu-plugins/hostinger-redirects/
 web/app/themes/*/
 !web/app/themes/sage
 web/app/upgrade
