@@ -1,0 +1,275 @@
+# One pipeline for checks and deploy. They used to be two files, but Woodpecker
+# gives each pipeline its own workspace, so `composer install` and the sage
+# `bun install` ran twice per push to dev. Merged, they run once and the deploy
+# steps are gated by `when` instead of by a `depends_on: test` between files.
+when:
+  # Push only on the deploy branches: a feature branch is covered by its pull
+  # request, and listening to both events ran every PR pipeline twice.
+  - event: push
+    branch: [dev, main]
+  - event: pull_request
+  - event: manual
+
+# Steps share `base`, not `path`, so /woodpecker/cache survives between steps
+# and sits outside the tree rsync ships.
+workspace:
+  base: /woodpecker
+  path: src
+
+# Secrets are referenced with a doubled dollar sign in commands, e.g.
+# $${SSH_HOST}. Woodpecker runs its own brace-substitution pass over this file
+# before the shell sees it, so a single dollar sign would be consumed there and
+# reach rsync empty. That pass covers comments too: never write a brace
+# expression here whose contents are not a real variable name.
+variables:
+  # PHP 8.3 matches the deploy target. The official composer image tracks the
+  # latest PHP (8.5 at the time of writing), which would resolve dependencies
+  # against a platform the server does not run, so composer is installed here.
+  - &php_image php:8.3-cli-alpine
+  - &bun_image oven/bun:1
+  - &theme_path web/app/themes/sage
+
+  # Caches live under the shared base, so the second bun install reuses what the
+  # first downloaded -- sage and frontenda-blocks pull nearly the same
+  # @wordpress/* tree -- and composer-prod re-resolves with no network at all.
+  - &composer_env
+    COMPOSER_CACHE_DIR: /woodpecker/cache/composer
+    COMPOSER_ALLOW_SUPERUSER: "1"
+  - &bun_env
+    BUN_INSTALL_CACHE_DIR: /woodpecker/cache/bun
+
+  - &deploy_env
+    SSH_HOST:
+      from_secret: ssh_host
+    SSH_PORT:
+      from_secret: ssh_port
+    SSH_USER:
+      from_secret: ssh_user
+    SSH_PRIVATE_KEY:
+      from_secret: ssh_private_key
+    DEPLOY_PATH:
+      from_secret: deploy_path
+
+  - &deploy_when
+    - event: push
+      branch: dev
+    - event: manual
+      branch: dev
+
+  # `patch` is what cweagans/composer-patches shells out to. It only uses
+  # `git apply` when the package directory is itself a git repo, and
+  # --prefer-dist unpacks from a zip, so the binary is the only route --
+  # and alpine does not ship it.
+  #
+  # The composer binary is cached alongside the package cache, so only the first
+  # PHP step of a run pays for the installer; the symlink is what lets both
+  # steps just say `composer`.
+  - &composer_setup |
+    apk add --no-cache git unzip curl patch
+    if [ ! -x /woodpecker/cache/bin/composer ]; then
+      mkdir -p /woodpecker/cache/bin
+      curl -sS https://getcomposer.org/installer \
+        | php -- --install-dir=/woodpecker/cache/bin --filename=composer
+    fi
+    ln -sf /woodpecker/cache/bin/composer /usr/local/bin/composer
+
+  - &ssh_setup |
+    apk add --no-cache openssh-client rsync
+    mkdir -p ~/.ssh
+    echo "$${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+    chmod 600 ~/.ssh/id_ed25519
+    ssh-keyscan -p "$${SSH_PORT}" "$${SSH_HOST}" >> ~/.ssh/known_hosts 2>/dev/null
+
+steps:
+  # Fail before anything is built if the repo is missing deploy secrets. This
+  # also guards rsync --delete against an empty DEPLOY_PATH.
+  - name: validate-secrets
+    image: alpine:3
+    depends_on: []
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - test -n "$${SSH_HOST}"
+      - test -n "$${SSH_PORT}"
+      - test -n "$${SSH_USER}"
+      - test -n "$${SSH_PRIVATE_KEY}"
+      - test -n "$${DEPLOY_PATH}"
+
+  # Dev dependencies, because pint and pest live there. composer-prod prunes
+  # them again before the tree is shipped.
+  - name: composer-install
+    image: *php_image
+    depends_on: []
+    environment: *composer_env
+    commands:
+      - *composer_setup
+      - composer install --no-interaction --no-progress --prefer-dist
+
+  - name: lint
+    image: *php_image
+    depends_on: [composer-install]
+    commands:
+      - vendor/bin/pint --test
+
+  - name: test
+    image: *php_image
+    depends_on: [composer-install]
+    commands:
+      - vendor/bin/pest
+
+  # `bun run build` is `tsc && vite build`, so this is the typecheck as well --
+  # there is no separate typecheck step any more. Starts immediately: the theme
+  # build needs nothing from composer.
+  - name: build-theme
+    image: *bun_image
+    depends_on: []
+    directory: *theme_path
+    environment: *bun_env
+    commands:
+      - bun install --frozen-lockfile
+      - bun run build
+
+  # frontenda-blocks ships its editor bundle only as source: blocks/section/build/
+  # is gitignored upstream, so the composer dist archive contains no compiled JS.
+  # Must run after composer-install, which is what puts the plugin on disk.
+  - name: build-plugin
+    image: *bun_image
+    depends_on: [composer-install]
+    directory: web/app/plugins/frontenda-blocks
+    environment: *bun_env
+    commands:
+      - bun install --frozen-lockfile
+      - bun run build
+
+  # After lint and test, because this drops pint and pest from vendor/.
+  - name: composer-prod
+    image: *php_image
+    depends_on: [lint, test]
+    when: *deploy_when
+    environment: *composer_env
+    commands:
+      - *composer_setup
+      - composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+      - cd web/app/themes/sage
+      - composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+  # rsync is not atomic, so mid-sync the server can hold new templates against
+  # an old autoloader. WP serves web/app/maintenance.php for the whole window
+  # once ABSPATH/.maintenance exists.
+  #
+  # The timestamp is produced on the server, inside single quotes, so neither
+  # Woodpecker's substitution pass nor the agent's shell touches it. It has to
+  # be a literal int: `$upgrading = time()` would never satisfy WP's own
+  # 10-minute expiry, which is the only thing that unsticks the site if this
+  # pipeline dies between here and maintenance-off.
+  - name: maintenance-on
+    image: alpine:3
+    depends_on: [composer-prod, build-theme, build-plugin]
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - *ssh_setup
+      - |
+        ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
+          'printf "<?php \$upgrading = %s;\n" "$(date +%s)" > '"$${DEPLOY_PATH}"'/web/wp/.maintenance'
+
+  # Acorn caches discovered packages and services under web/app/cache/acorn,
+  # which rsync excludes, so a plugin added or removed by this deploy would not
+  # be picked up until the cache is dropped. LiteSpeed is purged for the same
+  # reason one level up: its stored HTML still points at the previous build's
+  # hashed asset filenames, which this rsync --delete just removed. Both are
+  # best-effort -- wp-cli may be absent -- but a failing rsync above must still
+  # fail the step, so they end in `|| true` rather than `failure: ignore`.
+  - name: deploy
+    image: alpine:3
+    depends_on: [maintenance-on]
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - *ssh_setup
+      - |
+        rsync -az --delete \
+          -e "ssh -i ~/.ssh/id_ed25519 -p $${SSH_PORT}" \
+          --exclude=".git" \
+          --exclude=".github" \
+          --exclude=".woodpecker" \
+          --exclude=".devcontainer" \
+          --exclude=".env" \
+          --exclude=".env.*" \
+          --exclude=".htaccess" \
+          --exclude="layout" \
+          --exclude="node_modules" \
+          --exclude="/web/wp/.maintenance" \
+          --exclude="web/app/uploads" \
+          --exclude="web/app/cache" \
+          --exclude="web/app/backups-dup-lite" \
+          --exclude="web/app/upgrade" \
+          --exclude="web/app/upgrade-temp-backup" \
+          --exclude="web/app/languages" \
+          --exclude="web/.htaccess" \
+          --exclude="web/app/themes/twentytwentyfive" \
+          ./ \
+          "$${SSH_USER}@$${SSH_HOST}:$${DEPLOY_PATH}"
+      - |
+        ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
+          "cd $${DEPLOY_PATH} && command -v wp >/dev/null 2>&1 \
+             && { wp acorn optimize:clear; wp litespeed-purge all; } \
+             || rm -rf web/app/cache/acorn/framework/cache/*.php web/app/cache/acorn/framework/views/*" || true
+
+  # Runs on failure too. Almost every deploy failure is auth or network, i.e.
+  # before a single file moved, and leaving a 503 up for WP's 10-minute expiry
+  # would be downtime for nothing. A genuinely half-synced tree is the case this
+  # uncovers early -- smoke-test below is what reports it.
+  - name: maintenance-off
+    image: alpine:3
+    depends_on: [deploy]
+    when:
+      - event: push
+        branch: dev
+        status: [success, failure]
+      - event: manual
+        branch: dev
+        status: [success, failure]
+    environment: *deploy_env
+    commands:
+      - *ssh_setup
+      - |
+        ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
+          "rm -f $${DEPLOY_PATH}/web/wp/.maintenance"
+
+  # --fail covers the maintenance page too: a leftover .maintenance answers 503.
+  - name: smoke-test
+    image: alpine:3
+    depends_on: [maintenance-off]
+    when: *deploy_when
+    commands:
+      - apk add --no-cache curl
+      - curl --fail --silent --show-error --retry 3 --retry-delay 2 https://dev.kwiaty-bukiety.com.pl > /dev/null
+
+# Production deploy for `main`. To enable: uncomment the step below, create the
+# prod_* secrets in Woodpecker, and give the deploy steps a prod `when` branch
+# plus the prod environment anchor.
+#
+# - name: validate-secrets-prod
+#   image: alpine:3
+#   depends_on: []
+#   environment: &prod_env
+#     SSH_HOST:
+#       from_secret: prod_ssh_host
+#     SSH_PORT:
+#       from_secret: prod_ssh_port
+#     SSH_USER:
+#       from_secret: prod_ssh_user
+#     SSH_PRIVATE_KEY:
+#       from_secret: prod_ssh_private_key
+#     DEPLOY_PATH:
+#       from_secret: prod_deploy_path
+#   when:
+#     - event: push
+#       branch: main
+#   commands:
+#     - test -n "$${SSH_HOST}"
+#     - test -n "$${SSH_PORT}"
+#     - test -n "$${SSH_USER}"
+#     - test -n "$${SSH_PRIVATE_KEY}"
+#     - test -n "$${DEPLOY_PATH}"

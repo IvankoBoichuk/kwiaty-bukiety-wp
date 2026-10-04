@@ -64,7 +64,7 @@ jobs:
 
       # Only two files are edited and the next version is read from the API, so
       # this job needs no PHP, Composer or Bun. Lint, tests, typecheck and the
-      # asset build already gate this PR in .woodpecker/test.yaml.
+      # asset build already gate this PR in .woodpecker/ci.yaml.
       - name: Calculate next version and update files
         run: node .github/scripts/bump-dev-version.mjs
         env:

@@ -1,6 +1,6 @@
 name: Tests
 
-# Superseded by the Woodpecker test pipeline (.woodpecker/test.yaml), which runs
+# Superseded by the Woodpecker pipeline (.woodpecker/ci.yaml), which runs
 # pint, pest and the theme typecheck on every push and pull request. The
 # automatic triggers are removed so the same suite does not run twice; this
 # workflow is kept as a manual fallback only.

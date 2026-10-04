@@ -1,6 +1,6 @@
 name: Deploy to Hostinger
 
-# Superseded by Woodpecker CI (.woodpecker/deploy.yaml), which now owns the
+# Superseded by Woodpecker CI (.woodpecker/ci.yaml), which now owns the
 # deploy on push to dev. The push trigger is removed so both do not rsync
 # --delete to the same target at once; this workflow is kept as a manual
 # fallback only.
