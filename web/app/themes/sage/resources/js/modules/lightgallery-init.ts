@@ -28,12 +28,27 @@ async function loadLightGallery(gallery: HTMLElement): Promise<void> {
         speed: 500,
         download: false,
         counter: true,
+        closable: true,
+        showCloseIcon: true,
         closeOnTap: true,
         escKey: true,
         keyPress: true,
         zoom: true,
         thumbnail: true,
         animateThumb: true,
+        // lightGallery merges `strings` shallowly, so a partial object would
+        // blank the keys it leaves out -- all seven have to be here. The three
+        // visible controls take their label from the markup, which is where the
+        // translated copy already lives; the rest keep the English defaults.
+        strings: {
+            closeGallery: gallery.dataset.lgCloseLabel || 'Close gallery',
+            previousSlide: gallery.dataset.lgPrevLabel || 'Previous slide',
+            nextSlide: gallery.dataset.lgNextLabel || 'Next slide',
+            toggleMaximize: 'Toggle maximize',
+            download: 'Download',
+            playVideo: 'Play video',
+            mediaLoadingFailed: 'Oops... Failed to load content...',
+        },
     })
 
     galleryInstances.set(gallery, instance)

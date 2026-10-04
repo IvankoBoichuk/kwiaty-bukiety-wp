@@ -27,3 +27,38 @@
 .lg-outer .lg-thumb-item:hover {
   border-color: var(--color-purple);
 }
+
+/**
+ * The toolbar ships its icons as #999 going to #fff on hover, which is close
+ * to invisible against our near-white backdrop. Recolour them, and give the
+ * close button the same bordered box as the prev/next controls so it reads as
+ * a button rather than a stray glyph.
+ */
+.lg-toolbar .lg-icon,
+.lg-counter {
+  color: var(--color-dark-text);
+}
+
+.lg-toolbar .lg-icon:hover,
+.lg-toolbar .lg-icon:focus-visible {
+  color: var(--color-purple);
+}
+
+.lg-toolbar .lg-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+  padding: 0;
+  line-height: 1;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-dark-text);
+  border-radius: 8px;
+}
+
+.lg-toolbar .lg-close:hover,
+.lg-toolbar .lg-close:focus-visible {
+  border-color: var(--color-purple);
+}

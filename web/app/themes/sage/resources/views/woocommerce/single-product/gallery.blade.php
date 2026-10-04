@@ -1,6 +1,11 @@
 <div class="product-gallery relative -mx-3 md:-mx-8 lg:col-start-1 lg:row-start-1 lg:mx-0">
   <div class="relative min-w-0">
-    <div class="swiper product-gallery-swiper">
+    <div
+      class="swiper product-gallery-swiper"
+      data-lg-close-label="{{ esc_attr__('Close gallery', 'sage-front') }}"
+      data-lg-prev-label="{{ esc_attr__('Previous image', 'sage-front') }}"
+      data-lg-next-label="{{ esc_attr__('Next image', 'sage-front') }}"
+    >
       <div class="swiper-wrapper">
         @foreach ($gallery as $image)
           <div class="swiper-slide">
