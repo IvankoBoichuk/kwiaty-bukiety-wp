@@ -27,23 +27,34 @@
           {{ $dateOption['label'] }}
         </button>
       @endforeach
-      <button
-        type="button"
-        class="group delivery-date-option delivery-date-custom single-product-settings-option relative flex flex-1 items-center justify-center gap-1.5"
-        data-date-option="custom"
-      >
-        <span class="delivery-date-label">{{ __('Custom date', 'sage-front') }}</span>
-        <svg class="stroke-gray-3 group-hover:stroke-white group-[.active]:stroke-white" width="20" height="20" aria-hidden="true">
-          <use href="{{ get_template_directory_uri() . '/resources/icon/sprite-base.svg' }}#chevron-right"></use>
-        </svg>
+      {{-- The native input overlays the button instead of sitting inside it.
+           A form control nested in a <button> is invalid markup that Safari
+           never lets the user reach, and Safari also ignores showPicker() on a
+           control it considers untouchable, so the only reliable way to open
+           its date picker is to let the tap land on the input itself. The
+           button stays underneath purely as the visible, styleable surface and
+           is taken out of the tab order so keyboard users land on the input. --}}
+      <div class="relative flex flex-1">
+        <button
+          type="button"
+          class="group delivery-date-option delivery-date-custom single-product-settings-option flex w-full items-center justify-center gap-1.5"
+          data-date-option="custom"
+          tabindex="-1"
+        >
+          <span class="delivery-date-label">{{ __('Custom date', 'sage-front') }}</span>
+          <svg class="stroke-gray-3 group-hover:stroke-white group-[.active]:stroke-white" width="20" height="20" aria-hidden="true">
+            <use href="{{ get_template_directory_uri() . '/resources/icon/sprite-base.svg' }}#chevron-right"></use>
+          </svg>
+        </button>
         <input
           id="delivery-date-input"
           type="date"
-          class="delivery-date-input pointer-events-none absolute inset-0 opacity-0"
+          class="delivery-date-input absolute inset-0 h-full w-full cursor-pointer bg-transparent opacity-0"
           data-date-input
+          aria-label="{{ __('Custom date', 'sage-front') }}"
           min="{{ ($deliverySchedule['dateOptions'][0]['value'] ?? date('Y-m-d')) }}"
         />
-      </button>
+      </div>
     </div>
 
     <p

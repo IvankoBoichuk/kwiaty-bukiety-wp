@@ -370,3 +370,19 @@ section:has(.section__subtitle) {
 .swiper-pagination-fraction, .swiper-pagination-custom, .swiper-horizontal > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal {
   @apply relative bottom-[unset]! left-[unset]! transform-none!;
 }
+
+/* Safari on iOS zooms the whole page in whenever a focused form control renders
+   below 16px, and it never zooms back out — the body sets 14px under sm and
+   several fields sit at 13px, so almost every tap on a field shifted the
+   layout. Pinning controls to 16px on touch devices is the only fix Safari
+   honours that keeps pinch-zoom working; `pointer: coarse` leaves the desktop
+   rendering untouched. This stays outside @layer so it also outranks the
+   Tailwind text-* utilities those fields carry, which the utilities layer would
+   otherwise win regardless of specificity. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

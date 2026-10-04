@@ -118,27 +118,45 @@ export class DeliveryPlugin implements ProductPlugin {
 
         this.updateTimeSlotAvailability(store, this.selectedDate, schedule)
 
+        const customDateLabel = dateLabel?.textContent ?? ''
+
         dateOptions.forEach((btn) => {
             btn.addEventListener('click', () => {
-                dateOptions.forEach((button) => {
-                    button.classList.remove('active')
-                })
-
-                btn.classList.add('active')
-
                 const dateValue = btn.dataset.dateValue
                 const dateOption = btn.dataset.dateOption
 
                 if (dateValue) {
+                    this.activateDateOption(dateOptions, btn)
+
+                    // A preset wins over whatever the picker last returned, so
+                    // the custom button drops back to its neutral label.
+                    if (dateInput) {
+                        dateInput.value = ''
+                    }
+
+                    if (dateLabel) {
+                        dateLabel.textContent = customDateLabel
+                    }
+
                     this.selectedDate = new Date(`${dateValue}T00:00:00`)
                     this.syncSelectedDate(store, this.selectedDate, schedule)
-                } else if (dateOption === 'custom' && dateInput) {
-                    dateInput.showPicker()
+
+                    return
+                }
+
+                if (dateOption === 'custom' && dateInput) {
+                    this.openDatePicker(dateInput)
                 }
             })
         })
 
         if (dateInput && dateLabel && customDateBtn) {
+            // The input covers the custom button, so its own click is the only
+            // one that ever fires there.
+            dateInput.addEventListener('click', () => {
+                this.openDatePicker(dateInput)
+            })
+
             dateInput.addEventListener('change', (event) => {
                 const target = event.target as HTMLInputElement
 
@@ -147,6 +165,14 @@ export class DeliveryPlugin implements ProductPlugin {
                 }
 
                 this.selectedDate = new Date(`${target.value}T00:00:00`)
+
+                if (Number.isNaN(this.selectedDate.getTime())) {
+                    this.selectedDate = null
+
+                    return
+                }
+
+                this.activateDateOption(dateOptions, customDateBtn)
                 dateLabel.textContent = this.selectedDate.toLocaleDateString('pl-PL', {
                     day: '2-digit',
                     month: '2-digit',
@@ -230,6 +256,33 @@ export class DeliveryPlugin implements ProductPlugin {
             setHiddenValue('[data-delivery-time-hidden]', value)
             store.setDeliveryTime(value)
         })
+    }
+
+    private activateDateOption(dateOptions: NodeListOf<HTMLButtonElement>, active: HTMLButtonElement): void {
+        dateOptions.forEach((button) => {
+            button.classList.remove('active')
+        })
+
+        active.classList.add('active')
+    }
+
+    /**
+     * Desktop browsers only open the calendar when the click lands on their own
+     * picker indicator, which this input hides, so it has to be asked for
+     * explicitly. Touch Safari opens its picker from the tap itself and chokes
+     * on a second request, and Safari below 16 has no showPicker() at all.
+     */
+    private openDatePicker(input: HTMLInputElement): void {
+        if (typeof input.showPicker !== 'function' || window.matchMedia('(pointer: coarse)').matches) {
+            return
+        }
+
+        try {
+            input.showPicker()
+        } catch {
+            // Thrown when the browser does not count this as a user gesture;
+            // the input stays focused and keyboard-editable either way.
+        }
     }
 
     private syncSelectedDate(store: ProductPurchaseStore, selectedDate: Date, schedule: DeliverySchedule): void {
