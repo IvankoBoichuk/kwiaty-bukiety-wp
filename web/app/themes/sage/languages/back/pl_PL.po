@@ -1,0 +1,323 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Kwiaty Bukiety\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
+"Last-Translator: \n"
+"Language-Team: Polski\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.5; wp-7.0; php-8.2.29\n"
+"X-Domain: sage-back"
+
+#: app/Admin/CategoryFaqMetabox.php:44
+msgid "FAQ"
+msgstr "FAQ"
+
+#: app/Admin/CategoryFaqMetabox.php:62
+msgid "Add question"
+msgstr "Dodaj pytanie"
+
+#: app/Admin/CategoryFaqMetabox.php:67
+msgid "Shown on the first page of the category and published as FAQPage structured data."
+msgstr "Wyświetlane na pierwszej stronie kategorii i publikowane jako dane strukturalne FAQPage."
+
+#: app/Admin/CategoryFaqMetabox.php:90
+msgid "Question"
+msgstr "Pytanie"
+
+#: app/Admin/CategoryFaqMetabox.php:91
+msgid "Answer"
+msgstr "Odpowiedź"
+
+#: app/Admin/CategoryFaqMetabox.php:93 app/Admin/ContactSettingsPage.php:561
+msgid "Remove"
+msgstr "Usuń"
+
+#: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
+msgid "Contact Settings"
+msgstr "Ustawienia kontaktu"
+
+#: app/Admin/ContactSettingsPage.php:38
+msgid "Contacts"
+msgstr "Kontakty"
+
+#: app/Admin/ContactSettingsPage.php:216
+msgid "Manage phones, emails, and social network links from one page."
+msgstr "Zarządzaj telefonami, adresami e-mail i linkami do sieci społecznościowych z jednej strony."
+
+#: app/Admin/ContactSettingsPage.php:229
+msgid "Phones"
+msgstr "Telefony"
+
+#: app/Admin/ContactSettingsPage.php:230
+msgid "Each item contains a label and phone number."
+msgstr "Każdy element zawiera etykietę i numer telefonu."
+
+#: app/Admin/ContactSettingsPage.php:237 app/Admin/ContactSettingsPage.php:267
+msgid "Label"
+msgstr "Etykieta"
+
+#: app/Admin/ContactSettingsPage.php:239
+msgid "Sales department"
+msgstr "Dział sprzedaży"
+
+#: app/Admin/ContactSettingsPage.php:246
+msgid "Phone number"
+msgstr "Numer telefonu"
+
+#: app/Admin/ContactSettingsPage.php:248
+msgid "+48 123 456 789"
+msgstr "+48 123 456 789"
+
+#: app/Admin/ContactSettingsPage.php:259
+msgid "Emails"
+msgstr "Adresy e-mail"
+
+#: app/Admin/ContactSettingsPage.php:260
+msgid "Each item contains a label and email address."
+msgstr "Każdy element zawiera etykietę i adres e-mail."
+
+#: app/Admin/ContactSettingsPage.php:269
+msgid "Customer support"
+msgstr "Obsługa klienta"
+
+#: app/Admin/ContactSettingsPage.php:276
+msgid "Email"
+msgstr "E-mail"
+
+#: app/Admin/ContactSettingsPage.php:278
+msgid "hello@example.com"
+msgstr "hello@example.com"
+
+#: app/Admin/ContactSettingsPage.php:289
+msgid "Social Networks"
+msgstr "Sieci społecznościowe"
+
+#: app/Admin/ContactSettingsPage.php:290
+msgid "Select the network and set its URL."
+msgstr "Wybierz sieć i ustaw jej adres URL."
+
+#: app/Admin/ContactSettingsPage.php:294
+msgid "Network"
+msgstr "Sieć"
+
+#: app/Admin/ContactSettingsPage.php:300
+msgid "Link"
+msgstr "Odnośnik"
+
+#: app/Admin/ContactSettingsPage.php:302
+msgid "https://instagram.com/your-profile"
+msgstr "https://instagram.com/your-profile"
+
+#: app/Admin/ContactSettingsPage.php:314
+msgid "Save changes"
+msgstr "Zapisz zmiany"
+
+#: app/Admin/ContactSettingsPage.php:523
+msgid "Add item"
+msgstr "Dodaj element"
+
+#: app/Admin/ContactSettingsPage.php:557
+msgid "Item"
+msgstr "Element"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:20
+#: app/Admin/DeliveryTimerSettingsPage.php:21
+msgid "Delivery Timer"
+msgstr "Licznik dostawy"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:60
+msgid "Delivery timer settings"
+msgstr "Ustawienia licznika dostawy"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:65
+msgid "Set the working hours, delivery time slots, and the list of additional holidays."
+msgstr "Ustaw godziny pracy, przedziały czasowe dostaw oraz listę dodatkowych dni wolnych."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:81
+msgid "Working hours on weekdays"
+msgstr "Godziny pracy w dni powszednie"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:100
+msgid "Format: 9-17"
+msgstr "Format: 9-17"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:110
+msgid "Working hours on weekends"
+msgstr "Godziny pracy w weekendy"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:129
+msgid "Format: 9-14. Applies on Saturday and Sunday."
+msgstr "Format: 9-14. Obowiązuje w soboty i niedziele."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:139
+msgid "Delivery time slots"
+msgstr "Przedziały czasowe dostawy"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:157
+msgid "Format: 08-12, 12-15, 15-18, 18-21. You can separate values by commas or new lines."
+msgstr "Format: 08-12, 12-15, 15-18, 18-21. Wartości można oddzielać przecinkami lub nowymi liniami."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:167
+msgid "Additional holidays"
+msgstr "Dodatkowe dni wolne"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:185
+msgid "Format: YYYY-MM-DD, separated by commas."
+msgstr "Format: RRRR-MM-DD, oddzielone przecinkami."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:195
+msgid "Save"
+msgstr "Zapisz"
+
+#: app/Admin/NavMenuAccent.php:62
+msgid "Accent item"
+msgstr "Wyróżniony element"
+
+#: app/Admin/NavMenuAccent.php:63
+msgid "Shown in the header as a filled pill instead of a plain link."
+msgstr "Wyświetlane w nagłówku jako wypełniona pigułka zamiast zwykłego odnośnika."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:32
+#: app/Admin/OrderNotificationsSettingsPage.php:33
+#: app/Admin/OrderNotificationsSettingsPage.php:115
+msgid "Order Notifications"
+msgstr "Powiadomienia o zamówieniach"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:73
+msgid "The partner e-mail address is not valid; the e-mail channel stays off."
+msgstr "Adres e-mail partnera jest nieprawidłowy; kanał e-mail pozostaje wyłączony."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:83
+msgid "The webhook URL is not valid; the webhook stays off."
+msgstr "Adres URL webhooka jest nieprawidłowy; webhook pozostaje wyłączony."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:93
+msgid "The Google Sheets URL is not valid; the sync stays off."
+msgstr "Adres URL Google Sheets jest nieprawidłowy; synchronizacja pozostaje wyłączona."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:118
+msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
+msgstr "Wysyłane raz, gdy zamówienie przechodzi w stan „w realizacji”. Pozostaw pole puste, aby wyłączyć dany kanał."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:128
+msgid "Partner e-mail"
+msgstr "E-mail partnera"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:140
+msgid "Receives the fulfilment e-mail with the order details and the partner price."
+msgstr "Otrzymuje e-mail realizacyjny ze szczegółami zamówienia i ceną partnerską."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:147
+msgid "Make.com webhook URL"
+msgstr "Adres URL webhooka Make.com"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:160
+msgid "The order is posted here as JSON."
+msgstr "Zamówienie jest wysyłane tutaj w formacie JSON."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:167
+msgid "Google Sheets web app URL"
+msgstr "Adres URL aplikacji internetowej Google Sheets"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:180
+msgid "Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet."
+msgstr "Zamówienia przechodzące w realizację, zrealizowane, anulowane lub zwrócone są dopisywane do arkusza. Pozostaw puste na kopii witryny — dzięki temu nie trafią do produkcyjnego arkusza."
+
+#: app/Admin/ProductAttributeIcons.php:240
+#: app/Admin/ProductAttributeIcons.php:251
+#: app/Admin/ProductAttributeIcons.php:273
+msgid "Attribute icon preview"
+msgstr "Podgląd ikony atrybutu"
+
+#: app/Admin/ProductAttributeIcons.php:281
+#: app/Admin/ProductAttributeIcons.php:295
+msgid "Icon"
+msgstr "Ikona"
+
+#: app/Admin/ProductAttributeIcons.php:331
+msgid "Upload icon"
+msgstr "Prześlij ikonę"
+
+#: app/Admin/ProductAttributeIcons.php:338
+msgid "Remove icon"
+msgstr "Usuń ikonę"
+
+#: app/Admin/ProductAttributeIcons.php:343
+msgid "Upload an icon for this product attribute group."
+msgstr "Prześlij ikonę dla tej grupy atrybutów produktu."
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:51
+msgid "Popular"
+msgstr "Popularne"
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:99
+msgid "Popular order"
+msgstr "Kolejność popularnych"
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:101
+msgid "Lower numbers come first in the \"popular cities\" block. Leave empty to order automatically."
+msgstr "Niższe numery pojawiają się jako pierwsze w bloku „popularne miasta”. Pozostaw puste, aby uporządkować automatycznie."
+
+#: app/Shop/OrderAdminColumns.php:48
+msgid "NIP"
+msgstr "NIP"
+
+#: app/Shop/OrderSheetsSync.php:288
+msgid "Send to Google Sheets"
+msgstr "Wyślij do Google Sheets"
+
+#. 1: order status, 2: number of attempts, 3: failure reason.
+#: app/Shop/OrderSheetsSync.php:336
+msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
+msgstr "Synchronizacja z Google Sheets nie powiodła się dla statusu %1$s po %2$d próbach: %3$s"
+
+#: app/setup.php:365
+msgid "Primary Navigation"
+msgstr "Nawigacja główna"
+
+#: app/setup.php:366
+msgid "Top Bar Navigation"
+msgstr "Nawigacja górnego paska"
+
+#: app/setup.php:367
+msgid "Footer Navigation"
+msgstr "Nawigacja w stopce"
+
+#: app/setup.php:368
+msgid "Footer Secondary Navigation"
+msgstr "Dodatkowa nawigacja w stopce"
+
+#: app/setup.php:372
+msgid "Social Navigation"
+msgstr "Nawigacja społecznościowa"
+
+#: app/setup.php:463
+msgid "Primary"
+msgstr "Główna"
+
+#: app/setup.php:470
+msgid "Footer"
+msgstr "Stopka"
+
+#: app/setup.php:494
+msgid "Logo Dark"
+msgstr "Logo ciemne"
+
+#: app/setup.php:502
+msgid "Logo Dark Large"
+msgstr "Logo ciemne duże"
+
+#: app/setup.php:510
+msgid "Logo Light"
+msgstr "Logo jasne"
+
+#: app/setup.php:518
+msgid "Logo Light Large"
+msgstr "Logo jasne duże"

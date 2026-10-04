@@ -21,6 +21,11 @@
     @if ($attachmentIds !== [])
         <div
             class="swiper photogallery-swiper"
+            data-swiper-prev-label="{{ esc_attr__('Previous image', 'sage-front') }}"
+            data-swiper-next-label="{{ esc_attr__('Next image', 'sage-front') }}"
+            {{-- %s is swapped for Swiper's own {{index}} token in swiper-init.ts;
+                 spelling it here would end this Blade echo early. --}}
+            data-swiper-bullet-label="{{ esc_attr__('Go to image %s', 'sage-front') }}"
         >
             <div class="swiper-wrapper">
                 @foreach ($attachmentIds as $attachmentId)

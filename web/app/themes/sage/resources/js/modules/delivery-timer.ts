@@ -1,3 +1,5 @@
+import { createTranslator, type Strings } from './strings';
+
 type TimeSlot = {
     value: string;
     label: string;
@@ -10,6 +12,7 @@ type DeliveryTimerConfig = {
     holidays: string[];
     leadTimeHours: number;
     timeSlots: TimeSlot[];
+    strings?: Strings;
 };
 
 type TimerState =
@@ -152,6 +155,7 @@ const nextDeliveryMessage = (
     now: ZonedNow,
     holidays: Set<string>,
 ): string => {
+    const t = createTranslator(config.strings);
     const nextDate = nextWorkingDate(now.date, holidays);
     const nextSlotStart = firstSlotStart(config, nextDate);
     const tomorrow = new Date(now.date);
@@ -159,13 +163,18 @@ const nextDeliveryMessage = (
     tomorrow.setHours(0, 0, 0, 0);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const formattedStart = formatHour(nextSlotStart?.getHours() ?? 0);
+    // The hour is the only part of the message that carries markup, so it is
+    // wrapped here rather than in the catalogue.
+    const formattedStart = `<span>${formatHour(nextSlotStart?.getHours() ?? 0)}</span>`;
 
     if (toDateKey(nextDate) === toDateKey(tomorrow)) {
-        return `Najbliższa dostawa jutro od <span>${formattedStart}</span>`;
+        return t('nextDeliveryTomorrow', 'Next delivery tomorrow from %s')
+            .replace('%s', formattedStart);
     }
 
-    return `Najbliższa dostawa ${formatDate(nextDate)} od <span>${formattedStart}</span>`;
+    return t('nextDeliveryOnDate', 'Next delivery %1$s from %2$s')
+        .replace('%1$s', formatDate(nextDate))
+        .replace('%2$s', formattedStart);
 };
 
 const resolveState = (

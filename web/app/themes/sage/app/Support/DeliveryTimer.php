@@ -95,7 +95,8 @@ class DeliveryTimer
      *     timezone: string,
      *     holidays: array<int, string>,
      *     leadTimeHours: int,
-     *     timeSlots: array<int, array{value: string, label: string, start: int, end: int}>
+     *     timeSlots: array<int, array{value: string, label: string, start: int, end: int}>,
+     *     strings: array<string, string>
      * }
      */
     public function viewData(): array
@@ -108,6 +109,33 @@ class DeliveryTimer
             'holidays' => $this->normalizeHolidayList($settings['holidays']),
             'leadTimeHours' => self::ORDER_LEAD_HOURS,
             'timeSlots' => $timeSlots,
+            'strings' => $this->strings(),
+        ];
+    }
+
+    /**
+     * The copy the countdown shows once today's last slot has passed.
+     *
+     * It travels in the config rather than through @wordpress/i18n, the same
+     * way the cart and checkout copy does (see resources/js/modules/strings.ts).
+     * The hour keeps its own placeholder so the markup around it stays in the
+     * script and out of the catalogue.
+     *
+     * @return array<string, string>
+     */
+    protected function strings(): array
+    {
+        return [
+            /* translators: %s: opening hour of the next delivery slot. */
+            'nextDeliveryTomorrow' => __(
+                'Next delivery tomorrow from %s',
+                'sage-front',
+            ),
+            /* translators: %1$s: delivery date. %2$s: opening hour of the next delivery slot. */
+            'nextDeliveryOnDate' => __(
+                'Next delivery %1$s from %2$s',
+                'sage-front',
+            ),
         ];
     }
 

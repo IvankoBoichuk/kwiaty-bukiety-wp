@@ -82,7 +82,7 @@
             <div class="bx-container mx-auto w-full">
               <div class="mb-8 flex items-end justify-between gap-8 border-b border-[#D7E1DB] pb-6">
                 <div class="space-y-2">
-                  <p class="text-[11px] font-semibold tracking-[0.24em] text-[#6D8577] uppercase">{{ __('Explore', 'sage-back') }}</p>
+                  <p class="text-[11px] font-semibold tracking-[0.24em] text-[#6D8577] uppercase">{{ __('Explore', 'sage-front') }}</p>
                   <a
                     href="{{ $item['url'] }}"
                     class="block text-[32px] leading-none font-semibold text-[#244734] normal-case transition-colors duration-200 hover:text-[#426E59]"
@@ -95,7 +95,7 @@
                   href="{{ $item['url'] }}"
                   class="shrink-0 border-b border-[#244734] pb-1 text-[12px] font-semibold tracking-[0.14em] text-[#244734] uppercase transition-colors duration-200 hover:border-[#426E59] hover:text-[#426E59]"
                 >
-                  {{ __('View all', 'sage-back') }}
+                  {{ __('View all', 'sage-front') }}
                 </a>
               </div>
 
@@ -138,7 +138,7 @@
                           >
                           <span
                             class="text-[15px] leading-6 font-medium text-[#5B6F62] normal-case"
-                            >{{ __('Browse section', 'sage-back') }}</span
+                            >{{ __('Browse section', 'sage-front') }}</span
                           >
                         </a>
                       @endif
@@ -147,13 +147,13 @@
                 </ul>
 
                 <aside class="bg-[#F5F1EA] px-6 py-7 text-[#244734]">
-                  <p class="mb-3 text-[11px] font-semibold tracking-[0.22em] text-[#6D8577] uppercase">{{ __('Curated selection', 'sage-back') }}</p>
+                  <p class="mb-3 text-[11px] font-semibold tracking-[0.22em] text-[#6D8577] uppercase">{{ __('Curated selection', 'sage-front') }}</p>
                   <h3 class="mb-4 text-[24px] leading-7 font-semibold normal-case">{{ $item['title'] }}</h3>
                   <p class="mb-8 text-[15px] leading-6 text-[#5B6F62]">
                     {{
                       __(
                         'Discover featured categories, seasonal picks, and the most popular directions in this section.',
-                        'sage-back',
+                        'sage-front',
                       )
                     }}
                   </p>
@@ -162,7 +162,7 @@
                     <div class="flex items-baseline justify-between gap-4">
                       <span
                         class="text-[11px] font-semibold tracking-[0.18em] text-[#6D8577] uppercase"
-                        >{{ __('Sections', 'sage-back') }}</span
+                        >{{ __('Sections', 'sage-front') }}</span
                       >
                       <span class="text-[28px] leading-none font-semibold">{{ count($item['children']) }}</span>
                     </div>
@@ -170,7 +170,7 @@
                       {{
                         __(
                           'A broader overview of the catalogue with direct access to key destinations.',
-                          'sage-back',
+                          'sage-front',
                         )
                       }}
                     </p>
@@ -180,7 +180,7 @@
                     href="{{ $item['url'] }}"
                     class="inline-flex items-center gap-3 border-b border-[#244734] pb-1 text-[12px] font-semibold tracking-[0.14em] text-[#244734] uppercase transition-colors duration-200 hover:border-[#426E59] hover:text-[#426E59]"
                   >
-                    <span>{{ __('Open section', 'sage-back') }}</span>
+                    <span>{{ __('Open section', 'sage-front') }}</span>
                     <span aria-hidden="true">&rarr;</span>
                   </a>
                 </aside>

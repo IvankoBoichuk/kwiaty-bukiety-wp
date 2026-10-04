@@ -4,7 +4,7 @@
   class="bg-background inline-flex size-11 items-center justify-center rounded-full border border-[#426E59] text-[#244734] transition-colors duration-200 hover:bg-[#F3F7F4]"
   :aria-expanded="isOpen.toString()"
   aria-controls="mobile-navigation"
-  aria-label="{{ __('Toggle navigation', 'sage-back') }}"
+  aria-label="{{ __('Toggle navigation', 'sage-front') }}"
 >
   <svg x-show="!isOpen" class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

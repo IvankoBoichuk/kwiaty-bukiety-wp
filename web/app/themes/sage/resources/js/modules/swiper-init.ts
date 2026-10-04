@@ -108,10 +108,14 @@ function initPhotogalleries(): void {
                 dynamicBullets: true,
                 dynamicMainBullets: 3,
             },
+            // The screen-reader copy takes its label from the markup, the same
+            // way lightgallery-init does, so the translated strings stay in the
+            // theme's catalogue instead of this bundle.
             a11y: {
-                prevSlideMessage: 'Poprzednie zdjęcie',
-                nextSlideMessage: 'Następne zdjęcie',
-                paginationBulletMessage: 'Przejdź do zdjęcia {{index}}',
+                prevSlideMessage: swiperEl.dataset.swiperPrevLabel || 'Previous image',
+                nextSlideMessage: swiperEl.dataset.swiperNextLabel || 'Next image',
+                paginationBulletMessage: (swiperEl.dataset.swiperBulletLabel || 'Go to image %s')
+                    .replace('%s', '{{index}}'),
             },
             breakpoints: {
                 640: {

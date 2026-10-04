@@ -1,0 +1,323 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Kwiaty Bukiety\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
+"Last-Translator: \n"
+"Language-Team: Українська\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.5; wp-7.0; php-8.2.29\n"
+"X-Domain: sage-back"
+
+#: app/Admin/CategoryFaqMetabox.php:44
+msgid "FAQ"
+msgstr "Часті запитання"
+
+#: app/Admin/CategoryFaqMetabox.php:62
+msgid "Add question"
+msgstr "Додати запитання"
+
+#: app/Admin/CategoryFaqMetabox.php:67
+msgid "Shown on the first page of the category and published as FAQPage structured data."
+msgstr "Показується на першій сторінці категорії та публікується як структуровані дані FAQPage."
+
+#: app/Admin/CategoryFaqMetabox.php:90
+msgid "Question"
+msgstr "Запитання"
+
+#: app/Admin/CategoryFaqMetabox.php:91
+msgid "Answer"
+msgstr "Відповідь"
+
+#: app/Admin/CategoryFaqMetabox.php:93 app/Admin/ContactSettingsPage.php:561
+msgid "Remove"
+msgstr "Видалити"
+
+#: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
+msgid "Contact Settings"
+msgstr "Налаштування контактів"
+
+#: app/Admin/ContactSettingsPage.php:38
+msgid "Contacts"
+msgstr "Контакти"
+
+#: app/Admin/ContactSettingsPage.php:216
+msgid "Manage phones, emails, and social network links from one page."
+msgstr "Керуйте телефонами, адресами електронної пошти та посиланнями на соцмережі з однієї сторінки."
+
+#: app/Admin/ContactSettingsPage.php:229
+msgid "Phones"
+msgstr "Телефони"
+
+#: app/Admin/ContactSettingsPage.php:230
+msgid "Each item contains a label and phone number."
+msgstr "Кожен елемент містить підпис і номер телефону."
+
+#: app/Admin/ContactSettingsPage.php:237 app/Admin/ContactSettingsPage.php:267
+msgid "Label"
+msgstr "Підпис"
+
+#: app/Admin/ContactSettingsPage.php:239
+msgid "Sales department"
+msgstr "Відділ продажів"
+
+#: app/Admin/ContactSettingsPage.php:246
+msgid "Phone number"
+msgstr "Номер телефону"
+
+#: app/Admin/ContactSettingsPage.php:248
+msgid "+48 123 456 789"
+msgstr "+48 123 456 789"
+
+#: app/Admin/ContactSettingsPage.php:259
+msgid "Emails"
+msgstr "Адреси електронної пошти"
+
+#: app/Admin/ContactSettingsPage.php:260
+msgid "Each item contains a label and email address."
+msgstr "Кожен елемент містить підпис і адресу електронної пошти."
+
+#: app/Admin/ContactSettingsPage.php:269
+msgid "Customer support"
+msgstr "Підтримка клієнтів"
+
+#: app/Admin/ContactSettingsPage.php:276
+msgid "Email"
+msgstr "Електронна пошта"
+
+#: app/Admin/ContactSettingsPage.php:278
+msgid "hello@example.com"
+msgstr "hello@example.com"
+
+#: app/Admin/ContactSettingsPage.php:289
+msgid "Social Networks"
+msgstr "Соціальні мережі"
+
+#: app/Admin/ContactSettingsPage.php:290
+msgid "Select the network and set its URL."
+msgstr "Виберіть мережу та вкажіть її URL."
+
+#: app/Admin/ContactSettingsPage.php:294
+msgid "Network"
+msgstr "Мережа"
+
+#: app/Admin/ContactSettingsPage.php:300
+msgid "Link"
+msgstr "Посилання"
+
+#: app/Admin/ContactSettingsPage.php:302
+msgid "https://instagram.com/your-profile"
+msgstr "https://instagram.com/your-profile"
+
+#: app/Admin/ContactSettingsPage.php:314
+msgid "Save changes"
+msgstr "Зберегти зміни"
+
+#: app/Admin/ContactSettingsPage.php:523
+msgid "Add item"
+msgstr "Додати елемент"
+
+#: app/Admin/ContactSettingsPage.php:557
+msgid "Item"
+msgstr "Елемент"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:20
+#: app/Admin/DeliveryTimerSettingsPage.php:21
+msgid "Delivery Timer"
+msgstr "Таймер доставки"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:60
+msgid "Delivery timer settings"
+msgstr "Налаштування таймера доставки"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:65
+msgid "Set the working hours, delivery time slots, and the list of additional holidays."
+msgstr "Задайте робочі години, часові інтервали доставки та список додаткових вихідних днів."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:81
+msgid "Working hours on weekdays"
+msgstr "Робочі години в будні"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:100
+msgid "Format: 9-17"
+msgstr "Формат: 9-17"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:110
+msgid "Working hours on weekends"
+msgstr "Робочі години у вихідні"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:129
+msgid "Format: 9-14. Applies on Saturday and Sunday."
+msgstr "Формат: 9-14. Діє в суботу та неділю."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:139
+msgid "Delivery time slots"
+msgstr "Часові інтервали доставки"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:157
+msgid "Format: 08-12, 12-15, 15-18, 18-21. You can separate values by commas or new lines."
+msgstr "Формат: 08-12, 12-15, 15-18, 18-21. Значення можна розділяти комами або новими рядками."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:167
+msgid "Additional holidays"
+msgstr "Додаткові вихідні дні"
+
+#: app/Admin/DeliveryTimerSettingsPage.php:185
+msgid "Format: YYYY-MM-DD, separated by commas."
+msgstr "Формат: РРРР-ММ-ДД, через кому."
+
+#: app/Admin/DeliveryTimerSettingsPage.php:195
+msgid "Save"
+msgstr "Зберегти"
+
+#: app/Admin/NavMenuAccent.php:62
+msgid "Accent item"
+msgstr "Акцентний елемент"
+
+#: app/Admin/NavMenuAccent.php:63
+msgid "Shown in the header as a filled pill instead of a plain link."
+msgstr "Показується в шапці як заповнена «пігулка» замість звичайного посилання."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:32
+#: app/Admin/OrderNotificationsSettingsPage.php:33
+#: app/Admin/OrderNotificationsSettingsPage.php:115
+msgid "Order Notifications"
+msgstr "Сповіщення про замовлення"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:73
+msgid "The partner e-mail address is not valid; the e-mail channel stays off."
+msgstr "Адреса електронної пошти партнера некоректна; канал електронної пошти лишається вимкненим."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:83
+msgid "The webhook URL is not valid; the webhook stays off."
+msgstr "URL вебхука некоректний; вебхук лишається вимкненим."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:93
+msgid "The Google Sheets URL is not valid; the sync stays off."
+msgstr "URL Google Sheets некоректний; синхронізація лишається вимкненою."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:118
+msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
+msgstr "Надсилається один раз, коли замовлення переходить у стан «в обробці». Залиште поле порожнім, щоб вимкнути цей канал."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:128
+msgid "Partner e-mail"
+msgstr "Електронна пошта партнера"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:140
+msgid "Receives the fulfilment e-mail with the order details and the partner price."
+msgstr "Отримує лист про виконання із деталями замовлення та партнерською ціною."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:147
+msgid "Make.com webhook URL"
+msgstr "URL вебхука Make.com"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:160
+msgid "The order is posted here as JSON."
+msgstr "Замовлення надсилається сюди у форматі JSON."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:167
+msgid "Google Sheets web app URL"
+msgstr "URL вебзастосунку Google Sheets"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:180
+msgid "Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet."
+msgstr "Замовлення, що переходять в обробку, виконані, скасовані або повернені, додаються до таблиці. Залиште порожнім на копії сайту — саме це вбереже робочу таблицю від зайвих записів."
+
+#: app/Admin/ProductAttributeIcons.php:240
+#: app/Admin/ProductAttributeIcons.php:251
+#: app/Admin/ProductAttributeIcons.php:273
+msgid "Attribute icon preview"
+msgstr "Попередній перегляд іконки атрибута"
+
+#: app/Admin/ProductAttributeIcons.php:281
+#: app/Admin/ProductAttributeIcons.php:295
+msgid "Icon"
+msgstr "Іконка"
+
+#: app/Admin/ProductAttributeIcons.php:331
+msgid "Upload icon"
+msgstr "Завантажити іконку"
+
+#: app/Admin/ProductAttributeIcons.php:338
+msgid "Remove icon"
+msgstr "Видалити іконку"
+
+#: app/Admin/ProductAttributeIcons.php:343
+msgid "Upload an icon for this product attribute group."
+msgstr "Завантажте іконку для цієї групи атрибутів товару."
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:51
+msgid "Popular"
+msgstr "Популярні"
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:99
+msgid "Popular order"
+msgstr "Порядок популярних"
+
+#: app/Modules/LocalLinking/PopularOrderAdmin.php:101
+msgid "Lower numbers come first in the \"popular cities\" block. Leave empty to order automatically."
+msgstr "Менші числа йдуть першими в блоці «популярні міста». Залиште порожнім для автоматичного впорядкування."
+
+#: app/Shop/OrderAdminColumns.php:48
+msgid "NIP"
+msgstr "NIP"
+
+#: app/Shop/OrderSheetsSync.php:288
+msgid "Send to Google Sheets"
+msgstr "Надіслати в Google Sheets"
+
+#. 1: order status, 2: number of attempts, 3: failure reason.
+#: app/Shop/OrderSheetsSync.php:336
+msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
+msgstr "Не вдалося синхронізувати з Google Sheets для статусу %1$s після %2$d спроб: %3$s"
+
+#: app/setup.php:365
+msgid "Primary Navigation"
+msgstr "Головна навігація"
+
+#: app/setup.php:366
+msgid "Top Bar Navigation"
+msgstr "Навігація верхньої панелі"
+
+#: app/setup.php:367
+msgid "Footer Navigation"
+msgstr "Навігація в підвалі"
+
+#: app/setup.php:368
+msgid "Footer Secondary Navigation"
+msgstr "Додаткова навігація в підвалі"
+
+#: app/setup.php:372
+msgid "Social Navigation"
+msgstr "Навігація соцмереж"
+
+#: app/setup.php:463
+msgid "Primary"
+msgstr "Головна"
+
+#: app/setup.php:470
+msgid "Footer"
+msgstr "Підвал"
+
+#: app/setup.php:494
+msgid "Logo Dark"
+msgstr "Темне лого"
+
+#: app/setup.php:502
+msgid "Logo Dark Large"
+msgstr "Темне лого, велике"
+
+#: app/setup.php:510
+msgid "Logo Light"
+msgstr "Світле лого"
+
+#: app/setup.php:518
+msgid "Logo Light Large"
+msgstr "Світле лого, велике"

@@ -228,7 +228,10 @@ final class PartnerOrder
     }
 
     /**
-     * "bukiet-sredni-11-13-kwiatow" => "11–13 kwiatów".
+     * "bukiet-sredni-11-13-kwiatow" => "11-13 flowers".
+     *
+     * The attribute slug stays Polish because that is what the shop stores;
+     * only the label the partner e-mail prints goes through the catalogue.
      */
     public static function flowerCount(string $value): string
     {
@@ -239,11 +242,20 @@ final class PartnerOrder
         }
 
         if (preg_match('/(\d+)[^\d]+(\d+)[^\d]*(kwiat|flower)/iu', $value, $matches) === 1) {
-            return $matches[1] . '–' . $matches[2] . ' kwiatów';
+            return sprintf(
+                /* translators: %1$d: lowest number of flowers. %2$d: highest number of flowers. */
+                __('%1$d–%2$d flowers', 'sage-front'),
+                (int) $matches[1],
+                (int) $matches[2],
+            );
         }
 
         if (preg_match('/(\d+)[^\d]*(kwiat|flower)/iu', $value, $matches) === 1) {
-            return $matches[1] . ' kwiatów';
+            return sprintf(
+                /* translators: %d: number of flowers. */
+                __('%d flowers', 'sage-front'),
+                (int) $matches[1],
+            );
         }
 
         return '';
