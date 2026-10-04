@@ -19,7 +19,7 @@
   @php(post_class( trim( 'group bg-background relative flex flex-col overflow-hidden rounded-3xl border border-[#E0E0D7] lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent ' . $wrapperClass ) ))
 >
   <div
-    class="relative aspect-[370/304] w-full overflow-hidden md:aspect-[704/447] lg:aspect-[835/480] lg:rounded-[32px]"
+    class="relative aspect-370/304 w-full overflow-hidden md:aspect-704/447 lg:aspect-835/480 lg:rounded-[32px]"
   >
     @if (has_post_thumbnail())
       {!!

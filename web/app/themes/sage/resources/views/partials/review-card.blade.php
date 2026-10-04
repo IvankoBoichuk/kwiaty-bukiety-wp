@@ -4,7 +4,7 @@
    */
 @endphp
 
-<div class="flex flex-col gap-3 bg-[#E5EFDE] p-4">
+<div class="flex flex-col gap-3 bg-secondary p-4">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2 text-[13px] leading-3.75 font-semibold">
       @if ($review->name())

@@ -15,7 +15,7 @@
     <div class="bg-background flex h-13 items-center gap-2.5 rounded-2xl border border-[#E0E0D7] px-4 py-1">
       <button
         type="button"
-        class="flex size-5 items-center justify-center text-[#6D9586] transition-all disabled:cursor-not-allowed disabled:opacity-50"
+        class="flex size-5 items-center justify-center text-green-easy transition-all disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="$store.productPurchase.quantity <= 1 || $store.productPurchase.isSubmitting"
         aria-label="{{ $decreaseQuantityLabel }}"
         @click="$store.productPurchase.decrement()"
@@ -29,7 +29,7 @@
 
       <button
         type="button"
-        class="flex size-5 items-center justify-center text-[#6D9586] transition-all disabled:cursor-not-allowed disabled:opacity-50"
+        class="flex size-5 items-center justify-center text-green-easy transition-all disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="$store.productPurchase.isSubmitting"
         aria-label="{{ $increaseQuantityLabel }}"
         @click="$store.productPurchase.increment()"
@@ -43,7 +43,7 @@
 
     <button
       type="button"
-      class="text-gray-6 flex min-h-13 min-w-72 items-center justify-center gap-2.5 rounded-full bg-[#484D6F] px-9 py-3 text-center transition-all disabled:cursor-not-allowed disabled:opacity-60"
+      class="text-gray-6 flex min-h-13 min-w-72 items-center justify-center gap-2.5 rounded-full bg-purple-dark px-9 py-3 text-center transition-all disabled:cursor-not-allowed disabled:opacity-60"
       :disabled="!$store.productPurchase.canSubmit || $store.productPurchase.isSubmitting"
       @click="$store.productPurchase.submit()"
     >

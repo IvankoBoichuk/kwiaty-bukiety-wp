@@ -498,7 +498,7 @@ class CartCheckout
         $field['input_class'] = array_values(
             array_filter(
                 array_merge((array) ($field['input_class'] ?? []), [
-                    'w-full rounded-[14px] border border-[#DDD7CF] bg-[#FCF9F6] px-4 py-3 text-[14px] leading-5 text-green-default placeholder:text-[#A4A094] focus:border-green-easy focus:outline-none',
+                    'w-full rounded-[14px] border border-[#DDD7CF] bg-background px-4 py-3 text-[14px] leading-5 text-green-default placeholder:text-[#A4A094] focus:border-green-easy focus:outline-none',
                 ]),
             ),
         );

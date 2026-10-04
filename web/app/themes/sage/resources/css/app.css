@@ -4,6 +4,7 @@
 @import 'tailwindcss';
 @import './typography.css';
 @import './buttons.css';
+
 @plugin '@tailwindcss/typography';
 
 @source '../../app/**/*.php';
@@ -43,6 +44,48 @@
   /* Shadows */
   --shadow-100: 0px 1px 4px rgba(12, 12, 13, 0.05);
   --shadow-card: 0px 2px 32px rgba(0, 0, 0, 0.08);
+}
+
+@utility card {
+  @apply shadow-card rounded-xl bg-white px-3 py-4;
+}
+
+@utility bx-container {
+  @apply mx-0 px-3 md:px-8 lg:px-[max(20px,calc((100%-1680px)/2))];
+}
+
+@utility mx-container {
+  @apply mx-3 md:mx-8 lg:mx-[max(20px,calc((100%-1680px)/2))];
+}
+
+/* The negative counterparts of the container gutter: each cancels the padding
+   bx-container reserves on that side, so an element nested inside a padded
+   container can bleed back out to the window edge.
+
+   They read --container-gutter instead of restating bx-container's percentage,
+   because a percentage margin resolves against the element's own containing
+   block — for a grid item that is its grid area, not the page — so the
+   percentage form is only correct on a direct child of a full-width container
+   and quietly computes a far smaller gutter anywhere deeper. */
+
+/* Bleeds out on both sides. */
+@utility -mx-container {
+  @apply -mx-3 md:-mx-8 lg:-mx-(--container-gutter);
+}
+
+/* Bleeds out on the left only. */
+@utility -ml-container {
+  @apply -ml-3 md:-ml-8 lg:-ml-(--container-gutter);
+}
+
+/* Bleeds out on the right only. */
+@utility -mr-container {
+  @apply -mr-3 md:-mr-8 lg:-mr-(--container-gutter);
+}
+
+@utility sage-container {
+  @apply mx-auto px-3 md:px-8 lg:px-[max(20px,calc((100%-1680px)/2))];
+  /* lg:px-[calc((100vw-1680px)/2)]; */
 }
 
 /* Base styles */
@@ -123,7 +166,7 @@
   }
 
   .woocommerce-message {
-    @apply text-green-default border-green-easy bg-[#E5EFDE];
+    @apply text-green-default border-green-easy bg-secondary;
   }
 
   .woocommerce-error {
@@ -145,10 +188,6 @@
   button {
     @apply cursor-pointer;
   }
-}
-
-@utility card {
-  @apply shadow-card rounded-xl bg-white px-3 py-4;
 }
 
 @layer components {
@@ -235,44 +274,6 @@
   }
 }
 
-@utility bx-container {
-  @apply mx-0 px-3 md:px-8 lg:px-[max(20px,calc((100%-1680px)/2))];
-}
-
-@utility mx-container {
-  @apply mx-3 md:mx-8 lg:mx-[max(20px,calc((100%-1680px)/2))];
-}
-
-/* The negative counterparts of the container gutter: each cancels the padding
-   bx-container reserves on that side, so an element nested inside a padded
-   container can bleed back out to the window edge.
-
-   They read --container-gutter instead of restating bx-container's percentage,
-   because a percentage margin resolves against the element's own containing
-   block — for a grid item that is its grid area, not the page — so the
-   percentage form is only correct on a direct child of a full-width container
-   and quietly computes a far smaller gutter anywhere deeper. */
-
-/* Bleeds out on both sides. */
-@utility -mx-container {
-  @apply -mx-3 md:-mx-8 lg:-mx-(--container-gutter);
-}
-
-/* Bleeds out on the left only. */
-@utility -ml-container {
-  @apply -ml-3 md:-ml-8 lg:-ml-(--container-gutter);
-}
-
-/* Bleeds out on the right only. */
-@utility -mr-container {
-  @apply -mr-3 md:-mr-8 lg:-mr-(--container-gutter);
-}
-
-@utility sage-container {
-  @apply mx-auto px-3 md:px-8 lg:px-[max(20px,calc((100%-1680px)/2))];
-  /* lg:px-[calc((100vw-1680px)/2)]; */
-}
-
 @layer base {
   section {
     @apply mx-container;
@@ -316,11 +317,11 @@ section:has(.section__subtitle) {
 }
 
 .fa-section-block--products-2 {
-  @apply bx-container bg-[#E5EFDE] py-12 lg:py-30;
+  @apply bx-container bg-secondary py-12 lg:py-30;
 }
 
 .fa-section-block--cities-1 {
-  @apply bx-container text-dark-text bg-[#E5EFDE] py-10;
+  @apply bx-container text-dark-text bg-secondary py-10;
 }
 .fa-section-block--cities-1 img {
   @apply h-full w-full object-cover;
@@ -348,9 +349,9 @@ section:has(.section__subtitle) {
       @apply ring-green-dark rounded-xl ring-2 ring-offset-0;
     }
     label {
-      @apply w-full rounded-xl border-[#E0E0D7] bg-[#FCF9F6] p-2;
+      @apply w-full rounded-xl border-[#E0E0D7] bg-background p-2;
       &.active {
-        @apply bg-[#FCF9F6];
+        @apply bg-background;
         box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
       }
     }

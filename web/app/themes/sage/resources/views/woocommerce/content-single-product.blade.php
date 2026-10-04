@@ -122,7 +122,7 @@
       @endif
     </section>
     @if (!empty($relatedProducts))
-      <section class="bx-container bg-[#E5EFDE] py-12 lg:py-25">
+      <section class="bx-container bg-secondary py-12 lg:py-25">
         <h2 class="h2-mobile lg:h3-desktop text-green-default mb-6">{{ __('Similar products', 'sage-front') }}</h2>
         <div class="grid auto-rows-auto grid-cols-2 gap-x-2.75 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           @foreach ($relatedProducts as $item)

@@ -52,7 +52,7 @@
             <figure class="order-first m-0 md:order-last">
               {!!
                 get_the_post_thumbnail(null, 'full', [
-                  'class' => 'aspect-[370/296] w-full rounded-2xl object-cover md:aspect-[346/192] lg:aspect-[1113/592]',
+                  'class' => 'aspect-370/296 w-full rounded-2xl object-cover md:aspect-346/192 lg:aspect-1113/592',
                   'loading' => 'eager',
                   'fetchpriority' => 'high',
                   'sizes' => '(min-width: 1024px) 66vw, (min-width: 768px) 50vw, 100vw',

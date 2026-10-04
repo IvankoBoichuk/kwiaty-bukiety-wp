@@ -34,7 +34,7 @@
     ],
   ];
 @endphp
-<footer class="bx-container grid gap-12 bg-[#03130B] py-5 pt-8 text-white">
+<footer class="bx-container grid gap-12 bg-primary-dark py-5 pt-8 text-white">
   <div
     class="grid gap-14 md:grid-cols-[auto_auto] md:gap-x-10.5 md:gap-y-12 lg:flex lg:items-start lg:justify-between lg:gap-5"
   >

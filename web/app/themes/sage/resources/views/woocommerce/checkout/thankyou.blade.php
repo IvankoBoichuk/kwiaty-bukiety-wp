@@ -66,7 +66,7 @@
           </div>
           @if ($deliveryDate || $deliveryTimeLabel !== '')
             <div class="mb-6 flex flex-col gap-1 md:mb-0 lg:mb-5.5">
-              <div class="text-3.5 text-center font-normal text-[#6D9586] md:text-base">
+              <div class="text-3.5 text-center font-normal text-green-easy md:text-base">
                 {{ __('Expected delivery', 'sage-front') }}
               </div>
               <div class="text-body-15 text-dark-text flex justify-center gap-3 font-bold md:text-lg md:text-[22px]">

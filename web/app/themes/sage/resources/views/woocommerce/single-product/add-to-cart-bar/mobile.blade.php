@@ -32,7 +32,7 @@
 
   <button
     type="button"
-    class="text-gray-6 flex max-w-3xs flex-1 items-center justify-between gap-2.5 rounded-full bg-[#484D6F] px-6 py-3 text-left transition-all disabled:cursor-not-allowed disabled:opacity-60"
+    class="text-gray-6 flex max-w-3xs flex-1 items-center justify-between gap-2.5 rounded-full bg-purple-dark px-6 py-3 text-left transition-all disabled:cursor-not-allowed disabled:opacity-60"
     :disabled="!$store.productPurchase.canSubmit || $store.productPurchase.isSubmitting"
     @click="$store.productPurchase.submit()"
   >

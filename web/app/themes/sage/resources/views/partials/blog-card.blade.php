@@ -21,7 +21,7 @@
 <article
   @php(post_class( trim( 'group bg-background relative flex h-full flex-col overflow-hidden rounded-3xl border border-[#E0E0D7] lg:rounded-[32px] ' . $wrapperClass ) ))
 >
-  <div class="relative aspect-[370/304] w-full overflow-hidden md:aspect-[346/255] lg:aspect-[552/381]">
+  <div class="relative aspect-370/304 w-full overflow-hidden md:aspect-346/255 lg:aspect-552/381">
     @if (has_post_thumbnail())
       {!!
         get_the_post_thumbnail(null, 'large', [
