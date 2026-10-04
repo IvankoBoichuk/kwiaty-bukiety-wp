@@ -83,12 +83,7 @@
       ]
     },
     "wordpress-install-dir": "web/wp",
-    "composer-exit-on-patch-failure": true,
-    "patches": {
-      "frontenda/frontenda-blocks": {
-        "MediaRenderer: fall back to the attachment title, then the site name, so section images never render alt=\"\"": "patches/frontenda-blocks-media-alt-fallback.patch"
-      }
-    }
+    "composer-exit-on-patch-failure": true
   },
   "scripts": {
     "lint": "pint --test",
