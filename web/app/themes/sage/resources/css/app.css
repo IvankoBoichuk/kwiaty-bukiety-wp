@@ -8,8 +8,7 @@
 @plugin '@tailwindcss/typography';
 
 @source '../../app/**/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@source '../**/*.{js,ts,php}';
 
 @theme {
   /* Primary brand colors - customize these for your project */

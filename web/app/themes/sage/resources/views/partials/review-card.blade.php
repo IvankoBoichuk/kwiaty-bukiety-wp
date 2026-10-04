@@ -8,10 +8,10 @@
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2 text-[13px] leading-3.75 font-semibold">
       @if ($review->name())
-        <div class="text-green-easy uppercase">{{ $review->name() }}</div>
+        <div class="text-green-default uppercase">{{ $review->name() }}</div>
       @endif
       @if ($review->location())
-        <div class="text-gray-3">{{ $review->location() }}</div>
+        <div class="text-gray-2">{{ $review->location() }}</div>
       @endif
     </div>
 

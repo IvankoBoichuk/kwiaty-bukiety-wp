@@ -105,7 +105,7 @@
 
   @if ($featuredPost || $secondaryPosts !== [])
     <div
-      class="mt-6 grid auto-rows-fr grid-cols-2 gap-1.25 md:auto-rows-[100px] md:gap-3 lg:mt-8.5 lg:auto-rows-[124px] lg:grid-cols-3"
+      class="mt-6 grid auto-rows-fr grid-cols-2 gap-1.25 md:auto-rows-25 md:gap-3 lg:mt-8.5 lg:auto-rows-31 lg:grid-cols-3"
     >
       @if ($featuredPost)
         <a
