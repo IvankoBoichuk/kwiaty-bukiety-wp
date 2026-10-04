@@ -740,3 +740,115 @@ msgstr ""
 #: resources/views/partials/content-single.blade.php:77
 msgid "Page"
 msgstr ""
+
+#: resources/views/partials/article-terms.blade.php:21
+msgid "Categories"
+msgstr ""
+
+#: resources/views/partials/article-terms.blade.php:21
+msgid "Tags"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:22
+msgid "Previous article"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:28
+msgid "Next article"
+msgstr ""
+
+#: resources/views/partials/article-nav.blade.php:41
+msgid "Articles"
+msgstr ""
+
+#: resources/views/partials/comments.blade.php:32
+msgid "Comments"
+msgstr ""
+
+#: resources/views/partials/comment.blade.php:42
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: resources/views/partials/comment.blade.php:35
+msgid "Reply"
+msgstr ""
+
+#: app/View/Composers/Comments.php:159
+msgid "Leave a comment"
+msgstr ""
+
+#. %s is replaced with the name of the comment author being replied to
+#: resources/views/partials/comment.blade.php:38 app/View/Composers/Comments.php:161
+#, php-format
+msgid "Reply to %s"
+msgstr ""
+
+#: app/View/Composers/Comments.php:164
+msgid "Cancel reply"
+msgstr ""
+
+#: app/View/Composers/Comments.php:165
+msgid "Publish comment"
+msgstr ""
+
+#: app/View/Composers/Comments.php:172
+msgid "Your e-mail address will not be published. The fields marked with an asterisk are required."
+msgstr ""
+
+#: app/View/Composers/Comments.php:183
+msgid "Name"
+msgstr ""
+
+#: app/View/Composers/Comments.php:191
+msgid "E-mail"
+msgstr ""
+
+#: app/View/Composers/Comments.php:242
+msgid "Comment"
+msgstr ""
+
+#: app/View/Composers/Comments.php:245
+msgid "Share your thoughts about this article"
+msgstr ""
+
+#: app/View/Composers/Comments.php:282
+msgid "Save my name and e-mail in this browser for my next comment."
+msgstr ""
+
+#. %s is replaced with the display name of the logged-in user
+#: app/View/Composers/Comments.php:304
+#, php-format
+msgid "Commenting as %s."
+msgstr ""
+
+#: app/View/Composers/Comments.php:316
+msgid "Log out"
+msgstr ""
+
+#: app/View/Composers/Comments.php:330
+msgid "You have to be logged in to post a comment."
+msgstr ""
+
+#: resources/views/partials/cart-coupon.blade.php:57
+msgid "Apply"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:106
+msgid "Enter a coupon code."
+msgstr ""
+
+#: resources/views/partials/cart-coupon.blade.php:44
+msgid "Enter your code"
+msgstr ""
+
+#: resources/views/partials/cart-coupon.blade.php:26
+msgid "Remove coupon"
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:107
+msgid "We could not apply this coupon."
+msgstr ""
+
+#: app/Checkout/CartCheckout.php:111
+msgid "We could not remove this coupon."
+msgstr ""
