@@ -318,13 +318,18 @@ steps:
     commands:
       - apk add --no-cache curl
       - *site_domain
+      # --fail-with-body rather than --fail: plain --fail discards the response
+      # body on an HTTP error, which is where the API says *why* it refused
+      # ("Invalid API token", plus a correlation_id worth quoting at support).
+      # Keeping stdout costs one short JSON line on success and buys that.
+      # Dropping --fail entirely is not an option -- curl would exit 0 on a 401
+      # and the step would go green on a purge that never happened.
       - |
-        curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+        curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 \
           --request DELETE \
           --header "Authorization: Bearer $${HOSTINGER_API_TOKEN}" \
           --header 'Accept: application/json' \
-          "https://developers.hostinger.com/api/hosting/v1/accounts/$${HOSTINGER_ACCOUNT}/websites/$${SITE_DOMAIN}/cache/clear" \
-          > /dev/null
+          "https://developers.hostinger.com/api/hosting/v1/accounts/$${HOSTINGER_ACCOUNT}/websites/$${SITE_DOMAIN}/cache/clear"
 
   # --fail covers the maintenance page too: a leftover .maintenance answers 503.
   - name: smoke-test
