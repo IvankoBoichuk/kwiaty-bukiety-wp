@@ -13,23 +13,20 @@
    */
   $sprite = get_template_directory_uri() . '/resources/icon/sprite-base.svg';
   $wrapperClass = trim((string) ($wrapperClass ?? ''));
+  $cardImage = Markup::cardImage('large', [
+    'class' => 'size-full object-cover',
+    'loading' => 'eager',
+    'fetchpriority' => 'high',
+    'sizes' => '(min-width: 1024px) 50vw, 100vw',
+  ]);
 @endphp
 
 <article
   @php(post_class( trim( 'group bg-background relative flex flex-col overflow-hidden rounded-3xl border border-[#E0E0D7] lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent ' . $wrapperClass ) ))
 >
-  <div
-    class="relative aspect-370/304 w-full overflow-hidden md:aspect-704/447 lg:aspect-835/480 lg:rounded-[32px]"
-  >
-    @if (has_post_thumbnail())
-      {!!
-        get_the_post_thumbnail(null, 'large', [
-          'class' => 'size-full object-cover',
-          'loading' => 'eager',
-          'fetchpriority' => 'high',
-          'sizes' => '(min-width: 1024px) 50vw, 100vw',
-        ])
-      !!}
+  <div class="relative aspect-370/304 w-full overflow-hidden md:aspect-704/447 lg:aspect-835/480 lg:rounded-[32px]">
+    @if ($cardImage !== '')
+      {!! $cardImage !!}
     @else
       <div class="bg-secondary size-full" aria-hidden="true"></div>
     @endif

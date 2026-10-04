@@ -7,6 +7,7 @@ namespace App\Support;
 use Illuminate\Support\Facades\Vite;
 use Throwable;
 use Timber\Image;
+use WP_Post;
 
 /**
  * Presentation helpers shared by the fa/section templates and the WooCommerce
@@ -107,6 +108,150 @@ final class Markup
         remove_filter('excerpt_more', $ellipsis, 99);
 
         return trim(wp_strip_all_tags($excerpt));
+    }
+
+    /**
+     * The <img> a card shows for a post, or an empty string when it has none.
+     *
+     * A card used to ask for the featured image alone, which printed the grey
+     * placeholder next to every imported article saved without one -- and the
+     * body of those articles opens on a photo. So the thumbnail comes first and
+     * the first image in the body stands in for it, which is the one rule every
+     * card on the site now shares.
+     *
+     * The attachment id is what travels, not a URL: wp_get_attachment_image()
+     * needs it to emit the srcset and sizes the cards rely on, so an <img>
+     * hotlinked from outside the media library is skipped and the caller draws
+     * its placeholder instead.
+     *
+     * @param  array<string, string>  $attr
+     */
+    public static function cardImage(
+        string $size = 'large',
+        array $attr = [],
+        int|WP_Post|null $post = null,
+    ): string {
+        $post = get_post($post);
+        $imageId = self::cardImageId($post);
+
+        if ($imageId === null) {
+            return '';
+        }
+
+        /*
+         * A card is a link whose only other content is the title, so an
+         * attachment saved without alt text would hand a screen reader an
+         * unlabelled image inside it. The post title is what a reader of the
+         * card sees next to the photo anyway.
+         */
+        $alt = trim(
+            (string) get_post_meta($imageId, '_wp_attachment_image_alt', true),
+        );
+
+        if ($alt === '' && !isset($attr['alt'])) {
+            $attr['alt'] = wp_strip_all_tags(get_the_title($post));
+        }
+
+        return wp_get_attachment_image($imageId, $size, false, $attr);
+    }
+
+    /**
+     * The attachment behind cardImage(): the post thumbnail, else the first
+     * image of the body.
+     */
+    public static function cardImageId(int|WP_Post|null $post = null): ?int
+    {
+        $post = get_post($post);
+
+        if (!$post instanceof WP_Post) {
+            return null;
+        }
+
+        $thumbnailId = (int) get_post_thumbnail_id($post);
+
+        if ($thumbnailId > 0) {
+            return $thumbnailId;
+        }
+
+        // A listing renders the same post once, but a single article asks for
+        // its own image from the hero, the schema and the related block, and
+        // scanning the body is the expensive half of the lookup.
+        static $firstImage = [];
+
+        if (!array_key_exists($post->ID, $firstImage)) {
+            $firstImage[$post->ID] = self::firstContentImageId(
+                (string) $post->post_content,
+            );
+        }
+
+        return $firstImage[$post->ID];
+    }
+
+    /**
+     * Every attachment id the images of a post body carry, in the order they
+     * appear in it.
+     *
+     * The ids come from the markup the editor saves rather than from a rendered
+     * copy of it: the_content() on another post's body would run every block
+     * and shortcode on the page to find one number. An image block writes the
+     * id twice -- in its own block comment and as the wp-image-N class of the
+     * <img> -- while a cover or media-text block writes it only in the comment,
+     * hence both halves of the pattern.
+     *
+     * @return array<int, int>
+     */
+    public static function contentImageIds(string $content): array
+    {
+        if (
+            !str_contains($content, 'wp-image-')
+            && !str_contains($content, '<!-- wp:')
+        ) {
+            return [];
+        }
+
+        preg_match_all(
+            '/wp-image-(?<class>\d+)'
+            . '|<!--\s*wp:(?:image|cover|media-text|gallery)\s+(?<attributes>\{.*?\})\s*\/?-->/s',
+            $content,
+            $matches,
+            PREG_SET_ORDER,
+        );
+
+        $ids = [];
+
+        foreach ($matches as $match) {
+            $id = 0;
+
+            if (($match['class'] ?? '') !== '') {
+                $id = (int) $match['class'];
+            } elseif (
+                ($match['attributes'] ?? '') !== ''
+                && preg_match('/"id":\s*(\d+)/', $match['attributes'], $found)
+                    === 1
+            ) {
+                $id = (int) $found[1];
+            }
+
+            if ($id > 0) {
+                $ids[$id] = $id;
+            }
+        }
+
+        return array_values($ids);
+    }
+
+    /**
+     * The first id of contentImageIds() that is still an image in the library.
+     */
+    private static function firstContentImageId(string $content): ?int
+    {
+        foreach (self::contentImageIds($content) as $id) {
+            if (wp_attachment_is_image($id)) {
+                return $id;
+            }
+        }
+
+        return null;
     }
 
     public static function buttonClasses(

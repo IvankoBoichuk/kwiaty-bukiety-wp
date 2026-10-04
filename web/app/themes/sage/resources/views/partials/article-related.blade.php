@@ -1,3 +1,4 @@
+@use('App\Support\Markup')
 @php
   /*
    * "Będziesz zainteresowany" -- the related reading block (Figma 518-3458
@@ -48,14 +49,14 @@
           class="bg-background group flex h-16 items-center overflow-hidden md:h-22 md:pr-3"
         >
           <div class="h-full w-[73px] shrink-0 overflow-hidden rounded-xl md:w-[124px]">
-            @if (has_post_thumbnail())
-              {!!
-                get_the_post_thumbnail(null, 'medium', [
-                  'class' => 'size-full object-cover',
-                  'loading' => 'lazy',
-                  'sizes' => '124px',
-                ])
-              !!}
+            @php($cardImage = Markup::cardImage('medium', [
+                'class' => 'size-full object-cover',
+                'loading' => 'lazy',
+                'sizes' => '124px'
+              ]))
+
+            @if ($cardImage !== '')
+              {!! $cardImage !!}
             @else
               <div class="bg-secondary size-full" aria-hidden="true"></div>
             @endif
