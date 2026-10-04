@@ -44,3 +44,5 @@ phpunit.xml
 .devcontainer
 **/node_modules/
 /package-lock.json
+# Playwright/Lighthouse perf gate (reports only; baselines are committed)
+tests/perf/.reports/
