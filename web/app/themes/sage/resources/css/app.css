@@ -328,6 +328,11 @@ section:has(.section__subtitle) {
 .fa-section-block--cities-1 img {
   @apply h-full w-full object-cover;
 }
+
+.fa-section-block--offer-1,
+.fa-section-block--offer-2 {
+  @apply pt-5 lg:pt-10;
+}
  
 .woocommerce-products-header {
   @apply py-5 md:py-6 lg:py-8;
