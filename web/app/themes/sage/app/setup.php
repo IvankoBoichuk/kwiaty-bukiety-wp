@@ -70,6 +70,27 @@ add_action(
 );
 
 /**
+ * Load the threaded-comment script where the article page needs it.
+ *
+ * It is the one core script the theme asks for: partials/comment prints a Reply
+ * control per comment, and without comment-reply.js those links fall back to
+ * reloading the page with ?replytocom. Core registers it with no dependencies
+ * and an async strategy, so it costs the article page one small non-blocking
+ * request and nothing anywhere else.
+ *
+ * @return void
+ */
+add_action('wp_enqueue_scripts', function (): void {
+    if (
+        is_singular()
+        && comments_open()
+        && get_option('thread_comments')
+    ) {
+        wp_enqueue_script('comment-reply');
+    }
+});
+
+/**
  * Defer the front-end scripts that are safe to delay.
  *
  * Everything the theme itself ships is already deferred: Vite emits the bundle
