@@ -42,6 +42,13 @@ variables:
   # step can only carry one `environment`, and validate-secrets has to see them
   # too. They are account-wide, so dev and prod share them -- only the domain
   # differs, and that comes from the branch below.
+  #
+  # Every name here must exist as a repo secret, and for every event these steps
+  # run on: a `from_secret` that resolves to nothing fails the whole config with
+  # `secret "<name>" not found` before the first step starts. Woodpecker has no
+  # optional secret, so there is nothing a step can do about it. A new secret
+  # covers push, tag and deployment by default -- `manual` has to be added, or
+  # manual deploys break on exactly that error.
   - &deploy_env
     SSH_HOST:
       from_secret: ssh_host
@@ -114,9 +121,9 @@ steps:
       - test -n "$${SSH_USER}"
       - test -n "$${SSH_PRIVATE_KEY}"
       - test -n "$${DEPLOY_PATH}"
-      # The Hostinger credentials are deliberately not checked here: the purge
-      # step skips itself when they are absent, so a repo without them can still
-      # deploy. They are the only deploy secrets that are optional.
+      - test -n "$${HOSTINGER_ACCOUNT}"
+      - test -n "$${HOSTINGER_API_TOKEN}"
+      # Catches a branch with no domain mapped before anything is built.
       - *site_domain
 
   # Dev dependencies, because pint and pest live there. composer-prod prunes
@@ -303,25 +310,12 @@ steps:
   # The optional `?directory=` parameter targets a WordPress install in a
   # subdirectory; without it the call clears the whole website, which is what we
   # want -- worth knowing if a purge ever looks like it missed Bedrock's web/wp.
-  #
-  # Skips itself, loudly, when the credentials are not configured, so adding
-  # this step did not block deploys on creating two secrets first -- and so it
-  # starts working on its own once they exist. A real HTTP failure still fails
-  # the step: only the absence of credentials is tolerated, never a purge that
-  # was attempted and did not land.
   - name: purge-hostinger-cache
     image: alpine:3
     depends_on: [maintenance-off]
     when: *deploy_when
     environment: *deploy_env
     commands:
-      - |
-        if [ -z "$${HOSTINGER_ACCOUNT}" ] || [ -z "$${HOSTINGER_API_TOKEN}" ]; then
-          echo "SKIPPED: hostinger_account / hostinger_api_token are not set." >&2
-          echo "SKIPPED: the edge cache may keep serving HTML that references asset" >&2
-          echo "SKIPPED: filenames this deploy just removed. Add both secrets to fix." >&2
-          exit 0
-        fi
       - apk add --no-cache curl
       - *site_domain
       - |

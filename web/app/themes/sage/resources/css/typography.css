@@ -134,6 +134,26 @@
     @apply mx-auto block;
   }
 
+  /* From lg the measure is wide enough for the copy to wrap around an image,
+     so the images the editor inserts without an alignment -- aligncenter is
+     what the image block writes by default -- float too, alternating sides
+     down the article so they do not all stack against one edge. Each clears
+     its own side, so two images in a row sit one under the other rather than
+     side by side. An image the editor did align keeps the side it was given,
+     hence the :not(). Below lg the column is too narrow to wrap and they stay
+     full-width blocks. */
+  > :is(figure, img):not(.alignleft, .alignright) {
+    @apply lg:mt-0 lg:mb-5 lg:w-[346px] lg:max-w-[45%];
+  }
+
+  > :is(figure, img):not(.alignleft, .alignright):nth-of-type(odd) {
+    @apply lg:float-left lg:clear-left lg:mr-5 lg:ml-0;
+  }
+
+  > :is(figure, img):not(.alignleft, .alignright):nth-of-type(even) {
+    @apply lg:float-right lg:clear-right lg:mr-0 lg:ml-5;
+  }
+
   /* Floats must not escape the article into the footer. */
   &::after {
     @apply block clear-both content-[''];

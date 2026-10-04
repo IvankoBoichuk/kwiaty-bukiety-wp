@@ -28,12 +28,35 @@
     702-8385), so the copy does not run the full 1680px the container allows.
   --}}
   <section class="py-8 lg:py-12">
-    <div class="prose prose-content mx-auto w-full max-w-[1040px]">
-      @php(the_content())
+    <div class="mx-auto w-full max-w-260">
+      {{--
+        The page title and its featured image are printed here rather than by
+        the page template, and each only when the page carries one: most text
+        pages are saved without a thumbnail, and a page can be published with
+        an empty title, so neither may leave an empty heading or a stray gap
+        above the copy. They sit outside the prose wrapper because the article
+        heading scale there is the one the editor's own headings use, which is
+        smaller than the page title the design asks for.
+      --}}
+      @if ($title)
+        <h1 class="h2-mobile md:h2-desktop text-green-default mb-5 md:mb-8">{!! $title !!}</h1>
+      @endif
+
+      @if (has_post_thumbnail())
+        {!!
+          get_the_post_thumbnail(null, 'large', [
+            'class' => 'mb-5 md:mb-8 w-full rounded-2xl object-cover',
+          ])
+        !!}
+      @endif
+
+      <div class="prose prose-content">
+        @php(the_content())
+      </div>
     </div>
 
     @if ($pagination())
-      <nav class="page-nav text-body-13 md:text-body-16 mx-auto mt-8 w-full max-w-[1040px]" aria-label="Page">
+      <nav class="page-nav text-body-13 md:text-body-16 mx-auto mt-8 w-full max-w-260" aria-label="Page">
         {!! $pagination !!}
       </nav>
     @endif
