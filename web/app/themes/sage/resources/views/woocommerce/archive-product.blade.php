@@ -29,6 +29,11 @@ the readme will list any important changes.
     $archiveDescription = trim((string) ob_get_clean());
 
     $categoryFaq = \App\Catalog\Faq::forCurrentTerm();
+
+    // Page 1 only, like the FAQ below: the tiles are the same on
+    // every page of the loop, and repeating them would put the one
+    // block of internal links on the category into each paged URL.
+    $categoryTiles = is_paged() ? [] : \App\Catalog\CategoryTiles::forCurrentTerm();
   @endphp
 
   {{-- The whole catalogue is one container-width child of #main. That keeps it
@@ -41,6 +46,13 @@ the readme will list any important changes.
         <h1 class="woocommerce-products-header__title page-title">{!! woocommerce_page_title(false) !!}</h1>
       @endif
     </header>
+
+    {{-- The curated tiles of the category come before its products, the
+         order the old site used: the visitor picks the kind of flower
+         first and lands on its own catalogue. --}}
+    @if ($categoryTiles !== [])
+      @include('woocommerce.category-tiles', ['tiles' => $categoryTiles])
+    @endif
 
     @if (woocommerce_product_loop())
       @php
