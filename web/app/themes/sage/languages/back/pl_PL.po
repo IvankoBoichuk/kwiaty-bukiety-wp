@@ -39,6 +39,38 @@ msgstr "Odpowiedź"
 msgid "Remove"
 msgstr "Usuń"
 
+#: app/Admin/CategoryTilesMetabox.php:65
+msgid "Category tiles"
+msgstr "Kafelki kategorii"
+
+#: app/Admin/CategoryTilesMetabox.php:83
+msgid "Add tile"
+msgstr "Dodaj kafelek"
+
+#: app/Admin/CategoryTilesMetabox.php:88
+msgid "Printed above the products on the first page of this category. Leave the picture and the caption empty to use the chosen category's own thumbnail and name."
+msgstr "Wyświetlane nad produktami na pierwszej stronie tej kategorii. Zostaw zdjęcie i podpis puste, aby użyć miniatury i nazwy wybranej kategorii."
+
+#: app/Admin/CategoryTilesMetabox.php:123
+msgid "Caption — defaults to the category name"
+msgstr "Podpis — domyślnie nazwa kategorii"
+
+#: app/Admin/CategoryTilesMetabox.php:126
+msgid "Select picture"
+msgstr "Wybierz zdjęcie"
+
+#: app/Admin/CategoryTilesMetabox.php:127
+msgid "Clear"
+msgstr "Wyczyść"
+
+#: app/Admin/CategoryTilesMetabox.php:128
+msgid "Remove tile"
+msgstr "Usuń kafelek"
+
+#: app/Admin/CategoryTilesMetabox.php:139
+msgid "— Select a category —"
+msgstr "— Wybierz kategorię —"
+
 #: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
 msgid "Contact Settings"
 msgstr "Ustawienia kontaktu"

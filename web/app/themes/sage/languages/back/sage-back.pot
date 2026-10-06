@@ -38,6 +38,38 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+#: app/Admin/CategoryTilesMetabox.php:65
+msgid "Category tiles"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:83
+msgid "Add tile"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:88
+msgid "Printed above the products on the first page of this category. Leave the picture and the caption empty to use the chosen category's own thumbnail and name."
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:123
+msgid "Caption — defaults to the category name"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:126
+msgid "Select picture"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:127
+msgid "Clear"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:128
+msgid "Remove tile"
+msgstr ""
+
+#: app/Admin/CategoryTilesMetabox.php:139
+msgid "— Select a category —"
+msgstr ""
+
 #: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
 msgid "Contact Settings"
 msgstr ""
