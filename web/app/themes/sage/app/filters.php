@@ -22,6 +22,41 @@ add_filter('excerpt_more', function () {
     );
 });
 
+/**
+ * Keep the reviews sections to customer reviews, leaving out the shop's own
+ * answers.
+ *
+ * WP_Comment_Query returns a reply next to the review it answers, so the grid
+ * read as review, our answer, review, our answer -- with the answer carrying
+ * the replying account's name and no rating. A review is a top-level comment;
+ * an answer always has a parent.
+ *
+ * Manual mode is left alone: there the editor picked the comment ids by hand,
+ * and silently dropping one of them would be harder to explain than showing it.
+ */
+add_filter(
+    'frontenda_blocks/reviews/args',
+    function ($arguments, $slot = null) {
+        if (!is_array($arguments)) {
+            return $arguments;
+        }
+
+        if (
+            is_object($slot)
+            && method_exists($slot, 'mode')
+            && $slot->mode() === 'manual'
+        ) {
+            return $arguments;
+        }
+
+        $arguments['parent'] = 0;
+
+        return $arguments;
+    },
+    10,
+    2,
+);
+
 add_filter(
     'woocommerce_format_price_range',
     fn($price, $from, $to) => \sprintf(
