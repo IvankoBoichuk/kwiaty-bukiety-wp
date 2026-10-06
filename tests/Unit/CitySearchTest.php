@@ -12,6 +12,9 @@ use App\Modules\LocalLinking\LocalPageRepository;
  * without a Polish keyboard actually types -- and returned whatever the first
  * twenty rows of the CSV happened to be. Both halves are covered here: the
  * fold that makes the comparison work, and the ranking that decides the order.
+ *
+ * The suite boots no WordPress, so these also pin down that normalize() folds
+ * the Polish set on its own rather than leaning on remove_accents().
  */
 
 /**
@@ -44,7 +47,7 @@ it('folds every Polish diacritic to its ASCII letter', function () {
     expect(LocalPageRepository::normalize('ĄĆĘŁŃÓŚŹŻ'))->toBe('acelnoszz');
 });
 
-it('folds the crossed L that remove_accents() leaves alone', function () {
+it('folds the crossed L without needing WordPress to do it', function () {
     expect(LocalPageRepository::normalize('Łódź'))->toBe('lodz');
     expect(LocalPageRepository::normalize('Piła'))->toBe('pila');
     expect(LocalPageRepository::normalize('Świnoujście'))->toBe('swinoujscie');
@@ -67,13 +70,37 @@ it('finds a city typed without its diacritics', function () {
         ['Łódź', 'Łódzkie', 849],
     ]);
 
-    // Both are prefix matches, so the band is ordered by name -- and in the
-    // Polish alphabet l comes before ł, which puts Pilawa first.
+    // Which of the two comes first is the next test's business: they are both
+    // prefix matches differing only by ł/l, which is the one place the two
+    // orderings disagree. What matters here is that a query with no diacritics
+    // reaches a name that has them.
     expect(kb_city_names(LocalPageRepository::rankMatches($index, 'Pila')))
-        ->toBe(['Pilawa', 'Piła']);
+        ->toEqualCanonicalizing(['Piła', 'Pilawa']);
 
     expect(kb_city_names(LocalPageRepository::rankMatches($index, 'lodz')))
         ->toBe(['Łódź']);
+});
+
+/**
+ * Within a band the order comes from Collator('pl_PL') when intl is loaded and
+ * from the ASCII fold when it is not, and for ł/l the two disagree. That is the
+ * documented fallback, not a bug -- but it is worth pinning, because the two
+ * environments this runs in differ: the dev box has intl, the php:8.3-cli-alpine
+ * image CI tests on does not.
+ */
+it('orders ł against l by whichever collation is available', function () {
+    $index = kb_city_index([
+        ['Piła', 'Wielkopolskie', 755],
+        ['Pilawa', 'Mazowieckie', 1101],
+    ]);
+
+    expect(kb_city_names(LocalPageRepository::rankMatches($index, 'pila')))->toBe(
+        class_exists(Collator::class)
+            // Polish collation puts l before ł, so Pilawa sorts first.
+            ? ['Pilawa', 'Piła']
+            // The fold compares "pila" against "pilawa", so Piła sorts first.
+            : ['Piła', 'Pilawa'],
+    );
 });
 
 it('puts a match at the start of the name above one inside it', function () {
