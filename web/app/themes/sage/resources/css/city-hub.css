@@ -55,3 +55,49 @@
 .kb-city-title {
   @apply text-green-dark text-[16px] font-bold md:text-[18px];
 }
+
+/* The city search: an input and the listbox resources/js/modules/
+   city-autocomplete.ts fills. The markup is the one the page content carries,
+   so these are its class names, not ours -- except .is-active and
+   .kb-city-search__status, which the module adds. */
+.kb-city-search__wrapper {
+  @apply relative;
+}
+
+.kb-city-search__input {
+  @apply border-green-default/15 focus:border-green-easy text-green-default placeholder:text-gray-3 w-full rounded-xl border bg-white px-4 py-3 text-[15px] outline-none transition-colors duration-200 md:max-w-xl;
+}
+
+.kb-city-suggestions {
+  /* Above the voivodeship cards that follow, and scrollable rather than
+     pushing the page around at ten results. */
+  @apply border-green-default/15 absolute z-20 mt-1 max-h-80 w-full list-none overflow-y-auto rounded-xl border bg-white p-1 shadow-card md:max-w-xl;
+}
+
+.kb-city-suggestion {
+  @apply text-green-default flex cursor-pointer items-baseline gap-2 rounded-lg px-3 py-2 text-[15px];
+}
+
+.kb-city-suggestion:hover,
+.kb-city-suggestion.is-active {
+  @apply bg-green-easy/15;
+}
+
+.kb-city-suggestion__city {
+  @apply font-semibold;
+}
+
+.kb-city-suggestion__voivodeship {
+  @apply text-gray-3 text-[13px];
+}
+
+.kb-city-suggestions__empty {
+  @apply text-gray-3 px-3 py-2 text-[15px];
+}
+
+/* The count the listbox cannot announce on its own. Off-screen, not
+   display:none -- a hidden live region is never read. */
+.kb-city-search__status {
+  @apply absolute m-0 h-px w-px overflow-hidden border-0 p-0 whitespace-nowrap;
+  clip-path: inset(50%);
+}

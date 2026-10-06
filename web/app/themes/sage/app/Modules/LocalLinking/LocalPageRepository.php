@@ -21,6 +21,44 @@ class LocalPageRepository
 
     public const POPULAR_MAX = 12;
 
+    public const SEARCH_LIMIT = 10;
+
+    protected const INDEX_CACHE_GROUP = 'sage_city_index';
+
+    protected const INDEX_CACHE_KEY = 'cities';
+
+    protected const INDEX_CACHE_TTL = 12 * HOUR_IN_SECONDS;
+
+    /**
+     * The nine Polish letters that carry a diacritic, lower-case only --
+     * normalize() lower-cases before it folds. ó is in the list although
+     * remove_accents() handles it: the point is that the fold is the same with
+     * or without WordPress.
+     *
+     * @var array<string, string>
+     */
+    protected const DIACRITICS = [
+        'ą' => 'a',
+        'ć' => 'c',
+        'ę' => 'e',
+        'ł' => 'l',
+        'ń' => 'n',
+        'ó' => 'o',
+        'ś' => 's',
+        'ź' => 'z',
+        'ż' => 'z',
+    ];
+
+    /**
+     * @var array<int, array{normalized: string, name: string, voivodeship: string, term_id: int}>|null
+     */
+    protected static ?array $cityIndex = null;
+
+    /**
+     * False until resolved; null when intl is missing.
+     */
+    protected static \Collator|false|null $collator = false;
+
     /**
      * Is this term one of the city landing pages?
      */
@@ -217,5 +255,264 @@ class LocalPageRepository
         $rows = $wpdb->get_results("SELECT * FROM {$woj} ORDER BY name ASC");
 
         return $rows ?: [];
+    }
+
+    /**
+     * Normalizes a city name or a search query to one comparable form.
+     *
+     * Polish city names are written with diacritics and searched without them:
+     * nobody types "Piła" or "Łódź" into an autocomplete, they type "pila" and
+     * "lodz". The nine Polish letters are folded by the map below rather than
+     * by remove_accents() alone, because remove_accents() is WordPress: it
+     * reaches it through seems_utf8() and get_locale(), so what it does to ł
+     * depends on how the string arrived and which locale is loaded. The map
+     * does not, which is also what lets the ranking be unit-tested without
+     * booting WordPress. remove_accents() still runs after it, as a net for
+     * everything that is not Polish (a pasted "Köln", a name carrying a stray
+     * combining mark); over text the map already folded it is a no-op.
+     *
+     * The result is lower-case and ASCII for every name in bi_miasto, which is
+     * what lets the matching below use byte offsets.
+     */
+    public static function normalize(string $value): string
+    {
+        $value = mb_strtolower(trim($value), 'UTF-8');
+
+        if ($value === '') {
+            return '';
+        }
+
+        $value = strtr($value, self::DIACRITICS);
+
+        if (function_exists('remove_accents')) {
+            $value = remove_accents($value);
+        }
+
+        // "Nowy  Sącz" and "Nowy Sącz" are the same query; a single space also
+        // keeps the word-boundary test below to one character.
+        return (string) preg_replace('/\s+/u', ' ', $value);
+    }
+
+    /**
+     * Cities matching a query, best match first.
+     *
+     * Ranked in three bands -- the name starts with the query, a word inside
+     * the name starts with it, the query appears anywhere -- so "gora" offers
+     * Góra, then Jelenia Góra, then Twardogóra. The production endpoint had no
+     * ranking at all: it returned the first twenty rows in CSV order.
+     *
+     * The filtering runs in PHP over the cached index rather than as a SQL
+     * LIKE. 1 742 rows is nothing to scan, and a LIKE could not see past the
+     * diacritics without a collation that also folds ł.
+     *
+     * @return array<int, array{name: string, voivodeship: string, term_id: int}>
+     */
+    public function searchCities(string $query, int $limit = self::SEARCH_LIMIT): array
+    {
+        return self::rankMatches($this->cityIndex(), $query, $limit);
+    }
+
+    /**
+     * The matching and ordering of searchCities(), over an index passed in.
+     *
+     * Split out so the ranking can be exercised without a database: it is the
+     * part with the rules in it.
+     *
+     * @param  array<int, array{normalized: string, name: string, voivodeship: string, term_id: int}>  $index
+     * @return array<int, array{name: string, voivodeship: string, term_id: int}>
+     */
+    public static function rankMatches(
+        array $index,
+        string $query,
+        int $limit = self::SEARCH_LIMIT,
+    ): array {
+        $query = self::normalize($query);
+
+        if ($query === '' || $limit < 1) {
+            return [];
+        }
+
+        $matches = [];
+
+        foreach ($index as $row) {
+            $position = strpos($row['normalized'], $query);
+
+            if ($position === false) {
+                continue;
+            }
+
+            $matches[] = [
+                'rank' => self::rank($row['normalized'], $position),
+                'row' => $row,
+            ];
+        }
+
+        if ($matches === []) {
+            return [];
+        }
+
+        $collator = self::collator();
+
+        usort($matches, static function (array $a, array $b) use ($collator): int {
+            if ($a['rank'] !== $b['rank']) {
+                return $a['rank'] <=> $b['rank'];
+            }
+
+            $comparison = $collator instanceof \Collator
+                ? (int) $collator->compare($a['row']['name'], $b['row']['name'])
+                : $a['row']['normalized'] <=> $b['row']['normalized'];
+
+            // Nothing in bi_miasto shares a name today, but the fallback
+            // comparison is over the ASCII fold, where "Łodz" and "Lodz" would
+            // tie. The term id settles it so a cached response cannot differ
+            // from the one that built it.
+            return $comparison !== 0
+                ? $comparison
+                : $a['row']['term_id'] <=> $b['row']['term_id'];
+        });
+
+        return array_map(
+            static fn(array $match): array => [
+                'name' => $match['row']['name'],
+                'voivodeship' => $match['row']['voivodeship'],
+                'term_id' => $match['row']['term_id'],
+            ],
+            array_slice($matches, 0, $limit),
+        );
+    }
+
+    /**
+     * Every city that has a landing page, with its name pre-normalized.
+     *
+     * @return array<int, array{normalized: string, name: string, voivodeship: string, term_id: int}>
+     */
+    public function cityIndex(): array
+    {
+        if (self::$cityIndex !== null) {
+            return self::$cityIndex;
+        }
+
+        $cached = wp_cache_get(self::INDEX_CACHE_KEY, self::INDEX_CACHE_GROUP);
+
+        if (is_array($cached)) {
+            return self::$cityIndex = $cached;
+        }
+
+        $index = $this->buildCityIndex();
+
+        wp_cache_set(
+            self::INDEX_CACHE_KEY,
+            $index,
+            self::INDEX_CACHE_GROUP,
+            self::INDEX_CACHE_TTL,
+        );
+
+        return self::$cityIndex = $index;
+    }
+
+    /**
+     * Drops the cached index.
+     *
+     * The bi_* tables have no write path in the theme -- they arrive with a
+     * database import and are read-only here -- so nothing invalidates this on
+     * its own. Call it from whatever loads them next, or flush the object cache
+     * after an import.
+     */
+    public static function flushCityIndex(): void
+    {
+        self::$cityIndex = null;
+
+        Tables::flush();
+
+        wp_cache_delete(self::INDEX_CACHE_KEY, self::INDEX_CACHE_GROUP);
+    }
+
+    /**
+     * @return array<int, array{normalized: string, name: string, voivodeship: string, term_id: int}>
+     */
+    protected function buildCityIndex(): array
+    {
+        if (! Tables::exists()) {
+            return [];
+        }
+
+        global $wpdb;
+
+        $page = Tables::name(Tables::LOCAL_PAGE);
+        $city = Tables::name(Tables::MIASTO);
+        $woj = Tables::name(Tables::WOJEWODZTWO);
+
+        // LEFT JOIN on the voivodeship: a city whose wojewodztwo_id points
+        // nowhere still has a page worth offering, it just has no label.
+        $rows = $wpdb->get_results(
+            "SELECT m.name AS name, w.name AS voivodeship, lp.term_id
+             FROM {$page} lp
+             INNER JOIN {$city} m ON m.id = lp.miasto_id
+             LEFT JOIN {$woj} w ON w.id = m.wojewodztwo_id
+             WHERE lp.term_id IS NOT NULL AND lp.term_id > 0
+             ORDER BY m.name ASC",
+        );
+
+        $index = [];
+
+        foreach ($rows ?: [] as $row) {
+            $name = trim((string) ($row->name ?? ''));
+            $termId = (int) ($row->term_id ?? 0);
+
+            if ($name === '' || $termId <= 0) {
+                continue;
+            }
+
+            $index[] = [
+                'normalized' => self::normalize($name),
+                'name' => $name,
+                'voivodeship' => (string) ($row->voivodeship ?? ''),
+                'term_id' => $termId,
+            ];
+        }
+
+        return $index;
+    }
+
+    /**
+     * 0 when the name starts with the query, 1 when a word inside it does,
+     * 2 when the query only appears somewhere in the middle.
+     *
+     * Byte offsets are safe here: normalize() folds every name in bi_miasto to
+     * ASCII, and for anything it could not fold a continuation byte is neither
+     * a space nor a hyphen, so the match lands in the last band.
+     */
+    protected static function rank(string $normalized, int $position): int
+    {
+        if ($position === 0) {
+            return 0;
+        }
+
+        $preceding = $normalized[$position - 1];
+
+        return $preceding === ' ' || $preceding === '-' ? 1 : 2;
+    }
+
+    /**
+     * Polish collation for the within-band ordering, when intl is available.
+     *
+     * Without it the band falls back to the normalized name, which orders the
+     * ASCII fold instead of the Polish alphabet -- close enough that the lists
+     * read the same, and the only difference anyone would notice is where an
+     * ł-city sits among the l-cities.
+     */
+    protected static function collator(): ?\Collator
+    {
+        if (self::$collator !== false) {
+            return self::$collator;
+        }
+
+        if (! class_exists(\Collator::class)) {
+            return self::$collator = null;
+        }
+
+        $collator = collator_create('pl_PL');
+
+        return self::$collator = $collator instanceof \Collator ? $collator : null;
     }
 }

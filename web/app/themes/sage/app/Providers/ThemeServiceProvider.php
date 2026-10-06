@@ -11,6 +11,7 @@ use App\Admin\OrderNotificationsSettingsPage;
 use App\Admin\ProductAttributeIcons;
 use App\Api\CartCount;
 use App\Api\Categories;
+use App\Api\Cities;
 use App\Api\DeliverySchedule;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
@@ -68,6 +69,7 @@ class ThemeServiceProvider extends SageServiceProvider
         Timber::init();
         CartCount::boot();
         Categories::boot();
+        Cities::boot();
         DeliverySchedule::boot();
         Healthcheck::boot();
         ContactSettingsPage::boot();

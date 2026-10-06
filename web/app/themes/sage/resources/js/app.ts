@@ -13,6 +13,7 @@ import { initDeliveryTimers } from './modules/delivery-timer';
 import { initMenu } from './modules/menu';
 import { initCounterAnimation } from './modules/counter-animation';
 import { initCartCount } from './modules/cart-count';
+import { initCitySearch } from './modules/city-search-bootstrap';
 import collapse from '@alpinejs/collapse';
 import mask from '@alpinejs/mask';
 
@@ -26,5 +27,6 @@ initMenu();
 initCounterAnimation();
 initDeliveryTimers();
 void initCartCount();
+void initCitySearch();
 void initIntlTelInputs();
 Alpine.start();

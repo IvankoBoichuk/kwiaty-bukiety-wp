@@ -198,7 +198,15 @@ msgstr ""
 msgid "Order Total"
 msgstr ""
 
-#: app/SEO/CityHub.php:91
+#: app/SEO/CityHub.php:189
+msgid "No results"
+msgstr ""
+
+#: app/SEO/CityHub.php:190
+msgid "Suggestions: %d"
+msgstr ""
+
+#: app/SEO/CityHub.php:97
 msgid "Voivodeships"
 msgstr ""
 

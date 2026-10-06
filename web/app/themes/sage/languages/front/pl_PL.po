@@ -199,7 +199,15 @@ msgstr "Nie udało się usunąć tego kuponu."
 msgid "Order Total"
 msgstr "Razem za zamówienie"
 
-#: app/SEO/CityHub.php:91
+#: app/SEO/CityHub.php:189
+msgid "No results"
+msgstr "Brak wyników"
+
+#: app/SEO/CityHub.php:190
+msgid "Suggestions: %d"
+msgstr "Podpowiedzi: %d"
+
+#: app/SEO/CityHub.php:97
 msgid "Voivodeships"
 msgstr "Województwa"
 

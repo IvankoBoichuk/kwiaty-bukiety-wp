@@ -19,6 +19,23 @@ if (! isset($GLOBALS['kb_test'])) {
     $GLOBALS['kb_test'] = [];
 }
 
+/*
+ * WordPress' time constants. A class constant such as `12 * HOUR_IN_SECONDS`
+ * is evaluated the first time anything in that class is initialized, not the
+ * first time the constant itself is read, so a cache TTL is enough to make an
+ * otherwise WP-free class unloadable without these.
+ */
+foreach ([
+    'MINUTE_IN_SECONDS' => 60,
+    'HOUR_IN_SECONDS' => 3600,
+    'DAY_IN_SECONDS' => 86400,
+    'WEEK_IN_SECONDS' => 604800,
+] as $name => $value) {
+    if (! defined($name)) {
+        define($name, $value);
+    }
+}
+
 /**
  * Resets the recorded state. Call it at the top of every test.
  *

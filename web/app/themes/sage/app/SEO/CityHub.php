@@ -49,10 +49,16 @@ final class CityHub
         'kwiaciarnia-zachodniopomorskie' => 'Zachodniopomorskie',
     ];
 
+    /**
+     * The id of the JSON block the autocomplete module reads its config from.
+     */
+    public const SEARCH_CONFIG_ID = 'kb-city-search-config';
+
     public static function boot(): void
     {
         add_shortcode(self::SHORTCODE, [self::class, 'renderShortcode']);
         add_action('wp_head', [self::class, 'renderSchema'], 20);
+        add_action('wp_footer', [self::class, 'renderSearchConfig']);
     }
 
     /**
@@ -156,5 +162,56 @@ final class CityHub
         }
 
         return $items;
+    }
+
+    /**
+     * Config for the city autocomplete, as a JSON block the module parses.
+     *
+     * The search field itself is part of the hub's own content -- it came over
+     * from production as raw HTML inside the page -- so there is no template to
+     * hand the REST route and the copy to. They travel in this block instead of
+     * a window global, which keeps the page free of inline script, and the
+     * module falls back to the default route when the block is absent (the
+     * field also appears in the old product-category description, which this
+     * install no longer serves but a staging copy still might).
+     */
+    public static function renderSearchConfig(): void
+    {
+        if (! self::isHub()) {
+            return;
+        }
+
+        $config = [
+            'endpoint' => rest_url('sage/v1/cities'),
+            'strings' => [
+                // The production snippet printed this one string, in Polish,
+                // from PHP. It is the only copy the module needs.
+                'noResults' => __('No results', 'sage-front'),
+                'suggestions' => __('Suggestions: %d', 'sage-front'),
+            ],
+        ];
+
+        printf(
+            '<script type="application/json" id="%s">%s</script>' . "\n",
+            esc_attr(self::SEARCH_CONFIG_ID),
+            wp_json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+        );
+    }
+
+    /**
+     * True on whichever of the two hubs this install serves.
+     *
+     * Production had "Kwiaciarnie w Polsce" as a product category; here the
+     * same content lives on a page of that slug. Both are checked so the field
+     * works wherever the description ends up.
+     */
+    public static function isHub(): bool
+    {
+        if (is_page(self::HUB_SLUG)) {
+            return true;
+        }
+
+        return function_exists('is_product_category')
+            && is_product_category(self::HUB_SLUG);
     }
 }
