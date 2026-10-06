@@ -4,6 +4,7 @@
 @import 'tailwindcss';
 @import './typography.css';
 @import './buttons.css';
+@import './blocks.css';
 
 @plugin '@tailwindcss/typography';
 

@@ -1,0 +1,87 @@
+/*
+ * Layout for the core blocks the editor content uses.
+ *
+ * app/setup.php drops wp-block-library, so the theme carries the rules for the
+ * core blocks that appear in page and category copy -- the same arrangement
+ * buttons.css and the .prose-content section of typography.css already make.
+ *
+ * The columns block needs it most. Core splits that block's layout in two: the
+ * per-container half (flex-wrap, justification) is printed inline next to the
+ * markup as .wp-container-core-columns-is-layout-*, while `display: flex` and
+ * the stacking breakpoint live in the stylesheet. Only the inline half was
+ * reaching the page, so every column fell to its own row: the four category
+ * tiles on /kontakt/ and the photos under its copy ran down the page one per
+ * screen instead of two per row.
+ *
+ * The declarations below are core's own, breakpoint included, so a row laid out
+ * in the editor stacks on phones exactly where the editor preview says it does.
+ * The !important flags are core's too, and they are what lets the breakpoint win
+ * over the inline flex-wrap, which carries no media query of its own.
+ */
+.wp-block-columns {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap !important;
+  align-items: normal !important;
+  gap: var(--wp--style--block-gap, 1.5rem);
+}
+
+.wp-block-columns.are-vertically-aligned-top {
+  align-items: flex-start;
+}
+
+.wp-block-columns.are-vertically-aligned-center {
+  align-items: center;
+}
+
+.wp-block-columns.are-vertically-aligned-bottom {
+  align-items: flex-end;
+}
+
+.wp-block-columns.is-not-stacked-on-mobile {
+  flex-wrap: nowrap !important;
+}
+
+.wp-block-column {
+  flex-grow: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.wp-block-column.is-vertically-aligned-top {
+  align-self: flex-start;
+}
+
+.wp-block-column.is-vertically-aligned-center {
+  align-self: center;
+}
+
+.wp-block-column.is-vertically-aligned-bottom {
+  align-self: flex-end;
+}
+
+.wp-block-column.is-vertically-aligned-stretch {
+  align-self: stretch;
+}
+
+@media (max-width: 781px) {
+  .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column {
+    flex-basis: 100% !important;
+  }
+}
+
+@media (min-width: 782px) {
+  .wp-block-columns {
+    flex-wrap: nowrap !important;
+  }
+
+  .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+
+  .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column[style*='flex-basis'] {
+    flex-grow: 0;
+  }
+}
