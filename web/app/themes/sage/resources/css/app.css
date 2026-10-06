@@ -5,6 +5,7 @@
 @import './typography.css';
 @import './buttons.css';
 @import './blocks.css';
+@import './city-hub.css';
 
 @plugin '@tailwindcss/typography';
 

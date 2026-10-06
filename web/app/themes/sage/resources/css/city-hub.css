@@ -1,0 +1,57 @@
+/*
+ * The hand-written markup inside the "Kwiaciarnie w Polsce" category
+ * description and the city categories under it.
+ *
+ * Those descriptions were carried over from production as raw HTML, and the
+ * grids in them -- the voivodeship tiles, the city directory -- are plain divs
+ * that relied on a stylesheet which did not come with them. Unstyled, every
+ * tile is a block, so the sixteen voivodeship photos ran down the page one per
+ * row instead of filling it.
+ *
+ * The cards are dressed to match resources/views/seo/city-hub.blade.php, the
+ * shortcode that renders the same list without the photos, so the two read as
+ * one component whichever of them a page ends up using.
+ */
+.kb-section,
+.kb-city-section {
+  @apply mt-10 flex flex-col gap-5 lg:mt-14;
+}
+
+.kb-voivodeships-grid {
+  @apply grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4;
+}
+
+.kb-voivodeship-link {
+  @apply border-green-default/10 hover:border-green-easy text-green-default flex h-full flex-col gap-2 overflow-hidden rounded-xl border bg-white pb-3 text-center text-[15px] font-semibold no-underline transition-colors duration-200;
+}
+
+.kb-voivodeship-img {
+  @apply m-0 aspect-16/9 w-full rounded-none object-cover;
+}
+
+/* The directory: the metropolises in one column, everything else in the grid
+   of short lists beside them. The lists are <a> separated by <br>, so the
+   columns come from the wrappers and the rows from the line breaks. */
+.kb-city-layout {
+  @apply grid gap-8 md:grid-cols-2 md:gap-10;
+}
+
+.kb-city-sub-grid {
+  @apply grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4;
+}
+
+.kb-city-vertical-list,
+.kb-city-sub-col {
+  @apply flex flex-col gap-2 text-[15px] leading-6;
+}
+
+/* The line breaks between the links would double the gap the flex column
+   already provides. */
+.kb-city-vertical-list br,
+.kb-city-sub-col br {
+  @apply hidden;
+}
+
+.kb-city-title {
+  @apply text-green-dark text-[16px] font-bold md:text-[18px];
+}
