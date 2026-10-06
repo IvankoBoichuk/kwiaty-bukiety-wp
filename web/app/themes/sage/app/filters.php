@@ -856,6 +856,43 @@ add_action('woocommerce_before_add_to_cart_button', function () {
     echo '<div data-addition-inputs hidden></div>';
 });
 
+/**
+ * Drop the "no products found" notice from the category pages that are not
+ * catalogue pages.
+ *
+ * "Kwiaciarnie w Polsce" and the city pages under it are product categories
+ * only because that is where their URL lives; what they carry is the term
+ * description -- the voivodeship links, the city directory, the FAQ. The empty
+ * loop above that text printed WooCommerce's "nothing matched your selection",
+ * which reads as a broken catalogue on a page that never had products.
+ *
+ * A category with neither products nor a description still gets the notice:
+ * there the page really is empty and the notice is the only thing explaining
+ * it.
+ *
+ * @return void
+ */
+add_action('wp', function (): void {
+    if (
+        is_admin()
+        || !function_exists('is_product_category')
+        || !is_product_category()
+    ) {
+        return;
+    }
+
+    $term = get_queried_object();
+
+    if (
+        !$term instanceof \WP_Term
+        || trim(wp_strip_all_tags((string) $term->description)) === ''
+    ) {
+        return;
+    }
+
+    remove_action('woocommerce_no_products_found', 'wc_no_products_found', 10);
+});
+
 remove_action('woocommerce_thankyou', 'woocommerce_order_details_table', 10);
 remove_action('woocommerce_after_shop_loop', 'woocommerce_pagination', 10);
 
