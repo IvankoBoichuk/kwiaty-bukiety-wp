@@ -3,7 +3,7 @@
 @section('content')
   {{-- The listing is one container-width child of #main, so the title block,
        the grid and the paging control keep the gutter of the design instead of
-       picking up #main's own flex gap between them. --}}
+       picking up the section spacing of #main between them. --}}
   <section class="flex flex-col pt-5 pb-12 md:pt-6 lg:pt-8 lg:pb-20">
     @include('partials.blog-header')
 

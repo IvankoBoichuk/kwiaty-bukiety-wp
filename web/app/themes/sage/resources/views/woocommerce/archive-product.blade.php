@@ -37,7 +37,7 @@ the readme will list any important changes.
   @endphp
 
   {{-- The whole catalogue is one container-width child of #main. That keeps it
-       on the 1680px grid of the design, and it stops #main's own flex gap
+       on the 1680px grid of the design, and it stops the section spacing of #main
        (up to 140px on xl) from landing between the title, the grid, the
        button and the description. --}}
   <div class="mx-container flex flex-col pb-12 lg:pb-20">

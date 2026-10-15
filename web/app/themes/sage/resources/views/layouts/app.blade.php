@@ -24,10 +24,13 @@
 <body @php(body_class()) x-data="mobileMenu">
   @php(wp_body_open())
 
+  {{-- First in the body so a keyboard user can jump past the header. --}}
+  <a class="sr-only focus:not-sr-only" href="#main"> {{ __('Skip to content', 'sage-front') }} </a>
+
   @include('sections.header')
-  <main id="main" class="flex grow flex-col flex-1 gap-12 bg-background lg:gap-25 xl:gap-35">
-    <!-- pb-12 lg:pb-25 -->
-    <a class="sr-only focus:not-sr-only" href="#main"> {{ __('Skip to content', 'sage-front') }} </a>
+  {{-- page-flow: the vertical spacing between sections, see the "Section
+       flow" block in app.css. --}}
+  <main id="main" class="page-flow grow flex-1 bg-background">
     @yield('content')
   </main>
   @hasSection('sidebar')

@@ -287,6 +287,79 @@
   }
 }
 
+/* Section flow: the vertical rhythm of a page.
+ *
+ * A section never spaces itself from its neighbours -- #main does, from the
+ * pair of sections that meet. The space belongs to the seam rather than to
+ * either side of it, so an editor can reorder fa/section blocks and the page
+ * stays even. A section only says what kind it is:
+ *
+ * - default: no background; sits --section-space from the section it meets,
+ *   and half of that from the header or the footer.
+ * - surface: a full-bleed background with its padding inside. Two surfaces
+ *   meet edge to edge, since the change of colour is the seam, and the first
+ *   and last ones meet the header and the footer the same way.
+ * - hero: as the first section of a page it sits close under the header
+ *   instead of half a --section-space below it.
+ * - tight: reads as a continuation of the section above, so it sits half the
+ *   distance from it.
+ *
+ * The section--* classes can be set from the editor (Advanced > Additional
+ * CSS class), and the variants below are given their kind once, here.
+ *
+ * The seam is a flex gap, not a margin on `* + *`: #main also holds children
+ * that are out of the flow -- WooCommerce's screen-reader breadcrumb, an empty
+ * notices wrapper -- and a sibling selector counts them as a section above,
+ * while the gap skips them. The kinds that sit closer than the gap take it
+ * back with a negative margin.
+ *
+ * The page edges -- under the header, above the footer -- are only spaced for
+ * fa/section blocks. The hand-built templates (blog, catalogue, product, 404,
+ * account, cart) pad their containers to the design themselves. */
+@layer components {
+  .page-flow {
+    --section-space: --spacing(12);
+    @apply flex flex-col;
+    gap: var(--section-space);
+  }
+  @media (width >= 64rem) {
+    .page-flow {
+      --section-space: --spacing(25);
+    }
+  }
+  @media (width >= 80rem) {
+    .page-flow {
+      --section-space: --spacing(35);
+    }
+  }
+
+  .page-flow > .section--tight {
+    margin-top: calc(var(--section-space) / -2);
+  }
+  .page-flow
+    > :is(.section--surface, .fa-section-block--products-2, .fa-section-block--cities-1)
+    + :is(.section--surface, .fa-section-block--products-2, .fa-section-block--cities-1) {
+    margin-top: calc(var(--section-space) * -1);
+  }
+
+  .page-flow > .fa-section-block:first-child {
+    margin-top: calc(var(--section-space) / 2);
+  }
+  .page-flow > .fa-section-block:last-child {
+    margin-bottom: calc(var(--section-space) / 2);
+  }
+  .page-flow > :is(.section--surface, .fa-section-block--products-2, .fa-section-block--cities-1):first-child {
+    margin-top: 0;
+  }
+  .page-flow > :is(.section--surface, .fa-section-block--products-2, .fa-section-block--cities-1):last-child {
+    margin-bottom: 0;
+  }
+
+  .page-flow > :is(.section--hero, .fa-section-block--offer-1, .fa-section-block--offer-2):first-child {
+    @apply mt-0 pt-5 lg:pt-10;
+  }
+}
+
 /* Used by every fa/section header that renders a subtitle. In the design it is
    an oversized decorative word sitting behind the content — Galada Regular
    266px in #F6F1ED, uppercase. The section needs `isolate` so the negative
@@ -331,11 +404,6 @@ section:has(.section__subtitle) {
   @apply h-full w-full object-cover;
 }
 
-.fa-section-block--offer-1,
-.fa-section-block--offer-2 {
-  @apply pt-5 lg:pt-10;
-}
- 
 .woocommerce-products-header {
   @apply py-5 md:py-6 lg:py-8;
 }
