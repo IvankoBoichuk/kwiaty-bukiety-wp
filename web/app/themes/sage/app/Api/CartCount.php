@@ -28,6 +28,49 @@ class CartCount
     public static function boot(): void
     {
         add_action('rest_api_init', [self::class, 'registerRoutes']);
+        add_filter('rest_authentication_errors', [self::class, 'authenticateByCookie'], 99);
+    }
+
+    /**
+     * Keeps a logged-in customer logged in on this route.
+     *
+     * WordPress only trusts the login cookie on a REST request that also sends
+     * an X-WP-Nonce, and drops to user 0 otherwise (rest_cookie_check_errors,
+     * priority 100). The badge fetch sends none -- the page it runs on may be
+     * a cached copy -- so the request arrived as a guest holding a logged-in
+     * user's session cookie, which WooCommerce reads as "logged out" and
+     * answers by destroying the session: the count came back 0 and the cart
+     * the customer had just filled was emptied. Answering first leaves the
+     * user the login cookie resolved to, the way the Store API does for its
+     * own routes (Automattic\WooCommerce\StoreApi\Authentication).
+     *
+     * The route is a read-only GET that returns a number, so skipping the
+     * nonce's CSRF check gives a cross-site page nothing to act on.
+     *
+     * @param  \WP_Error|null|true  $result
+     * @return \WP_Error|null|true
+     */
+    public static function authenticateByCookie($result)
+    {
+        if ($result !== null || ! self::isRequestToRoute()) {
+            return $result;
+        }
+
+        return true;
+    }
+
+    protected static function isRequestToRoute(): bool
+    {
+        $route = '/' . rest_get_url_prefix() . '/' . self::ROUTE_NAMESPACE . self::ROUTE;
+        $path = (string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+
+        if (untrailingslashit($path) === $route) {
+            return true;
+        }
+
+        // Plain permalinks: /?rest_route=/sage/v1/cart-count
+        return isset($_GET['rest_route'])
+            && untrailingslashit((string) wp_unslash($_GET['rest_route'])) === '/' . self::ROUTE_NAMESPACE . self::ROUTE;
     }
 
     public static function registerRoutes(): void
