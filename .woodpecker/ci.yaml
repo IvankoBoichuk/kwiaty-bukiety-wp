@@ -215,6 +215,14 @@ steps:
   # The timestamp has to stay a literal int; `$upgrading = time()` would never
   # satisfy WP's own 10-minute expiry, which is the only thing that unsticks
   # the site if this pipeline dies between here and maintenance-off.
+  #
+  # On Hostinger `wp` is a function in ~/.bashrc that runs wp-cli on PHP 8.3;
+  # the bare /usr/local/bin/wp runs on PHP 8.2 and dies on composer's platform
+  # check before WordPress loads. sshd's bash sources .bashrc for the command
+  # string, but a child shell does not, so the function is exported and the
+  # script runs in bash, which can inherit it -- `sh -s` used to drop it, and
+  # wp-cli had failed here on every deploy, leaving it all to the fallback.
+  # Where `wp` is a plain binary, `export -f` fails quietly and changes nothing.
   - name: maintenance-on
     image: alpine:3
     depends_on: [composer-prod, build-theme, build-plugin]
@@ -224,7 +232,7 @@ steps:
       - *ssh_setup
       - |
         ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
-          "DEPLOY_PATH=$${DEPLOY_PATH} sh -s" <<'REMOTE'
+          "export -f wp 2>/dev/null; DEPLOY_PATH=$${DEPLOY_PATH} bash -s" <<'REMOTE'
         cd "$DEPLOY_PATH" || exit 1
         if command -v wp >/dev/null 2>&1 && wp maintenance-mode activate --force; then
           exit 0
@@ -303,7 +311,7 @@ steps:
       - *ssh_setup
       - |
         ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
-          "DEPLOY_PATH=$${DEPLOY_PATH} sh -s" <<'REMOTE'
+          "export -f wp 2>/dev/null; DEPLOY_PATH=$${DEPLOY_PATH} bash -s" <<'REMOTE'
         cd "$DEPLOY_PATH" || exit 1
         if command -v wp >/dev/null 2>&1; then
           wp maintenance-mode deactivate || true
@@ -319,11 +327,9 @@ steps:
   # Hence after maintenance-off: under .maintenance admin-ajax returns 503 and
   # the purge fails, which it did on every deploy until this step existed.
   #
-  # The command string (not `sh -s` with a heredoc) matters: sshd then runs it
-  # through bash, which sources ~/.bashrc, and that is where the host maps `wp`
-  # to PHP 8.3. A bare /usr/local/bin/wp runs on PHP 8.2 and dies on composer's
-  # platform check before WordPress loads. No `|| true`: if this fails, stale
-  # HTML pointing at deleted assets stays on the edges for up to a week.
+  # `wp` runs straight in sshd's bash, so the ~/.bashrc PHP 8.3 wrapper applies
+  # with no export needed (see maintenance-on). No `|| true`: if this fails,
+  # stale HTML pointing at deleted assets stays on the edges for up to a week.
   - name: purge-litespeed
     image: alpine:3
     depends_on: [maintenance-off]
