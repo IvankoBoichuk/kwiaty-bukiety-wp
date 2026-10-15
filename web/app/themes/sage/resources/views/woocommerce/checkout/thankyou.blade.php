@@ -11,7 +11,11 @@
   $orderNumber = $order instanceof WC_Order ? $order->get_order_number() : '';
 @endphp
 
-<div class="woocommerce-order">
+{{-- The bottom padding is the one the other hand-built templates (blog,
+     catalogue, account) leave above the footer: #main only spaces fa/section
+     blocks from the page edges. The top is left to the confirmation itself,
+     whose photo runs up under the header on phones. --}}
+<div class="woocommerce-order pb-12 lg:pb-20">
   @if ($order instanceof WC_Order)
     @php(do_action('woocommerce_before_thankyou', $order->get_id()))
     @if ($order->has_status('failed'))
