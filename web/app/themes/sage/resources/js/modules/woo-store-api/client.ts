@@ -184,16 +184,21 @@ export class WooStoreApiClient {
         return result
     }
 
+    /**
+     * Only the nonce is taken from responses. Every Store API response also
+     * carries a Cart-Token, but in the browser the cart lives in the
+     * WooCommerce session cookie: a request that sends a Cart-Token is served
+     * from a token session instead and never gets that cookie. The token
+     * handed out by a response before the session exists -- e.g. the 403 of
+     * an expired nonce on a page-cached product page -- names a fresh guest,
+     * so the retry put the item in a cart only this page object knew about,
+     * and the badge showed 1 until the next reload emptied it.
+     */
     protected captureResponseTokens(response: Response): void {
         const nextNonce = response.headers.get('Nonce')
-        const nextCartToken = response.headers.get('Cart-Token')
 
         if (nextNonce) {
             this.nonce = nextNonce
-        }
-
-        if (nextCartToken) {
-            this.cartToken = nextCartToken
         }
     }
 
