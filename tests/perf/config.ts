@@ -79,7 +79,7 @@ export const updateBaseline = process.env.PERF_UPDATE_BASELINE === '1';
  */
 export const reportOnly = process.env.PERF_REPORT_ONLY === '1';
 
-function inferEnv(url: string): string {
+export function inferEnv(url: string): string {
   const { hostname } = new URL(url);
 
   if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.local')) return 'local';

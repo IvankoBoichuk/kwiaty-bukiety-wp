@@ -1,0 +1,564 @@
+<!doctype html>
+<!--
+  Template for .output/gallery.html. gallery-reporter.ts swaps the data
+  placeholder below for the run's results; open the generated file, not this one.
+-->
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Галерея скріншотів</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #efede8;
+    --text: #1d1f1c;
+    --muted: #6b6e68;
+    --border: #dedbd3;
+    --accent: #2f6b4f;
+    --accent-text: #ffffff;
+    --bad: #b3261e;
+    --bad-bg: #fbe9e7;
+    --ok: #2f6b4f;
+    --warn: #8a5a00;
+    --warn-bg: #fdf3dc;
+    --changed: #1f5fbf;
+    --changed-bg: #e6eefb;
+    --shadow: 0 1px 2px rgb(0 0 0 / .06), 0 4px 12px rgb(0 0 0 / .05);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141513;
+      --surface: #1d1f1c;
+      --surface-2: #262825;
+      --text: #ecebe6;
+      --muted: #9a9d96;
+      --border: #33362f;
+      --accent: #7fbf9c;
+      --accent-text: #10170f;
+      --bad: #ff8a80;
+      --bad-bg: #3a1d1a;
+      --ok: #7fbf9c;
+      --warn: #f0c060;
+      --warn-bg: #352a12;
+      --changed: #8ab4ff;
+      --changed-bg: #17243a;
+      --shadow: none;
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+    padding: 12px 20px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .toolbar h1 { margin: 0 8px 0 0; font-size: 16px; font-weight: 650; }
+  .summary { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .summary .bad { color: var(--bad); font-weight: 600; }
+  .summary .warn { color: var(--warn); font-weight: 600; }
+  .summary .changed { color: var(--changed); font-weight: 600; }
+  .summary code { font: 12px ui-monospace, Menlo, monospace; }
+  .control { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+
+  .segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .segmented button {
+    border: 0; background: var(--surface); color: var(--text);
+    padding: 5px 11px; font: inherit; cursor: pointer;
+  }
+  .segmented button + button { border-left: 1px solid var(--border); }
+  .segmented button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
+  select, input[type="range"] { font: inherit; accent-color: var(--accent); }
+  select { padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  label.check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
+
+  main { padding: 8px 20px 60px; }
+  section.group { margin-top: 28px; }
+  section.group > h2 { margin: 0 0 4px; font-size: 20px; font-weight: 650; }
+  section.group > .sub { margin: 0 0 12px; color: var(--muted); }
+  section.group > .sub a { color: inherit; }
+  h3 {
+    margin: 18px 0 10px; font-size: 12px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    max-width: 100%;
+  }
+  .card.failed { border-color: var(--bad); }
+  .card.warned { border-color: var(--warn); }
+  .card.changed { border-color: var(--changed); }
+  .card header {
+    display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 8px;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  .card header b { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .card header span { grid-column: 2; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+  .failed .dot { background: var(--bad); }
+  .warned .dot { background: var(--warn); }
+  .changed .dot { background: var(--changed); }
+  .change { padding: 6px 10px; font-size: 12px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .change.is-changed { background: var(--changed-bg); color: var(--changed); font-weight: 600; }
+
+  .shot {
+    display: block; width: 100%;
+    max-height: 70vh; overflow-y: auto; overflow-x: hidden;
+    background: var(--surface-2); cursor: zoom-in;
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .missing { padding: 24px 12px; color: var(--muted); text-align: center; background: var(--surface-2); }
+
+  .problem { padding: 8px 10px; background: var(--bad-bg); color: var(--bad); font-size: 12px; border-bottom: 1px solid var(--border); }
+  .problem summary { cursor: pointer; font-weight: 600; }
+  .problem.warning { background: var(--warn-bg); color: var(--warn); }
+  .problem pre { margin: 6px 0 0; white-space: pre-wrap; word-break: break-word; font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--text); }
+
+  .empty { margin: 60px auto; max-width: 420px; text-align: center; color: var(--muted); }
+
+  /* Full-size viewer */
+  .viewer { position: fixed; inset: 0; z-index: 50; display: none; flex-direction: column; background: #0e0f0e; color: #f2f2f2; }
+  .viewer.open { display: flex; }
+  .viewer .bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid rgb(255 255 255 / .12); }
+  .viewer .bar .title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .viewer .bar .title small { color: #a8a8a8; margin-left: 8px; }
+  .viewer button { border: 1px solid rgb(255 255 255 / .25); background: transparent; color: inherit; border-radius: 6px; padding: 4px 10px; font: inherit; cursor: pointer; }
+  .viewer button:hover { background: rgb(255 255 255 / .1); }
+  .viewer .stage { flex: 1; overflow: auto; display: flex; justify-content: center; padding: 16px; }
+  .viewer .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 16px; border-bottom: 1px solid rgb(255 255 255 / .12); }
+  .viewer .modes[hidden] { display: none; }
+  .viewer .modes button[aria-pressed="true"] { background: #f2f2f2; color: #111; border-color: #f2f2f2; }
+  .viewer .modes .info { color: #a8a8a8; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .viewer .modes input[type="range"] { width: 160px; accent-color: #f2f2f2; }
+  .stack { position: relative; display: grid; align-self: flex-start; max-width: 100%; box-shadow: 0 0 0 1px rgb(255 255 255 / .1); }
+  .stage.actual .stack { max-width: none; }
+  .stack img { grid-area: 1 / 1; display: block; width: 100%; height: auto; }
+  .stack img[hidden] { display: none; }
+  .stack .divider { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #ff3b7f; pointer-events: none; }
+  .stack .divider[hidden] { display: none; }
+  .stack .tag { position: sticky; top: 0; grid-area: 1 / 1; align-self: start; display: flex; justify-content: space-between; pointer-events: none; }
+  .stack .tag span { margin: 6px; padding: 2px 8px; border-radius: 4px; background: rgb(0 0 0 / .7); color: #fff; font-size: 12px; }
+  .stack .tag[hidden] { display: none; }
+
+  @media (max-width: 640px) {
+    .toolbar, main { padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <h1>Скріншоти</h1>
+  <span class="summary" id="summary"></span>
+  <span class="control" id="envControl" hidden>Сайт <select id="env"></select></span>
+  <span class="control">Групувати
+    <span class="segmented" id="groupBy">
+      <button data-value="page" aria-pressed="true">за сторінкою</button>
+      <button data-value="viewport" aria-pressed="false">за розширенням</button>
+    </span>
+  </span>
+  <span class="control">
+    <span class="segmented" id="device">
+      <button data-value="all" aria-pressed="true">Усі</button>
+      <button data-value="mobile" aria-pressed="false">Мобілка</button>
+      <button data-value="tablet" aria-pressed="false">Планшет</button>
+      <button data-value="desktop" aria-pressed="false">Десктоп</button>
+    </span>
+  </span>
+  <span class="control">Масштаб <input type="range" id="scale" min="10" max="60" step="5" value="25"> <span id="scaleValue">25%</span></span>
+  <span class="control">Показати
+    <span class="segmented" id="show">
+      <button data-value="all" aria-pressed="true">усі</button>
+      <button data-value="problems" aria-pressed="false">проблеми</button>
+      <button data-value="changed" aria-pressed="false">зміни</button>
+    </span>
+  </span>
+  <span class="control" id="thumbControl" hidden>Мініатюра
+    <span class="segmented" id="thumb">
+      <button data-value="shot" aria-pressed="true">знімок</button>
+      <button data-value="diff" aria-pressed="false">різниця</button>
+    </span>
+  </span>
+</div>
+
+<main id="main"></main>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Скріншот">
+  <div class="bar">
+    <button id="prev" title="Попередній (←)">←</button>
+    <button id="next" title="Наступний (→)">→</button>
+    <span class="title" id="viewerTitle"></span>
+    <button id="approve" title="Скопіювати команду, що робить цей знімок стабільним">Затвердити</button>
+    <button id="actual" title="Реальний розмір (Пробіл)">1:1</button>
+    <button id="close" title="Закрити (Esc)">✕</button>
+  </div>
+  <div class="modes" id="modes">
+    <span class="segmented" id="mode">
+      <button data-value="current" title="1">Нова</button>
+      <button data-value="stable" title="2">Стабільна</button>
+      <button data-value="overlay" title="3">Накладання</button>
+      <button data-value="swipe" title="4">Шторка</button>
+      <button data-value="diff" title="5">Різниця</button>
+    </span>
+    <input type="range" id="mix" min="0" max="100" value="50" aria-label="Прозорість або положення шторки">
+    <span class="info" id="changeInfo"></span>
+  </div>
+  <div class="stage" id="stage">
+    <div class="stack" id="stack">
+      <img id="imgStable" alt="Стабільна версія">
+      <img id="imgCurrent" alt="Нова версія">
+      <img id="imgDiff" alt="Різниця">
+      <div class="tag" id="tags"><span>Стабільна</span><span>Нова</span></div>
+      <div class="divider" id="divider"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = /*__GALLERY_DATA__*/[];
+
+const GROUPS = { mobile: 'Мобілка', tablet: 'Планшет', desktop: 'Десктоп' };
+const GROUP_ORDER = ['mobile', 'tablet', 'desktop'];
+
+const store = {
+  get(key, fallback) { try { return localStorage.getItem('gallery:' + key) ?? fallback; } catch { return fallback; } },
+  set(key, value) { try { localStorage.setItem('gallery:' + key, value); } catch {} },
+};
+
+const state = {
+  env: null,
+  groupBy: store.get('groupBy', 'page'),
+  device: store.get('device', 'all'),
+  scale: Number(store.get('scale', 25)),
+  show: store.get('show', 'all'),
+  thumb: store.get('thumb', 'shot'),
+  mode: store.get('mode', 'swipe'),
+  mix: Number(store.get('mix', 50)),
+};
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, ...children) => {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (key === 'class') node.className = value;
+    else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
+    else node.setAttribute(key, value);
+  }
+  for (const child of children.flat(Infinity)) if (child != null) node.append(child);
+  return node;
+};
+
+const isFailed = (entry) => entry.status !== 'passed' && entry.status !== 'skipped';
+const isWarned = (entry) => !isFailed(entry) && (entry.brokenImages ?? []).length > 0;
+const hasProblem = (entry) => isFailed(entry) || isWarned(entry);
+const isChanged = (entry) => (entry.visual?.changedPixels ?? 0) > 0;
+const bust = (src, entry) => src + '?t=' + encodeURIComponent(entry.capturedAt);
+
+/** "2.31%", or "<0.01%" for a handful of pixels -- still a change, just a tiny one. */
+function percent(ratio) {
+  const value = ratio * 100;
+  return value > 0 && value < 0.01 ? '<0.01%' : value.toFixed(2).replace(/\.?0+$/, '') + '%';
+}
+
+function changeText(visual) {
+  const [, height] = visual.size;
+  const [, stableHeight] = visual.stableSize;
+  const tall = height !== stableHeight ? ` · висота ${stableHeight}→${height}` : '';
+  return `Змінено ${percent(visual.ratio)}${tall}`;
+}
+const size = (entry) => `${entry.viewport.width}×${entry.viewport.height}`;
+const viewportSort = (a, b) =>
+  GROUP_ORDER.indexOf(a.viewport.group) - GROUP_ORDER.indexOf(b.viewport.group) || a.viewport.width - b.viewport.width || a.viewport.height - b.viewport.height;
+
+/** Pages in the order targets.ts lists them, not the order the tests happened to finish in. */
+function pageOrder(entries) {
+  const seen = new Map();
+  for (const entry of entries) if (!seen.has(entry.page.id)) seen.set(entry.page.id, entry.pageIndex ?? 0);
+  return [...seen.entries()].sort((a, b) => a[1] - b[1]).map(([id]) => id);
+}
+
+/** "Скрол вбік" for the overflow check, the first line otherwise. */
+function problemTitle(message) {
+  if (message.includes('wider than the viewport')) return 'Скрол вбік — елементи ширші за екран';
+  if (message.includes('images that failed to load')) return 'Картинки не завантажились';
+  if (message.includes('did not answer 200')) return 'Сторінка відповіла не 200';
+  if (message.includes('redirected')) return 'Переадресація';
+  if (/timeout/i.test(message)) return 'Таймаут';
+  return message.split('\n')[0].slice(0, 120);
+}
+
+let visible = [];
+
+function render() {
+  const envs = [...new Set(DATA.map((entry) => entry.baseUrl))];
+  if (!envs.includes(state.env)) state.env = envs.includes(store.get('env', '')) ? store.get('env', '') : envs[0];
+
+  $('envControl').hidden = envs.length < 2;
+  $('env').replaceChildren(...envs.map((env) => el('option', env === state.env ? { value: env, selected: '' } : { value: env }, env.replace(/^https?:\/\//, ''))));
+
+  for (const [id, value] of [['groupBy', state.groupBy], ['device', state.device], ['show', state.show], ['thumb', state.thumb]]) {
+    for (const button of $(id).querySelectorAll('button')) button.setAttribute('aria-pressed', String(button.dataset.value === value));
+  }
+  $('scale').value = state.scale;
+  $('scaleValue').textContent = state.scale + '%';
+
+  const all = DATA.filter((entry) => entry.baseUrl === state.env);
+  const failedCount = all.filter(isFailed).length;
+  const warnedCount = all.filter(isWarned).length;
+  const comparedCount = all.filter((entry) => entry.visual).length;
+  const changedCount = all.filter(isChanged).length;
+  $('summary').replaceChildren(...[
+    `${all.length} знімків`,
+    failedCount ? el('span', { class: 'bad' }, ` · ${failedCount} з проблемами`) : null,
+    warnedCount ? el('span', { class: 'warn' }, ` · ${warnedCount} з битими картинками`) : null,
+    failedCount || warnedCount ? null : ' · без проблем',
+    !comparedCount
+      ? [' · стабільної версії ще немає: ', el('code', {}, 'bun run screenshots:approve')]
+      : changedCount
+        ? el('span', { class: 'changed' }, ` · ${changedCount} змінено`)
+        : ' · без змін відносно стабільної',
+  ].flat().filter((part) => part != null));
+  $('thumbControl').hidden = !changedCount;
+
+  const entries = all
+    .filter((entry) => state.device === 'all' || entry.viewport.group === state.device)
+    .filter((entry) => state.show === 'all' || (state.show === 'problems' ? hasProblem(entry) : isChanged(entry)));
+
+  const main = $('main');
+  visible = [];
+
+  if (!DATA.length) {
+    main.replaceChildren(el('p', { class: 'empty' }, 'Ще немає жодного знімка. Запусти bun run screenshots.'));
+    return;
+  }
+  if (!entries.length) {
+    const empty = { problems: 'Проблем немає 🎉', changed: comparedCount ? 'Нічого не змінилось.' : 'Порівнювати нема з чим: спершу затверди стабільну версію.' };
+    main.replaceChildren(el('p', { class: 'empty' }, empty[state.show] ?? 'Нічого не підходить під фільтр.'));
+    return;
+  }
+
+  const pages = pageOrder(all);
+  const sections = [];
+
+  if (state.groupBy === 'page') {
+    for (const pageId of pages) {
+      const forPage = entries.filter((entry) => entry.page.id === pageId).sort(viewportSort);
+      if (!forPage.length) continue;
+      const { page, baseUrl } = forPage[0];
+      sections.push(el('section', { class: 'group' },
+        el('h2', {}, page.label),
+        el('p', { class: 'sub' }, el('a', { href: baseUrl + page.path, target: '_blank', rel: 'noopener' }, baseUrl + page.path)),
+        GROUP_ORDER.map((group) => {
+          const inGroup = forPage.filter((entry) => entry.viewport.group === group);
+          return inGroup.length ? [el('h3', {}, GROUPS[group]), el('div', { class: 'row' }, inGroup.map((entry) => card(entry, size(entry), entry.viewport.label)))] : null;
+        }),
+      ));
+    }
+  } else {
+    const byViewport = [...new Map(entries.sort(viewportSort).map((entry) => [entry.project, entry.viewport])).entries()];
+    for (const [project, viewport] of byViewport) {
+      const forViewport = entries
+        .filter((entry) => entry.project === project)
+        .sort((a, b) => pages.indexOf(a.page.id) - pages.indexOf(b.page.id));
+      sections.push(el('section', { class: 'group' },
+        el('h2', {}, `${GROUPS[viewport.group]} ${viewport.width}×${viewport.height}`),
+        el('p', { class: 'sub' }, viewport.label),
+        el('div', { class: 'row' }, forViewport.map((entry) => card(entry, entry.page.label, entry.page.path))),
+      ));
+    }
+  }
+
+  main.replaceChildren(...sections);
+}
+
+function card(entry, title, subtitle) {
+  const index = visible.push(entry) - 1;
+  const width = Math.max(140, Math.round(entry.viewport.width * state.scale / 100));
+  const failed = isFailed(entry);
+  const broken = entry.brokenImages ?? [];
+  const changed = isChanged(entry);
+  const tone = failed ? ' failed' : isWarned(entry) ? ' warned' : changed ? ' changed' : '';
+  const thumb = state.thumb === 'diff' && entry.visual?.diff ? entry.visual.diff : entry.image;
+
+  return el('article', { class: 'card' + tone, style: `width:${width}px` },
+    el('header', {}, el('i', { class: 'dot' }), el('b', {}, title), el('span', { title: subtitle }, subtitle)),
+    entry.visual
+      ? el('div', { class: 'change' + (changed ? ' is-changed' : '') }, changed ? changeText(entry.visual) : 'Без змін')
+      : null,
+    entry.errors.length
+      ? el('details', { class: 'problem' },
+          el('summary', {}, problemTitle(entry.errors[0])),
+          entry.errors.map((message) => el('pre', {}, message)))
+      : null,
+    broken.length
+      ? el('details', { class: 'problem warning' },
+          el('summary', {}, `Не завантажились картинки: ${broken.length}`),
+          el('pre', {}, broken.map((url) => url.split('/').pop()).join('\n')))
+      : null,
+    entry.image
+      ? el('div', { class: 'shot', title: 'Відкрити на весь екран', onclick: () => openViewer(index) },
+          el('img', { src: bust(thumb, entry), loading: 'lazy', alt: `${entry.page.label}, ${size(entry)}` }))
+      : el('div', { class: 'missing' }, 'Знімка немає'),
+  );
+}
+
+let current = -1;
+
+function openViewer(index) {
+  const withImages = visible.filter((entry) => entry.image);
+  if (!withImages.length) return;
+  current = (withImages.indexOf(visible[index]) + withImages.length) % withImages.length;
+  showCurrent(withImages);
+  $('viewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showCurrent(withImages = visible.filter((entry) => entry.image)) {
+  const entry = withImages[current];
+  const visual = entry.visual;
+
+  $('viewerTitle').replaceChildren(
+    `${entry.page.label} · ${GROUPS[entry.viewport.group]} ${size(entry)}`,
+    el('small', {}, `${entry.viewport.label} · ${current + 1} / ${withImages.length}`),
+  );
+
+  $('imgCurrent').src = bust(entry.image, entry);
+  $('imgStable').src = visual ? bust(visual.stable, entry) : '';
+  $('imgDiff').src = visual?.diff ? bust(visual.diff, entry) : '';
+  // Shots are taken at 1 CSS px per image px, so the viewport width is the image width.
+  $('stack').style.width = (visual?.size?.[0] || entry.viewport.width) + 'px';
+
+  $('modes').hidden = !visual;
+  $('changeInfo').textContent = !visual
+    ? ''
+    : isChanged(entry)
+      ? `${changeText(visual)} · ${visual.changedPixels.toLocaleString('uk')} пікселів` +
+        (visual.changedRows ? ` · рядки ${visual.changedRows[0]}–${visual.changedRows[1]}` : '')
+      : 'Без змін відносно стабільної';
+
+  applyMode(entry);
+  scrollToChange(entry);
+}
+
+/** Straight to the first changed row -- the change is often several screens down a full-page shot. */
+function scrollToChange(entry) {
+  const rows = entry.visual?.changedRows;
+  const stage = $('stage');
+  if (!rows) return stage.scrollTo(0, 0);
+
+  // The shot may be shown smaller than 1:1; wait for layout to know by how much.
+  requestAnimationFrame(() => {
+    const scale = $('stack').getBoundingClientRect().width / (entry.visual.size[0] || entry.viewport.width);
+    stage.scrollTo(0, Math.max(0, rows[0] * scale - 80));
+  });
+}
+
+/**
+ * The comparison modes all stack the same images in one grid cell and only
+ * change what is visible: the stable shot underneath, the new one on top --
+ * faded for "overlay", clipped to the right of the slider for "swipe".
+ */
+function applyMode(entry = visible.filter((item) => item.image)[current]) {
+  const visual = entry?.visual;
+  let mode = visual ? state.mode : 'current';
+  if (mode === 'diff' && !visual?.diff) mode = 'current';
+
+  for (const button of $('mode').querySelectorAll('button')) {
+    button.setAttribute('aria-pressed', String(button.dataset.value === mode));
+    button.disabled = button.dataset.value === 'diff' && !visual?.diff;
+  }
+
+  const top = $('imgCurrent');
+  $('imgStable').hidden = !['stable', 'overlay', 'swipe'].includes(mode);
+  top.hidden = !['current', 'overlay', 'swipe'].includes(mode);
+  $('imgDiff').hidden = mode !== 'diff';
+  $('mix').hidden = !['overlay', 'swipe'].includes(mode);
+  $('tags').hidden = mode !== 'swipe';
+  $('divider').hidden = mode !== 'swipe';
+
+  top.style.opacity = mode === 'overlay' ? state.mix / 100 : '';
+  top.style.clipPath = mode === 'swipe' ? `inset(0 0 0 ${state.mix}%)` : '';
+  $('divider').style.left = state.mix + '%';
+  $('mix').value = state.mix;
+}
+
+function step(delta) {
+  const withImages = visible.filter((entry) => entry.image);
+  current = (current + delta + withImages.length) % withImages.length;
+  showCurrent(withImages);
+}
+
+function closeViewer() {
+  $('viewer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function update(key, value) {
+  state[key] = value;
+  store.set(key, value);
+  render();
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  store.set('mode', mode);
+  applyMode();
+}
+
+/** The gallery is a file on disk and cannot write anything, so it hands over the command instead. */
+async function copyApproveCommand() {
+  const entry = visible.filter((item) => item.image)[current];
+  const command = `bun run screenshots:approve -- ${entry.image.replace(/\.png$/, '')}`;
+  try {
+    await navigator.clipboard.writeText(command);
+    $('approve').textContent = 'Скопійовано ✓';
+    setTimeout(() => ($('approve').textContent = 'Затвердити'), 1500);
+  } catch {
+    window.prompt('Виконай у терміналі:', command);
+  }
+}
+
+$('env').addEventListener('change', (event) => update('env', event.target.value));
+for (const id of ['groupBy', 'device', 'show', 'thumb']) {
+  $(id).addEventListener('click', (event) => { const button = event.target.closest('button'); if (button) update(id, button.dataset.value); });
+}
+$('scale').addEventListener('input', (event) => update('scale', Number(event.target.value)));
+$('mode').addEventListener('click', (event) => { const button = event.target.closest('button'); if (button && !button.disabled) setMode(button.dataset.value); });
+$('mix').addEventListener('input', (event) => { state.mix = Number(event.target.value); store.set('mix', state.mix); applyMode(); });
+$('approve').addEventListener('click', copyApproveCommand);
+$('prev').addEventListener('click', () => step(-1));
+$('next').addEventListener('click', () => step(1));
+$('close').addEventListener('click', closeViewer);
+$('actual').addEventListener('click', () => $('stage').classList.toggle('actual'));
+$('stage').addEventListener('click', (event) => { if (event.target === $('stage')) closeViewer(); });
+document.addEventListener('keydown', (event) => {
+  if (!$('viewer').classList.contains('open')) return;
+  if (event.key === 'Escape') closeViewer();
+  else if (event.key === 'ArrowLeft') step(-1);
+  else if (event.key === 'ArrowRight') step(1);
+  else if (event.key === ' ') { event.preventDefault(); $('stage').classList.toggle('actual'); }
+  else if (['1', '2', '3', '4', '5'].includes(event.key)) setMode(['current', 'stable', 'overlay', 'swipe', 'diff'][Number(event.key) - 1]);
+});
+
+render();
+</script>
+</body>
+</html>

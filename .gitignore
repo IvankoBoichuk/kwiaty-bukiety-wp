@@ -50,3 +50,5 @@ phpunit.xml
 /package-lock.json
 # Playwright/Lighthouse perf gate (reports only; baselines are committed)
 tests/perf/.reports/
+# Responsive screenshot suite output
+tests/screenshots/.output/

@@ -2,22 +2,29 @@
   "name": "kwiaty-bukiety-wp",
   "private": true,
   "type": "module",
-  "description": "Root package: git hooks and the Lighthouse performance gate. The theme has its own package.json in web/app/themes/sage.",
+  "description": "Root package: git hooks, the Lighthouse performance gate and the responsive screenshot suite. The theme has its own package.json in web/app/themes/sage.",
   "scripts": {
     "prepare": "husky",
     "lint": "vendor/bin/pint --test",
     "lint:fix": "vendor/bin/pint",
     "perf": "node node_modules/@playwright/test/cli.js test --config tests/perf/playwright.config.ts",
     "perf:update": "PERF_UPDATE_BASELINE=1 node node_modules/@playwright/test/cli.js test --config tests/perf/playwright.config.ts",
-    "perf:report": "node node_modules/@playwright/test/cli.js show-report tests/perf/.reports/playwright"
+    "perf:report": "node node_modules/@playwright/test/cli.js show-report tests/perf/.reports/playwright",
+    "screenshots": "node node_modules/@playwright/test/cli.js test --config tests/screenshots/playwright.config.ts",
+    "screenshots:report": "node node_modules/@playwright/test/cli.js show-report tests/screenshots/.output/report",
+    "screenshots:gallery": "open tests/screenshots/.output/gallery.html",
+    "screenshots:approve": "bun tests/screenshots/approve.ts"
   },
   "lint-staged": {
     "*.php": "vendor/bin/pint"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
+    "@types/pngjs": "^6.0.5",
     "husky": "^9.1.7",
     "lighthouse": "^13.5.0",
-    "lint-staged": "^16.2.6"
+    "lint-staged": "^16.2.6",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0"
   }
 }
