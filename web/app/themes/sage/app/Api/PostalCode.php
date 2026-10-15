@@ -68,10 +68,6 @@ class PostalCode
 
     protected const MAX_RESULTS = 100;
 
-    protected const CACHE_GROUP = 'sage_postal_codes';
-
-    protected const CACHE_TTL = 12 * HOUR_IN_SECONDS;
-
     public static function findByPostalCode(WP_REST_Request $request): WP_REST_Response
     {
         $postalCode = trim((string) $request->get_param('postal_code'));
@@ -82,7 +78,7 @@ class PostalCode
             ], 400);
         }
 
-        return self::respond("code:{$postalCode}", static fn() => PostalCodeModel::query()
+        return self::respond(static fn() => PostalCodeModel::query()
             ->select(self::COLUMNS)
             ->where('postal_code', $postalCode)
             ->orderBy('settlement')
@@ -104,7 +100,7 @@ class PostalCode
 
         $prefix = self::escapeLike($settlement) . '%';
 
-        return self::respond("settlement:{$settlement}:{$limit}", static fn() => PostalCodeModel::query()
+        return self::respond(static fn() => PostalCodeModel::query()
             ->select(self::COLUMNS)
             ->where('settlement', 'like', $prefix)
             ->orderBy('settlement')
@@ -126,26 +122,18 @@ class PostalCode
     }
 
     /**
-     * The autocomplete fires per keystroke over a table of ~118k rows, so the
-     * same handful of prefixes gets asked for constantly. Cache the response.
+     * Not cached. The host has no persistent object cache, so wp_cache_set()
+     * only lived for the request, and a transient per keystroke would cost a
+     * wp_options lookup to save one indexed query -- while letting anyone grow
+     * that table by varying the prefix and the limit.
      */
-    protected static function respond(string $key, callable $query): WP_REST_Response
+    protected static function respond(callable $query): WP_REST_Response
     {
-        $cacheKey = md5($key);
-        $cached = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if (is_array($cached)) {
-            return new WP_REST_Response($cached);
-        }
-
         $results = $query();
-        $payload = [
+
+        return new WP_REST_Response([
             'data' => $results->all(),
             'count' => $results->count(),
-        ];
-
-        wp_cache_set($cacheKey, $payload, self::CACHE_GROUP, self::CACHE_TTL);
-
-        return new WP_REST_Response($payload);
+        ]);
     }
 }

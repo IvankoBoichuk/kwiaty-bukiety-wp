@@ -23,9 +23,13 @@ class LocalPageRepository
 
     public const SEARCH_LIMIT = 10;
 
-    protected const INDEX_CACHE_GROUP = 'sage_city_index';
-
-    protected const INDEX_CACHE_KEY = 'cities';
+    /**
+     * A transient, not wp_cache_*(): the host runs no persistent object cache,
+     * so wp_cache_set() lived for one request and every search rebuilt the
+     * index from the bi_* tables. Delete it by hand with
+     * `wp transient delete sage_city_index`.
+     */
+    protected const INDEX_TRANSIENT = 'sage_city_index';
 
     protected const INDEX_CACHE_TTL = 12 * HOUR_IN_SECONDS;
 
@@ -392,7 +396,7 @@ class LocalPageRepository
             return self::$cityIndex;
         }
 
-        $cached = wp_cache_get(self::INDEX_CACHE_KEY, self::INDEX_CACHE_GROUP);
+        $cached = get_transient(self::INDEX_TRANSIENT);
 
         if (is_array($cached)) {
             return self::$cityIndex = $cached;
@@ -400,12 +404,11 @@ class LocalPageRepository
 
         $index = $this->buildCityIndex();
 
-        wp_cache_set(
-            self::INDEX_CACHE_KEY,
-            $index,
-            self::INDEX_CACHE_GROUP,
-            self::INDEX_CACHE_TTL,
-        );
+        // An empty index is a fresh install or a half-finished import; caching
+        // it would hide the cities for twelve hours once the tables fill up.
+        if ($index !== []) {
+            set_transient(self::INDEX_TRANSIENT, $index, self::INDEX_CACHE_TTL);
+        }
 
         return self::$cityIndex = $index;
     }
@@ -415,8 +418,8 @@ class LocalPageRepository
      *
      * The bi_* tables have no write path in the theme -- they arrive with a
      * database import and are read-only here -- so nothing invalidates this on
-     * its own. Call it from whatever loads them next, or flush the object cache
-     * after an import.
+     * its own. Call it from whatever loads them next, or run
+     * `wp transient delete sage_city_index` after an import.
      */
     public static function flushCityIndex(): void
     {
@@ -424,7 +427,7 @@ class LocalPageRepository
 
         Tables::flush();
 
-        wp_cache_delete(self::INDEX_CACHE_KEY, self::INDEX_CACHE_GROUP);
+        delete_transient(self::INDEX_TRANSIENT);
     }
 
     /**

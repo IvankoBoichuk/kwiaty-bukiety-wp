@@ -45,10 +45,6 @@ final class Cities
      */
     protected const LINK_FAILURE_MARGIN = 5;
 
-    protected const CACHE_GROUP = 'sage_cities';
-
-    protected const CACHE_TTL = 12 * HOUR_IN_SECONDS;
-
     public static function boot(): void
     {
         add_action('rest_api_init', [self::class, 'registerRoutes']);
@@ -116,22 +112,12 @@ final class Cities
         }
 
         /*
-         * Keyed by the normalized query, so "Piła", "pila" and "PIŁA" are one
-         * cache entry rather than three. The responses are tiny and the same
-         * few prefixes get typed over and over.
+         * Not cached per query: the host has no persistent object cache, and a
+         * transient per keystroke would grow wp_options without bound. The
+         * expensive part, the city index, is cached once in
+         * LocalPageRepository::cityIndex().
          */
-        $cacheKey = md5("{$query}:{$limit}");
-        $cached = wp_cache_get($cacheKey, self::CACHE_GROUP);
-
-        if (is_array($cached)) {
-            return new WP_REST_Response($cached);
-        }
-
-        $payload = self::payload(self::suggestions($query, $limit));
-
-        wp_cache_set($cacheKey, $payload, self::CACHE_GROUP, self::CACHE_TTL);
-
-        return new WP_REST_Response($payload);
+        return new WP_REST_Response(self::payload(self::suggestions($query, $limit)));
     }
 
     /**
