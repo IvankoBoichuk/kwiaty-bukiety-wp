@@ -234,11 +234,13 @@ steps:
 
   # Acorn caches discovered packages and services under web/app/cache/acorn,
   # which rsync excludes, so a plugin added or removed by this deploy would not
-  # be picked up until the cache is dropped. LiteSpeed is purged for the same
-  # reason one level up: its stored HTML still points at the previous build's
-  # hashed asset filenames, which this rsync --delete just removed. Both are
-  # best-effort -- wp-cli may be absent -- but a failing rsync above must still
-  # fail the step, so they end in `|| true` rather than `failure: ignore`.
+  # be picked up until the cache is dropped. Best-effort -- wp-cli may be absent
+  # -- but a failing rsync above must still fail the step, so it ends in
+  # `|| true` rather than `failure: ignore`.
+  #
+  # The LiteSpeed purge used to sit here too and failed on every deploy with
+  # "Got 503": it is an HTTP round trip to admin-ajax, and maintenance mode is
+  # still on at this point. It now has its own step after maintenance-off.
   - name: deploy
     image: alpine:3
     depends_on: [maintenance-on]
@@ -272,7 +274,7 @@ steps:
       - |
         ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" \
           "cd $${DEPLOY_PATH} && command -v wp >/dev/null 2>&1 \
-             && { wp acorn optimize:clear; wp litespeed-purge all; } \
+             && wp acorn optimize:clear \
              || rm -rf web/app/cache/acorn/framework/cache/*.php web/app/cache/acorn/framework/views/*" || true
 
   # Runs on failure too. Almost every deploy failure is auth or network, i.e.
@@ -309,11 +311,32 @@ steps:
         rm -f web/wp/.maintenance
         REMOTE
 
-  # Hostinger's own page cache sits in front of PHP, so the LiteSpeed purge in
-  # the deploy step never reaches it -- and where the Hostinger CDN is on, this
-  # is also what drops the edge copy. Worth a red pipeline if it fails: stale
-  # HTML here still references the previous build's hashed asset filenames,
-  # which rsync --delete has just removed.
+  # The page cache is the Hostinger CDN edge (server: hcdn, fra-edge6..10), not
+  # LiteSpeed on the origin: the edges store pages per the X-LiteSpeed-Cache-
+  # Control header LSCWP sends (front page TTL 7 days) and obey X-LiteSpeed-Purge.
+  # `wp litespeed-purge all` is how that header gets sent -- the CLI command makes
+  # a GET to admin-ajax on the public domain, and that request answers with it.
+  # Hence after maintenance-off: under .maintenance admin-ajax returns 503 and
+  # the purge fails, which it did on every deploy until this step existed.
+  #
+  # The command string (not `sh -s` with a heredoc) matters: sshd then runs it
+  # through bash, which sources ~/.bashrc, and that is where the host maps `wp`
+  # to PHP 8.3. A bare /usr/local/bin/wp runs on PHP 8.2 and dies on composer's
+  # platform check before WordPress loads. No `|| true`: if this fails, stale
+  # HTML pointing at deleted assets stays on the edges for up to a week.
+  - name: purge-litespeed
+    image: alpine:3
+    depends_on: [maintenance-off]
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - *ssh_setup
+      - ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" "cd $${DEPLOY_PATH} && wp litespeed-purge all"
+
+  # Clears the whole Hostinger cache, edges included, as a second route next to
+  # the LiteSpeed purge. The API only answers "Request accepted" and finishes
+  # asynchronously, so verify-assets below is what actually confirms the edges
+  # are clean.
   #
   # Deliberately after maintenance-off. Clearing while the 503 is still up
   # invites the cache to repopulate from the maintenance page and then serve it
@@ -324,7 +347,7 @@ steps:
   # want -- worth knowing if a purge ever looks like it missed Bedrock's web/wp.
   - name: purge-hostinger-cache
     image: alpine:3
-    depends_on: [maintenance-off]
+    depends_on: [purge-litespeed]
     when: *deploy_when
     environment: *deploy_env
     commands:
@@ -353,6 +376,45 @@ steps:
       - *site_domain
       - curl --fail --silent --show-error --retry 3 --retry-delay 2 "https://$${SITE_DOMAIN}" > /dev/null
 
+  # smoke-test passes on an unstyled page, which is exactly what a stale edge
+  # serves: its HTML names the previous build's app-<hash>.css, gone since
+  # rsync --delete. Each request lands on a random CDN edge, so the home page is
+  # sampled repeatedly, desktop and mobile (LSCWP caches them separately), and
+  # every build asset it references must exist in the build just shipped. Stale
+  # copies have reappeared on edges seconds after a purge -- some upstream tier
+  # catches up late -- so a miss re-purges and tries again before going red.
+  - name: verify-assets
+    image: alpine:3
+    depends_on: [smoke-test]
+    when: *deploy_when
+    environment: *deploy_env
+    commands:
+      - *ssh_setup
+      - apk add --no-cache curl
+      - *site_domain
+      - |
+        check() {
+          bad=0
+          for ua in 'Mozilla/5.0 (X11; Linux x86_64)' 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile/15E148'; do
+            for i in 1 2 3 4 5 6 7 8; do
+              html=$$(curl --fail --silent --show-error -A "$$ua" "https://$${SITE_DOMAIN}/") || return 1
+              assets=$$(printf '%s' "$$html" | grep -oE 'public/build/assets/[^"?]+' | sort -u)
+              [ -n "$$assets" ] || { echo "no build assets referenced"; bad=1; continue; }
+              for a in $$assets; do
+                [ -f "web/app/themes/sage/$$a" ] || { echo "stale: $$a"; bad=1; }
+              done
+            done
+          done
+          return $$bad
+        }
+        for attempt in 1 2 3 4 5 6; do
+          check && exit 0
+          echo "attempt $$attempt: stale HTML still on an edge, purging again"
+          ssh -i ~/.ssh/id_ed25519 -p "$${SSH_PORT}" "$${SSH_USER}@$${SSH_HOST}" "cd $${DEPLOY_PATH} && wp litespeed-purge all" || true
+          sleep 20
+        done
+        exit 1
+
   # Lighthouse report, from tests/perf, against the site this pipeline just
   # deployed. Last on purpose: the numbers only mean anything once the LiteSpeed
   # and Hostinger caches have been purged and smoke-test has proved the site
@@ -371,7 +433,7 @@ steps:
   # pins these dependencies.
   - name: perf
     image: mcr.microsoft.com/playwright:v1.63.0-noble
-    depends_on: [smoke-test]
+    depends_on: [verify-assets]
     when: *deploy_when
     environment: *perf_env
     commands:
