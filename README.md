@@ -89,7 +89,9 @@ bun run perf:report     # HTML-звіти Lighthouse за останній пр�
 збирає editor-assets плагіна `frontenda-blocks`** (він тримає
 `blocks/section/build/` у `.gitignore`, тож composer-архів приходить без
 зібраного JS), розкладає все через `rsync --delete`, скидає кеш Acorn, чистить
-кеш LiteSpeed і гасить кеш Hostinger через їхній API.
+кеш LiteSpeed і гасить кеш Hostinger через їхній API, а потім перевіряє, що
+CDN уже віддає HTML з новим білдом. Як влаштований кеш і як його чистити
+вручну — [docs/caching.md](docs/caching.md).
 
 ### Секрети Woodpecker
 
