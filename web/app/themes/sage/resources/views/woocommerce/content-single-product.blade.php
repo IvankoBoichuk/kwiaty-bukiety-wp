@@ -135,6 +135,13 @@
         </div>
       </section>
     @endif
+    @if ($productData['seoText'] !== '')
+      <section class="bx-container bg-background py-12 lg:py-25">
+        <div class="prose prose-a:text-[#0885CD] prose-a:no-underline prose-a:hover:underline max-w-full">
+          {!! wp_kses_post($productData['seoText']) !!}
+        </div>
+      </section>
+    @endif
     @php(do_action('woocommerce_after_single_product'))
   @endif
 @endif

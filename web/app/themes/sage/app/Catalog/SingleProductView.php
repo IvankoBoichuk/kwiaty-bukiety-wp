@@ -34,6 +34,7 @@ final class SingleProductView
             'priceHtml' => $this->product->get_price_html(),
             'shortDescription' => (string) $this->product->get_short_description(),
             'description' => (string) $this->product->get_description(),
+            'seoText' => $this->seoText(),
             'sku' => (string) $this->product->get_sku(),
             'badges' => $this->data->badges(),
             'gallery' => $this->gallery(),
@@ -46,6 +47,19 @@ final class SingleProductView
             'reviewCount' => (int) $this->product->get_review_count(),
             'averageRating' => (float) $this->product->get_average_rating(),
         ];
+    }
+
+    /**
+     * The long SEO copy under the product, kept in the production ACF wysiwyg
+     * field `product_bottom_text` (85 products have one). ACF is not installed
+     * here, so the meta is read directly and given the paragraphs the wysiwyg
+     * field used to add on output.
+     */
+    protected function seoText(): string
+    {
+        $text = trim((string) get_post_meta($this->product->get_id(), 'product_bottom_text', true));
+
+        return $text === '' ? '' : wpautop($text);
     }
 
     /**
