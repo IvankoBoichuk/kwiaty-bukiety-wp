@@ -1,24 +1,28 @@
-function removeLoadMoreControl(button: HTMLButtonElement): void {
-    button.closest('[data-products-load-more]')?.remove()
+function removeLoadMoreControl(link: HTMLAnchorElement): void {
+    link.closest('[data-products-load-more]')?.remove()
 }
 
-function getButtonLabelElement(button: HTMLButtonElement): HTMLSpanElement | null {
-    const label = button.querySelector('span')
+function getLinkLabelElement(link: HTMLAnchorElement): HTMLSpanElement | null {
+    const label = link.querySelector('span')
 
     return label instanceof HTMLSpanElement ? label : null
 }
 
-function setButtonState(button: HTMLButtonElement, disabled: boolean): void {
-    button.disabled = disabled
+function setLinkState(link: HTMLAnchorElement, loading: boolean): void {
+    if (loading) {
+        link.setAttribute('aria-disabled', 'true')
+    } else {
+        link.removeAttribute('aria-disabled')
+    }
 
-    const label = getButtonLabelElement(button)
+    const label = getLinkLabelElement(link)
     if (!label) {
         return
     }
 
-    label.textContent = disabled
-        ? button.dataset.loadingLabel ?? button.dataset.defaultLabel ?? ''
-        : button.dataset.defaultLabel ?? label.textContent ?? ''
+    label.textContent = loading
+        ? link.dataset.loadingLabel ?? link.dataset.defaultLabel ?? ''
+        : link.dataset.defaultLabel ?? label.textContent ?? ''
 }
 
 function parseProductsDocument(html: string): {
@@ -37,30 +41,30 @@ function parseProductsDocument(html: string): {
         (item): item is HTMLLIElement => item instanceof HTMLLIElement,
     )
 
-    const nextButton = document.querySelector<HTMLButtonElement>(
-        '[data-products-load-more-button]',
+    const nextLink = document.querySelector<HTMLAnchorElement>(
+        '[data-products-load-more-link]',
     )
 
     return {
         items,
-        nextUrl: nextButton?.dataset.nextUrl ?? '',
+        nextUrl: nextLink?.getAttribute('href') ?? '',
     }
 }
 
-async function loadMoreProducts(button: HTMLButtonElement): Promise<void> {
+async function loadMoreProducts(link: HTMLAnchorElement): Promise<void> {
     const list = document.querySelector('[data-products-list]')
     if (!(list instanceof HTMLUListElement)) {
-        removeLoadMoreControl(button)
+        removeLoadMoreControl(link)
         return
     }
 
-    const nextUrl = button.dataset.nextUrl
+    const nextUrl = link.getAttribute('href')
     if (!nextUrl) {
-        removeLoadMoreControl(button)
+        removeLoadMoreControl(link)
         return
     }
 
-    setButtonState(button, true)
+    setLinkState(link, true)
 
     try {
         const response = await fetch(nextUrl, {
@@ -77,7 +81,7 @@ async function loadMoreProducts(button: HTMLButtonElement): Promise<void> {
         const payload = parseProductsDocument(await response.text())
 
         if (!payload || payload.items.length === 0) {
-            removeLoadMoreControl(button)
+            removeLoadMoreControl(link)
             return
         }
 
@@ -86,26 +90,37 @@ async function loadMoreProducts(button: HTMLButtonElement): Promise<void> {
         })
 
         if (payload.nextUrl === '') {
-            removeLoadMoreControl(button)
+            removeLoadMoreControl(link)
             return
         }
 
-        button.dataset.nextUrl = payload.nextUrl
-        setButtonState(button, false)
+        link.setAttribute('href', payload.nextUrl)
+        setLinkState(link, false)
     } catch (error) {
         console.error(error)
-        setButtonState(button, false)
+        setLinkState(link, false)
     }
 }
 
 function initProductsLoadMore(): void {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(
-        '[data-products-load-more-button]',
+    const links = document.querySelectorAll<HTMLAnchorElement>(
+        '[data-products-load-more-link]',
     )
 
-    buttons.forEach((button) => {
-        button.addEventListener('click', () => {
-            void loadMoreProducts(button)
+    links.forEach((link) => {
+        link.addEventListener('click', (event) => {
+            // A modified or middle click means "open the page": let the href do it.
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                return
+            }
+
+            event.preventDefault()
+
+            if (link.getAttribute('aria-disabled') === 'true') {
+                return
+            }
+
+            void loadMoreProducts(link)
         })
     })
 }
