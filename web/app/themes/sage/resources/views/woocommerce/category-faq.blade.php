@@ -1,9 +1,10 @@
 {{--
   Per-category FAQ: the visible block and the FAQPage markup from one source.
 
-  Google only honours FAQ markup when the questions are visible on the page,
-  which is why the four production categories that carried nothing but a
-  JSON-LD script were violating the guidelines.
+  Google only honours FAQ markup when the questions are visible on the page.
+  The four categories whose legacy field held only a JSON-LD script keep their
+  questions in the category description; archive-product publishes that
+  markup instead (Faq::legacyForCurrentTerm()).
 --}}
 @php
   use App\Catalog\Faq;

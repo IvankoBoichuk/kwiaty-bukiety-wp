@@ -30,6 +30,11 @@ the readme will list any important changes.
 
     $categoryFaq = \App\Catalog\Faq::forCurrentTerm();
 
+    // The categories whose questions sit in the description, with only the
+    // markup in the legacy field: publish that markup, checked against the
+    // description, instead of a second visible FAQ block.
+    $legacyFaq = $categoryFaq === [] && !is_paged() ? \App\Catalog\Faq::legacyForCurrentTerm($archiveDescription) : [];
+
     // Page 1 only, like the FAQ below: the tiles are the same on
     // every page of the loop, and repeating them would put the one
     // block of internal links on the category into each paged URL.
@@ -96,6 +101,10 @@ the readme will list any important changes.
       <div class="mt-12 lg:mt-20">
         @include('woocommerce.category-faq', ['faq' => $categoryFaq])
       </div>
+    @elseif (!empty($legacyFaq))
+      <script type="application/ld+json">
+        {!! wp_json_encode(\App\Catalog\Faq::schema($legacyFaq), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+      </script>
     @endif
   </div>
 
