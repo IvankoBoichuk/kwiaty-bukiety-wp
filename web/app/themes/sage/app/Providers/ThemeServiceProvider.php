@@ -18,6 +18,7 @@ use App\Api\PostalCode;
 use App\Console\FaqImporter;
 use App\Console\LegacyBlockMigrator;
 use App\SEO\CityHub;
+use App\SEO\FloristSchema;
 use App\Shop\CatalogOrder;
 use App\Shop\CartReturn;
 use App\Shop\DeliveryWindowRules;
@@ -98,6 +99,7 @@ class ThemeServiceProvider extends SageServiceProvider
         TermShortcodes::boot();
         OpenGraph::boot();
         ProductSchema::boot();
+        FloristSchema::boot();
         Blade::directive('id', function ($expression) {
             return "<?php if (!empty($expression)): ?>id=\"<?php echo e($expression); ?>\"<?php endif; ?>";
         });
