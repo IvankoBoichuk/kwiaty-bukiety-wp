@@ -79,7 +79,9 @@ final class CityHub
 
     public static function renderSchema(): void
     {
-        if (! function_exists('is_product_category') || ! is_product_category(self::HUB_SLUG)) {
+        // The hub is a page here; checking only for the category, as snippet #49
+        // did, left the page without the list.
+        if (! self::isHub()) {
             return;
         }
 
