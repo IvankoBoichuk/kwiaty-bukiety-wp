@@ -108,9 +108,13 @@
       </div>
 
       {{-- Product Description --}}
-      @if ($productData['description'])
+      @if ($productData['description'] || $productData['shortDescription'])
         <div class="lg:col-start-1 lg:row-start-2">
-          @include('woocommerce.single-product.description', ['description' => $productData['description']])
+          @include('woocommerce.single-product.description',
+            [
+              'shortDescription' => $productData['shortDescription'],
+              'description' => $productData['description']
+            ])
         </div>
       @endif
 

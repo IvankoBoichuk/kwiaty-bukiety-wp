@@ -21,6 +21,15 @@
 
   <div class="overflow-hidden transition-all duration-300" x-show="open" x-collapse>
     <div class="prose prose-a:text-[#0885CD] prose-a:no-underline prose-a:hover:underline max-w-full pt-2 lg:pt-6">
+      {{-- Nearly every product has a short description and 115 have nothing
+           else; production showed it above the full one. --}}
+      @if (($shortDescription ?? '') !== '')
+        {!!
+          wp_kses_post(
+            apply_filters('woocommerce_short_description', $shortDescription),
+          )
+        !!}
+      @endif
       {!! wp_kses_post($description) !!}
     </div>
   </div>
