@@ -18,6 +18,44 @@ final class Robots
     {
         add_filter('wpseo_robots', [self::class, 'filter']);
         add_filter('woocommerce_archive_description', [self::class, 'hideDescriptionOnPagedArchives'], 20);
+        add_filter('robots_txt', [self::class, 'robotsTxt'], 99);
+    }
+
+    /**
+     * Crawl rules from production's static robots.txt, which does not exist in
+     * this tree: without them search, feeds, embeds, author and attachment
+     * archives and the shop's private pages would be crawled again after the
+     * switch.
+     *
+     * Production also blocked /wp-includes/, /wp-content/plugins/ and
+     * /wp-content/themes/. Bedrock serves none of those paths, and blocking
+     * the CSS and JS under them only kept Google from rendering the pages, so
+     * they are not carried over.
+     */
+    public static function robotsTxt(mixed $output): mixed
+    {
+        if (! is_string($output)) {
+            return $output;
+        }
+
+        $rules = [
+            '/?s=',
+            '/search/',
+            '*/feed/',
+            '*/rss/',
+            '*/embed/',
+            '/author/',
+            '/attachment/',
+            '/trackback/',
+            '/xmlrpc.php',
+            '/cgi-bin/',
+            '/cart/',
+            '/checkout/',
+            '/my-account/',
+        ];
+
+        return rtrim($output) . "\n\nUser-agent: *\n"
+            . implode('', array_map(static fn(string $path): string => "Disallow: {$path}\n", $rules));
     }
 
     public static function filter(mixed $robots): mixed
