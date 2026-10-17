@@ -51,11 +51,18 @@ function kb_test_reset(array $options = []): void
         'http' => [],
         'requests' => [],
         'can' => true,
+        'filters' => [],
+        'transients' => [],
+        'lock_free' => true,
+        'locks' => [],
     ];
+
+    $GLOBALS['wpdb'] = new KbTestWpdb();
 }
 
 /**
- * Queues the responses wp_remote_post() hands back, in order.
+ * Queues the responses wp_remote_post() and wp_remote_request() hand back, in
+ * order. Once the queue runs dry every request answers 200 with `{}`.
  *
  * @param  array<int, mixed>  $responses
  */
@@ -206,10 +213,77 @@ if (! function_exists('get_option')) {
     }
 }
 
+/**
+ * A JSON response in the shape wp_remote_*() returns.
+ *
+ * @param  array<string, mixed>  $body
+ * @return array{response: array{code: int}, body: string}
+ */
+function kb_test_json(array $body = [], int $code = 200): array
+{
+    return ['response' => ['code' => $code], 'body' => (string) json_encode($body)];
+}
+
+/**
+ * Stands in for $wpdb as far as the sync's named lock goes: GET_LOCK answers
+ * from $GLOBALS['kb_test']['lock_free'], and both calls are recorded.
+ */
+if (! class_exists('KbTestWpdb')) {
+    class KbTestWpdb
+    {
+        public function prepare(string $query, mixed ...$args): string
+        {
+            return vsprintf(str_replace('%s', "'%s'", $query), $args);
+        }
+
+        public function get_var(string $query): mixed
+        {
+            $GLOBALS['kb_test']['locks'][] = $query;
+
+            if (str_contains($query, 'GET_LOCK')) {
+                return $GLOBALS['kb_test']['lock_free'] ? '1' : '0';
+            }
+
+            return '1';
+        }
+    }
+}
+
+/**
+ * Returns $GLOBALS['kb_test']['filters'][$hook] when a test has set one, so a
+ * test can supply what production reads from a constant.
+ */
 if (! function_exists('apply_filters')) {
     function apply_filters(string $hook, mixed $value, mixed ...$args): mixed
     {
-        return $value;
+        return array_key_exists($hook, $GLOBALS['kb_test']['filters'] ?? [])
+            ? $GLOBALS['kb_test']['filters'][$hook]
+            : $value;
+    }
+}
+
+if (! function_exists('get_transient')) {
+    function get_transient(string $key): mixed
+    {
+        return $GLOBALS['kb_test']['transients'][$key] ?? false;
+    }
+}
+
+if (! function_exists('set_transient')) {
+    function set_transient(string $key, mixed $value, int $expiration = 0): bool
+    {
+        $GLOBALS['kb_test']['transients'][$key] = $value;
+
+        return true;
+    }
+}
+
+if (! function_exists('delete_transient')) {
+    function delete_transient(string $key): bool
+    {
+        unset($GLOBALS['kb_test']['transients'][$key]);
+
+        return true;
     }
 }
 
@@ -283,7 +357,23 @@ if (! function_exists('wp_remote_post')) {
     {
         $GLOBALS['kb_test']['requests'][] = ['url' => $url, 'args' => $args];
 
-        return array_shift($GLOBALS['kb_test']['http']) ?? ['response' => ['code' => 200]];
+        return array_shift($GLOBALS['kb_test']['http']) ?? kb_test_json();
+    }
+}
+
+if (! function_exists('wp_remote_request')) {
+    function wp_remote_request(string $url, array $args = []): mixed
+    {
+        $GLOBALS['kb_test']['requests'][] = ['url' => $url, 'args' => $args];
+
+        return array_shift($GLOBALS['kb_test']['http']) ?? kb_test_json();
+    }
+}
+
+if (! function_exists('wp_remote_retrieve_body')) {
+    function wp_remote_retrieve_body(mixed $response): string
+    {
+        return (string) ($response['body'] ?? '');
     }
 }
 

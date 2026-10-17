@@ -174,6 +174,14 @@ Config::define('HOSTINGER_SITE_DOMAIN', env('HOSTINGER_SITE_DOMAIN') ?: '');
 Config::define('HOSTINGER_REDIRECTS_ENABLED', env('HOSTINGER_REDIRECTS_ENABLED') ?? '');
 
 /**
+ * Google service-account key for the order sync into the shop's spreadsheet
+ * (App\Shop\OrderSheetsSync): the JSON itself or a path to the file. It lives
+ * here rather than with the spreadsheet setting so that a copy of the database
+ * on another environment has nothing to write to the live sheet with.
+ */
+Config::define('GOOGLE_SHEETS_CREDENTIALS', env('GOOGLE_SHEETS_CREDENTIALS') ?: '');
+
+/**
  * Debugging Settings
  */
 Config::define('WP_DEBUG_DISPLAY', false);

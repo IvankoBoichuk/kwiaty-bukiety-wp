@@ -230,10 +230,6 @@ msgstr "Adres e-mail partnera jest nieprawidłowy; kanał e-mail pozostaje wył�
 msgid "The webhook URL is not valid; the webhook stays off."
 msgstr "Adres URL webhooka jest nieprawidłowy; webhook pozostaje wyłączony."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:93
-msgid "The Google Sheets URL is not valid; the sync stays off."
-msgstr "Adres URL Google Sheets jest nieprawidłowy; synchronizacja pozostaje wyłączona."
-
 #: app/Admin/OrderNotificationsSettingsPage.php:118
 msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
 msgstr "Wysyłane raz, gdy zamówienie przechodzi w stan „w realizacji”. Pozostaw pole puste, aby wyłączyć dany kanał."
@@ -253,14 +249,6 @@ msgstr "Adres URL webhooka Make.com"
 #: app/Admin/OrderNotificationsSettingsPage.php:160
 msgid "The order is posted here as JSON."
 msgstr "Zamówienie jest wysyłane tutaj w formacie JSON."
-
-#: app/Admin/OrderNotificationsSettingsPage.php:167
-msgid "Google Sheets web app URL"
-msgstr "Adres URL aplikacji internetowej Google Sheets"
-
-#: app/Admin/OrderNotificationsSettingsPage.php:180
-msgid "Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet."
-msgstr "Zamówienia przechodzące w realizację, zrealizowane, anulowane lub zwrócone są dopisywane do arkusza. Pozostaw puste na kopii witryny — dzięki temu nie trafią do produkcyjnego arkusza."
 
 #: app/Admin/ProductAttributeIcons.php:240
 #: app/Admin/ProductAttributeIcons.php:251
@@ -301,12 +289,40 @@ msgstr "Niższe numery pojawiają się jako pierwsze w bloku „popularne miasta
 msgid "NIP"
 msgstr "NIP"
 
-#: app/Shop/OrderSheetsSync.php:288
+#: app/Admin/OrderNotificationsSettingsPage.php:97
+msgid "That is not a Google Sheets ID or link; the sync stays off."
+msgstr "To nie jest identyfikator ani link do arkusza Google Sheets; synchronizacja pozostaje wyłączona."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:171
+msgid "Google Sheets spreadsheet"
+msgstr "Arkusz Google Sheets"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:184
+msgid "The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order's row is removed. Only columns A-H are touched."
+msgstr "Link do arkusza lub jego identyfikator. Zamówienia przechodzące w realizację, zrealizowane lub zwrócone są w nim zapisywane, najnowsze na górze; wiersz anulowanego zamówienia jest usuwany. Zmieniane są tylko kolumny A-H."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:191
+msgid "Sheet tab"
+msgstr "Karta arkusza"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:205
+msgid "Service account"
+msgstr "Konto usługi"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:210
+msgid "Share the spreadsheet with this address as an editor."
+msgstr "Udostępnij arkusz temu adresowi z uprawnieniami edytora."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:214
+msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
+msgstr "Zmienna GOOGLE_SHEETS_CREDENTIALS nie jest ustawiona w tym środowisku, więc synchronizacja jest wyłączona. Na kopii witryny tak ma być: dzięki temu nie trafia ona do produkcyjnego arkusza."
+
+#: app/Shop/OrderSheetsSync.php:402
 msgid "Send to Google Sheets"
 msgstr "Wyślij do Google Sheets"
 
 #. 1: order status, 2: number of attempts, 3: failure reason.
-#: app/Shop/OrderSheetsSync.php:336
+#: app/Shop/OrderSheetsSync.php:450
 msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
 msgstr "Synchronizacja z Google Sheets nie powiodła się dla statusu %1$s po %2$d próbach: %3$s"
 

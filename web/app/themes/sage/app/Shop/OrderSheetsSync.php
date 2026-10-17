@@ -4,25 +4,37 @@ declare(strict_types=1);
 
 namespace App\Shop;
 
+use RuntimeException;
 use WC_Order;
 use WC_Order_Item_Product;
 
 /**
- * Mirrors an order into the Google Sheet the shop runs its fulfilment from.
+ * Mirrors an order into the Google Sheet the shop runs its fulfilment from,
+ * through the Sheets API as a service account.
  *
  * Production does this from the `advanced-checkout-page` plugin, which posts to
- * an Apps Script web app straight out of `woocommerce_order_status_changed`.
- * The payload here is deliberately identical -- the Apps Script on the other
- * side is not ours to change -- but everything around it is not:
+ * an Apps Script web app straight out of `woocommerce_order_status_changed`,
+ * and the script's doPost() decides what happens to the sheet. That decision
+ * now lives here, kept the same:
+ *
+ * - The row is found by the order ID in column A.
+ * - `cancelled` deletes it; any other status writes A-H over it.
+ * - An order with no row yet gets a new one -- at the top, under the header,
+ *   where the script appended at the bottom. The shop asked for newest first.
+ * - Columns past H belong to the people working the sheet and are never
+ *   written.
+ *
+ * Around it:
  *
  * - The request leaves the status hook. Production waits on a 5 second timeout
  *   inside the transition itself, so since May 2026 nearly every send fails
  *   with cURL error 28 while the checkout and the payment callback sit behind
  *   it. Here the hook only queues an Action Scheduler job.
- * - The URL is a setting rather than a constant in the source, and an empty one
- *   switches the module off. That is what stops a copy of the database on dev
- *   from writing into the live sheet.
- * - A failed send is retried three times with a widening gap instead of being
+ * - The key sits in the environment (GOOGLE_SHEETS_CREDENTIALS) and the sheet
+ *   in a setting; either one missing switches the module off. A copy of the
+ *   database on dev carries the setting but not the key, so it cannot write
+ *   into the live sheet.
+ * - A failed send is tried again twice with a widening gap instead of being
  *   dropped, and the last failure is recorded on the order rather than in an
  *   unbounded `_gs_debug_log` meta.
  * - Re-sending by hand is an order action and a WP-CLI command, both behind a
@@ -45,8 +57,8 @@ final class OrderSheetsSync
     public const LOG_SOURCE = 'kb-sheets';
 
     /**
-     * One flag per status, so `processing -> completed` writes two rows while
-     * re-entering `processing` writes none.
+     * One flag per status, so `processing -> completed` writes twice while
+     * re-entering `processing` writes nothing.
      */
     public const SENT_META_PREFIX = '_kb_sheets_sent_';
 
@@ -58,11 +70,14 @@ final class OrderSheetsSync
     public const SYNCED_STATUSES = ['processing', 'completed', 'cancelled', 'refunded'];
 
     /**
-     * Matches OrderNotifications::WEBHOOK_TIMEOUT. Apps Script answers with a
-     * redirect to script.googleusercontent.com, so the follow-up counts against
-     * the same budget.
+     * The tab the Apps Script wrote to.
      */
-    public const TIMEOUT = OrderNotifications::WEBHOOK_TIMEOUT;
+    public const DEFAULT_TAB = 'Zamówienia';
+
+    /**
+     * Row 1 is the header; orders start under it.
+     */
+    public const FIRST_ROW = 2;
 
     public const MAX_ATTEMPTS = 3;
 
@@ -71,7 +86,13 @@ final class OrderSheetsSync
      *
      * @var array<int, int>
      */
-    public const RETRY_DELAYS = [300, 1800, 7200];
+    public const RETRY_DELAYS = [300, 1800];
+
+    /**
+     * How long a job waits when another one is mid-write. It does not count as
+     * an attempt.
+     */
+    public const LOCK_DELAY = 30;
 
     public const ORDER_ACTION = 'kb_sheets_resend';
 
@@ -106,9 +127,9 @@ final class OrderSheetsSync
             return false;
         }
 
-        // An unset URL is the off switch, not a failure, so it stays out of the
-        // log: dev runs this way permanently.
-        if (self::url() === '') {
+        // Switched off is not a failure, so it stays out of the log: dev runs
+        // this way permanently.
+        if (! self::enabled()) {
             return false;
         }
 
@@ -144,9 +165,9 @@ final class OrderSheetsSync
         $status = (string) $status;
         $attempt = max(1, (int) $attempt);
 
-        $url = self::url();
+        $client = self::client();
 
-        if ($url === '') {
+        if ($client === null) {
             return;
         }
 
@@ -173,56 +194,109 @@ final class OrderSheetsSync
             return;
         }
 
-        $response = wp_remote_post($url, [
-            'method' => 'POST',
-            'timeout' => self::TIMEOUT,
-            // Apps Script answers 302 to script.googleusercontent.com; success
-            // is the status of the request at the end of that chain.
-            'redirection' => 5,
-            'headers' => ['Content-Type' => 'application/json'],
-            'body' => (string) wp_json_encode(self::payload($order, $status)),
-        ]);
-
-        if (is_wp_error($response)) {
-            self::retryOrGiveUp($order, $status, $attempt, $response->get_error_message());
+        // Rows are addressed by position, and every new order pushes the rest
+        // down one, so two jobs writing at once could each land on the other's
+        // row. One at a time; the other waits its turn.
+        if (! self::lock()) {
+            as_schedule_single_action(
+                time() + self::LOCK_DELAY,
+                self::ACTION_HOOK,
+                [$orderId, $status, $attempt],
+                self::ACTION_GROUP,
+            );
 
             return;
         }
 
-        $code = (int) wp_remote_retrieve_response_code($response);
-
-        if ($code < 200 || $code >= 300) {
-            self::retryOrGiveUp($order, $status, $attempt, 'HTTP ' . $code);
+        try {
+            $outcome = self::write($client, $order, $status);
+        } catch (RuntimeException $e) {
+            self::retryOrGiveUp($order, $status, $attempt, $e->getMessage());
 
             return;
+        } finally {
+            self::unlock();
         }
 
         $order->update_meta_data(self::sentMetaKey($status), current_time('mysql'));
         $order->save();
 
-        self::log(sprintf('Order %d synced to the sheet as %s.', $order->get_id(), $status));
+        self::log(sprintf('Order %d synced to the sheet as %s: %s.', $order->get_id(), $status, $outcome));
     }
 
     /**
-     * The row the Apps Script expects. Keys, order and formatting match
-     * production exactly; changing them means changing the spreadsheet.
+     * What doPost() did, with new rows going in at the top.
      *
-     * @return array{id: int, status: string, date: string, time: string, city: string, postcode: string, price: string, products: array<int, string>}
+     * @return string What happened, for the log.
      */
-    public static function payload(WC_Order $order, string $status): array
+    public static function write(GoogleSheetsClient $client, WC_Order $order, string $status): string
+    {
+        $tab = self::tab();
+        $ids = $client->idColumn($tab);
+        $index = array_search((string) $order->get_id(), $ids, true);
+        $row = $index === false ? null : $index + self::FIRST_ROW;
+
+        if ($status === 'cancelled') {
+            if ($row === null) {
+                return 'no row to delete';
+            }
+
+            $client->deleteRow($tab, $row);
+
+            return 'deleted row ' . $row;
+        }
+
+        $values = self::row($order, $status);
+
+        if ($row !== null) {
+            $client->writeRow($tab, $row, $values);
+
+            return 'updated row ' . $row;
+        }
+
+        // An insert whose write failed leaves an empty top row behind. The
+        // retry fills it rather than opening a second one above it -- but only
+        // when the row is empty all the way across, since a phone order may
+        // have been typed in with no ID.
+        if (($ids[0] ?? '') !== '' || ! $client->rowIsEmpty($tab, self::FIRST_ROW)) {
+            $client->insertRow($tab, self::FIRST_ROW);
+        }
+
+        $client->writeRow($tab, self::FIRST_ROW, $values);
+
+        return 'inserted row ' . self::FIRST_ROW;
+    }
+
+    /**
+     * Columns A-H, as doPost() built them: the ID, date, hour, products, city,
+     * postcode, price and status.
+     *
+     * The values are written as if typed in, so a city that a customer typed
+     * as `=IMPORTXML(...)` would become a live formula in the shop's sheet.
+     * Text that opens like a formula is quoted, which the sheet shows as the
+     * plain text it was.
+     *
+     * @return array<int, string>
+     */
+    public static function row(WC_Order $order, string $status): array
     {
         $partnerOrder = new PartnerOrder($order);
 
-        return [
-            'id' => $order->get_id(),
-            'status' => $status,
-            'date' => self::orDash($partnerOrder->deliveryDate()),
-            'time' => self::orDash($partnerOrder->deliveryTime()),
-            'city' => (string) $order->get_shipping_city(),
-            'postcode' => (string) $order->get_shipping_postcode(),
-            'price' => (string) $order->get_total(),
-            'products' => self::products($order),
+        $cells = [
+            (string) $order->get_id(),
+            self::orDash($partnerOrder->deliveryDate()),
+            self::orDash($partnerOrder->deliveryTime()),
+            implode(', ', self::products($order)),
+            (string) $order->get_shipping_city(),
+            (string) $order->get_shipping_postcode(),
+            (string) $order->get_total(),
+            $status,
         ];
+
+        return array_map(
+            static fn(string $cell): string => preg_match('/^[=+\-@]/', $cell) ? "'" . $cell : $cell,
+            $cells,
+        );
     }
 
     /**
@@ -258,17 +332,57 @@ final class OrderSheetsSync
         return (string) $order->get_meta(self::sentMetaKey($status), true) !== '';
     }
 
-    /**
-     * The Apps Script endpoint, or an empty string when the module is off.
-     */
-    public static function url(): string
+    public static function enabled(): bool
     {
-        $url = trim((string) apply_filters(
-            'sage/shop/sheets_url',
-            OrderNotifications::settings()['sheets_url'],
+        return self::spreadsheetId() !== '' && GoogleSheetsClient::credentials() !== null;
+    }
+
+    /**
+     * The API client, or null when the module is off.
+     */
+    public static function client(): ?GoogleSheetsClient
+    {
+        $credentials = GoogleSheetsClient::credentials();
+        $spreadsheetId = self::spreadsheetId();
+
+        if ($credentials === null || $spreadsheetId === '') {
+            return null;
+        }
+
+        return new GoogleSheetsClient($credentials, $spreadsheetId);
+    }
+
+    public static function spreadsheetId(): string
+    {
+        return self::parseSpreadsheetId((string) apply_filters(
+            'sage/shop/sheets_spreadsheet_id',
+            OrderNotifications::settings()['sheets_spreadsheet_id'],
+        ));
+    }
+
+    public static function tab(): string
+    {
+        $tab = trim((string) apply_filters(
+            'sage/shop/sheets_tab',
+            OrderNotifications::settings()['sheets_tab'],
         ));
 
-        return filter_var($url, FILTER_VALIDATE_URL) ? $url : '';
+        return $tab !== '' ? $tab : self::DEFAULT_TAB;
+    }
+
+    /**
+     * Takes either the bare ID or the whole address out of the browser bar,
+     * since the address is what people copy. Anything else is empty, i.e. off.
+     */
+    public static function parseSpreadsheetId(string $value): string
+    {
+        $value = trim($value);
+
+        if (preg_match('~/spreadsheets/d/([A-Za-z0-9_-]+)~', $value, $match)) {
+            return $match[1];
+        }
+
+        return preg_match('/^[A-Za-z0-9_-]{20,}$/', $value) ? $value : '';
     }
 
     /**
@@ -362,6 +476,34 @@ final class OrderSheetsSync
         );
     }
 
+    /**
+     * A MySQL named lock rather than an option: taking it is atomic, and it is
+     * released with the connection, so a job that dies mid-write cannot leave
+     * the sync locked.
+     */
+    protected static function lock(): bool
+    {
+        global $wpdb;
+
+        return (int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', self::lockName())) === 1;
+    }
+
+    protected static function unlock(): void
+    {
+        global $wpdb;
+
+        $wpdb->get_var($wpdb->prepare('SELECT RELEASE_LOCK(%s)', self::lockName()));
+    }
+
+    /**
+     * Named locks are server-wide, so the name carries the spreadsheet: two
+     * databases on one server writing to two sheets do not wait on each other.
+     */
+    protected static function lockName(): string
+    {
+        return 'kb_sheets_' . md5(self::spreadsheetId());
+    }
+
     protected static function log(string $message, string $level = 'info'): void
     {
         if (! function_exists('wc_get_logger')) {
@@ -372,8 +514,7 @@ final class OrderSheetsSync
     }
 
     /**
-     * The sheet shows an em dash for a missing date or hour, so the payload
-     * carries one rather than an empty cell.
+     * The sheet shows an em dash for a missing date or hour, as doPost() did.
      */
     protected static function orDash(string $value): string
     {

@@ -230,10 +230,6 @@ msgstr "Адреса електронної пошти партнера неко
 msgid "The webhook URL is not valid; the webhook stays off."
 msgstr "URL вебхука некоректний; вебхук лишається вимкненим."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:93
-msgid "The Google Sheets URL is not valid; the sync stays off."
-msgstr "URL Google Sheets некоректний; синхронізація лишається вимкненою."
-
 #: app/Admin/OrderNotificationsSettingsPage.php:118
 msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
 msgstr "Надсилається один раз, коли замовлення переходить у стан «в обробці». Залиште поле порожнім, щоб вимкнути цей канал."
@@ -253,14 +249,6 @@ msgstr "URL вебхука Make.com"
 #: app/Admin/OrderNotificationsSettingsPage.php:160
 msgid "The order is posted here as JSON."
 msgstr "Замовлення надсилається сюди у форматі JSON."
-
-#: app/Admin/OrderNotificationsSettingsPage.php:167
-msgid "Google Sheets web app URL"
-msgstr "URL вебзастосунку Google Sheets"
-
-#: app/Admin/OrderNotificationsSettingsPage.php:180
-msgid "Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet."
-msgstr "Замовлення, що переходять в обробку, виконані, скасовані або повернені, додаються до таблиці. Залиште порожнім на копії сайту — саме це вбереже робочу таблицю від зайвих записів."
 
 #: app/Admin/ProductAttributeIcons.php:240
 #: app/Admin/ProductAttributeIcons.php:251
@@ -301,12 +289,40 @@ msgstr "Менші числа йдуть першими в блоці «попу
 msgid "NIP"
 msgstr "NIP"
 
-#: app/Shop/OrderSheetsSync.php:288
+#: app/Admin/OrderNotificationsSettingsPage.php:97
+msgid "That is not a Google Sheets ID or link; the sync stays off."
+msgstr "Це не ID і не посилання на таблицю Google Sheets; синхронізація лишається вимкненою."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:171
+msgid "Google Sheets spreadsheet"
+msgstr "Таблиця Google Sheets"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:184
+msgid "The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order's row is removed. Only columns A-H are touched."
+msgstr "Посилання на таблицю або її ID. Замовлення, що переходять у статус «в обробці», «виконано» або «повернено», записуються в неї, найновіші зверху; рядок скасованого замовлення видаляється. Змінюються лише колонки A-H."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:191
+msgid "Sheet tab"
+msgstr "Аркуш"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:205
+msgid "Service account"
+msgstr "Сервісний акаунт"
+
+#: app/Admin/OrderNotificationsSettingsPage.php:210
+msgid "Share the spreadsheet with this address as an editor."
+msgstr "Надайте цій адресі доступ до таблиці з правом редагування."
+
+#: app/Admin/OrderNotificationsSettingsPage.php:214
+msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
+msgstr "У цьому середовищі не задано GOOGLE_SHEETS_CREDENTIALS, тому синхронізація вимкнена. На копії сайту так і має бути: це не дає їй писати в робочу таблицю."
+
+#: app/Shop/OrderSheetsSync.php:402
 msgid "Send to Google Sheets"
 msgstr "Надіслати в Google Sheets"
 
 #. 1: order status, 2: number of attempts, 3: failure reason.
-#: app/Shop/OrderSheetsSync.php:336
+#: app/Shop/OrderSheetsSync.php:450
 msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
 msgstr "Не вдалося синхронізувати з Google Sheets для статусу %1$s після %2$d спроб: %3$s"
 

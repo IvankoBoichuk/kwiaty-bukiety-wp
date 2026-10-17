@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Admin;
 
+use App\Shop\GoogleSheetsClient;
 use App\Shop\OrderNotifications;
+use App\Shop\OrderSheetsSync;
 
 /**
  * Appearance → Order Notifications: where a paid order is announced.
@@ -64,7 +66,9 @@ class OrderNotificationsSettingsPage
 
         $email = sanitize_email((string) ($input['partner_email'] ?? ''));
         $url = esc_url_raw(trim((string) ($input['webhook_url'] ?? '')), ['http', 'https']);
-        $sheetsUrl = esc_url_raw(trim((string) ($input['sheets_url'] ?? '')), ['http', 'https']);
+        $sheetsInput = trim((string) ($input['sheets_spreadsheet_id'] ?? ''));
+        $spreadsheetId = OrderSheetsSync::parseSpreadsheetId($sheetsInput);
+        $tab = sanitize_text_field((string) ($input['sheets_tab'] ?? '')) ?: OrderSheetsSync::DEFAULT_TAB;
 
         if ($email !== '' && ! is_email($email)) {
             add_settings_error(
@@ -86,20 +90,19 @@ class OrderNotificationsSettingsPage
             $url = '';
         }
 
-        if ($sheetsUrl !== '' && ! filter_var($sheetsUrl, FILTER_VALIDATE_URL)) {
+        if ($sheetsInput !== '' && $spreadsheetId === '') {
             add_settings_error(
                 OrderNotifications::OPTION_NAME,
-                'sheets_url',
-                __('The Google Sheets URL is not valid; the sync stays off.', 'sage-back'),
+                'sheets_spreadsheet_id',
+                __('That is not a Google Sheets ID or link; the sync stays off.', 'sage-back'),
             );
-
-            $sheetsUrl = '';
         }
 
         return [
             'partner_email' => $email,
             'webhook_url' => $url,
-            'sheets_url' => $sheetsUrl,
+            'sheets_spreadsheet_id' => $spreadsheetId,
+            'sheets_tab' => $tab,
         ];
     }
 
@@ -110,6 +113,7 @@ class OrderNotificationsSettingsPage
         }
 
         $options = OrderNotifications::settings();
+        $credentials = GoogleSheetsClient::credentials();
         ?>
         <div class="wrap">
             <h1><?php echo esc_html__('Order Notifications', 'sage-back'); ?></h1>
@@ -163,22 +167,53 @@ class OrderNotificationsSettingsPage
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="sage-sheets-url">
-                                <?php echo esc_html__('Google Sheets web app URL', 'sage-back'); ?>
+                            <label for="sage-sheets-id">
+                                <?php echo esc_html__('Google Sheets spreadsheet', 'sage-back'); ?>
                             </label>
                         </th>
                         <td>
                             <input
-                                type="url"
-                                id="sage-sheets-url"
+                                type="text"
+                                id="sage-sheets-id"
                                 class="large-text code"
-                                name="<?php echo esc_attr(OrderNotifications::OPTION_NAME); ?>[sheets_url]"
-                                value="<?php echo esc_attr($options['sheets_url']); ?>"
-                                placeholder="https://script.google.com/macros/s/…/exec"
+                                name="<?php echo esc_attr(OrderNotifications::OPTION_NAME); ?>[sheets_spreadsheet_id]"
+                                value="<?php echo esc_attr($options['sheets_spreadsheet_id']); ?>"
+                                placeholder="https://docs.google.com/spreadsheets/d/…/edit"
                             />
                             <p class="description">
-                                <?php echo esc_html__('Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet.', 'sage-back'); ?>
+                                <?php echo esc_html__('The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order\'s row is removed. Only columns A-H are touched.', 'sage-back'); ?>
                             </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="sage-sheets-tab">
+                                <?php echo esc_html__('Sheet tab', 'sage-back'); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <input
+                                type="text"
+                                id="sage-sheets-tab"
+                                class="regular-text"
+                                name="<?php echo esc_attr(OrderNotifications::OPTION_NAME); ?>[sheets_tab]"
+                                value="<?php echo esc_attr($options['sheets_tab']); ?>"
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php echo esc_html__('Service account', 'sage-back'); ?></th>
+                        <td>
+                            <?php if ($credentials !== null) { ?>
+                                <code><?php echo esc_html($credentials['client_email']); ?></code>
+                                <p class="description">
+                                    <?php echo esc_html__('Share the spreadsheet with this address as an editor.', 'sage-back'); ?>
+                                </p>
+                            <?php } else { ?>
+                                <p class="description">
+                                    <?php echo esc_html__('GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet.', 'sage-back'); ?>
+                                </p>
+                            <?php } ?>
                         </td>
                     </tr>
                 </table>

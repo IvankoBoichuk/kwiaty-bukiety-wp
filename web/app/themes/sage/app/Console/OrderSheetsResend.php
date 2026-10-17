@@ -48,9 +48,9 @@ final class OrderSheetsResend
             ));
         }
 
-        if (OrderSheetsSync::url() === '') {
+        if (! OrderSheetsSync::enabled()) {
             \WP_CLI::error(
-                'No Google Sheets URL is set (Appearance -> Order Notifications), so the sync is switched off.',
+                'The sync is switched off: it needs GOOGLE_SHEETS_CREDENTIALS in the environment and a spreadsheet in Appearance -> Order Notifications.',
             );
         }
 

@@ -229,10 +229,6 @@ msgstr ""
 msgid "The webhook URL is not valid; the webhook stays off."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:93
-msgid "The Google Sheets URL is not valid; the sync stays off."
-msgstr ""
-
 #: app/Admin/OrderNotificationsSettingsPage.php:118
 msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
 msgstr ""
@@ -251,14 +247,6 @@ msgstr ""
 
 #: app/Admin/OrderNotificationsSettingsPage.php:160
 msgid "The order is posted here as JSON."
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:167
-msgid "Google Sheets web app URL"
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:180
-msgid "Orders entering processing, completed, cancelled or refunded are appended to the sheet. Leave empty on a copy of the site: that is what keeps it out of the live spreadsheet."
 msgstr ""
 
 #: app/Admin/ProductAttributeIcons.php:240
@@ -300,12 +288,40 @@ msgstr ""
 msgid "NIP"
 msgstr ""
 
-#: app/Shop/OrderSheetsSync.php:288
+#: app/Admin/OrderNotificationsSettingsPage.php:97
+msgid "That is not a Google Sheets ID or link; the sync stays off."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:171
+msgid "Google Sheets spreadsheet"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:184
+msgid "The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order's row is removed. Only columns A-H are touched."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:191
+msgid "Sheet tab"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:205
+msgid "Service account"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:210
+msgid "Share the spreadsheet with this address as an editor."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:214
+msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
+msgstr ""
+
+#: app/Shop/OrderSheetsSync.php:402
 msgid "Send to Google Sheets"
 msgstr ""
 
 #. 1: order status, 2: number of attempts, 3: failure reason.
-#: app/Shop/OrderSheetsSync.php:336
+#: app/Shop/OrderSheetsSync.php:450
 msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
 msgstr ""
 
