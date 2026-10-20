@@ -70,6 +70,10 @@ final class CityHub
      * category and printed on its archive with their FAQPage markup. The FAQ
      * import files them under that term, but the category URL now redirects to
      * this page, so they were shown nowhere.
+     *
+     * The import missed this term: its legacy field held bare h3/p pairs, not
+     * the markup the parser looked for. Until `kb_faq` is filled in, the
+     * questions are read straight from that field.
      */
     public static function appendFaq(mixed $content): mixed
     {
@@ -78,7 +82,13 @@ final class CityHub
         }
 
         $term = get_term_by('slug', self::HUB_SLUG, 'product_cat');
-        $faq = $term instanceof \WP_Term ? Faq::forTerm($term->term_id) : [];
+
+        if (! $term instanceof \WP_Term) {
+            return $content;
+        }
+
+        $faq = Faq::forTerm($term->term_id)
+            ?: Faq::parseLegacyHtml((string) get_term_meta($term->term_id, Faq::LEGACY_META_KEY, true));
 
         if ($faq === []) {
             return $content;

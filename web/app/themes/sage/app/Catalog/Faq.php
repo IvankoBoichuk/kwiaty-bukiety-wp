@@ -123,6 +123,45 @@ final class Faq
         return $items;
     }
 
+    /**
+     * Questions written into the legacy field as plain HTML: each <h3> is a
+     * question, and everything after it up to the next heading is its answer.
+     * That is the shape the "Kwiaciarnie w Polsce" category used on production
+     * (a `.faq-section` of h3/p pairs), which the FAQ import did not pick up.
+     *
+     * @return array<int, array{q: string, a: string}>
+     */
+    public static function parseLegacyHtml(string $html): array
+    {
+        if (trim($html) === '' || ! str_contains(strtolower($html), '<h3')) {
+            return [];
+        }
+
+        $dom = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8"><div>' . $html . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        $items = [];
+
+        foreach ($dom->getElementsByTagName('h3') as $heading) {
+            $answer = '';
+
+            for ($node = $heading->nextSibling; $node !== null; $node = $node->nextSibling) {
+                if ($node instanceof \DOMElement && preg_match('/^h[1-6]$/i', $node->nodeName)) {
+                    break;
+                }
+
+                $answer .= $dom->saveHTML($node);
+            }
+
+            $items[] = ['q' => self::plainText($heading->textContent), 'a' => trim($answer)];
+        }
+
+        return self::normalize($items);
+    }
+
     private static function plainText(string $html): string
     {
         $text = html_entity_decode(wp_strip_all_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');

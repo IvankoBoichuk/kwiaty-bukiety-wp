@@ -301,6 +301,13 @@ if (! function_exists('wp_strip_all_tags')) {
     }
 }
 
+if (! function_exists('wp_kses_post')) {
+    function wp_kses_post(string $value): string
+    {
+        return $value;
+    }
+}
+
 if (! function_exists('__')) {
     function __(string $text, string $domain = 'default'): string
     {
