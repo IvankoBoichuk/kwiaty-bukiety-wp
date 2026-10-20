@@ -34,6 +34,21 @@
             <time class="dt-published" datetime="{{ get_post_time('c', true) }}">{{ get_the_date('d.m.Y') }}</time>
           </p>
 
+          {{-- The byline production printed on every post ("przez Katrinamsl"):
+               it was the only path from the articles to the author archive, and
+               the author is what the article's E-E-A-T rests on. --}}
+          <p class="flex items-center gap-1 text-[13px] leading-5 font-semibold text-[#969998] md:gap-1.5 md:text-[16px] md:leading-6">
+            <svg class="size-4 shrink-0" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <use href="{{ $sprite }}#account"></use>
+            </svg>
+            <span>{{ __('By', 'sage-front') }}</span>
+            <a
+              href="{{ esc_url(get_author_posts_url((int) get_the_author_meta('ID'))) }}"
+              class="p-author h-card hover:text-green-default transition-colors"
+              rel="author"
+            >{{ get_the_author() }}</a>
+          </p>
+
           @include('partials.article-terms', ['taxonomy' => 'category'])
         </div>
 
