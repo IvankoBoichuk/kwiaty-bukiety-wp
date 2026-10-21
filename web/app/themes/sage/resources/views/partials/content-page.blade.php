@@ -19,7 +19,7 @@
    */
   $content = get_the_content();
   $isBlockLayout = PageSections::startsWithSection($content);
-  $runs = $isBlockLayout ? [] : PageSections::split($content) ?: [['section' => false, 'content' => '']];
+  $runs = $isBlockLayout ? [] : (PageSections::split($content) ?: [['section' => false, 'content' => '']]);
   $firstText = array_search(false, array_column($runs, 'section'), true);
 @endphp
 
