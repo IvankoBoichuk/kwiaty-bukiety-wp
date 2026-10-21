@@ -979,6 +979,10 @@ msgstr ""
 msgid "Similar products"
 msgstr ""
 
+#: resources/views/woocommerce/content-single-product.blade.php:146
+msgid "Categories:"
+msgstr ""
+
 #: resources/views/woocommerce/local-linking/back.blade.php:2
 #: resources/views/woocommerce/local-linking/back.blade.php:4
 msgid "Back to the voivodeship"

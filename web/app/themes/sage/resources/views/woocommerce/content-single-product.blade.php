@@ -135,10 +135,20 @@
         </div>
       </section>
     @endif
-    @if ($productData['seoText'] !== '')
+    @if ($productData['seoText'] !== '' || !empty($productData['categories']))
       <section class="bx-container bg-background py-12 lg:py-25">
         <div class="prose prose-a:text-[#0885CD] prose-a:no-underline prose-a:hover:underline max-w-full">
-          {!! wp_kses_post($productData['seoText']) !!}
+          @if ($productData['seoText'] !== '')
+            {!! wp_kses_post($productData['seoText']) !!}
+          @endif
+          @if (!empty($productData['categories']))
+            <p>
+              {{ __('Categories:', 'sage-front') }}
+              @foreach ($productData['categories'] as $category)
+                <a href="{{ $category['url'] }}">{{ $category['name'] }}</a>{{ $loop->last ? '' : ',' }}
+              @endforeach
+            </p>
+          @endif
         </div>
       </section>
     @endif

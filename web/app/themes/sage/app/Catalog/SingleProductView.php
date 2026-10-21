@@ -35,6 +35,7 @@ final class SingleProductView
             'shortDescription' => (string) $this->product->get_short_description(),
             'description' => (string) $this->product->get_description(),
             'seoText' => $this->seoText(),
+            'categories' => $this->categories(),
             'sku' => (string) $this->product->get_sku(),
             'badges' => $this->data->badges(),
             'gallery' => $this->gallery(),
@@ -60,6 +61,46 @@ final class SingleProductView
         $text = trim((string) get_post_meta($this->product->get_id(), 'product_bottom_text', true));
 
         return $text === '' ? '' : wpautop($text);
+    }
+
+    /**
+     * The product's categories, linked under the SEO copy. Production listed
+     * them as "Kategorie:" under every product, and those links were the only
+     * way in to several categories (kwiaty-bukiety, kwiaty-dla-nowozencow, the
+     * cemetery one) and most of the links to the city categories. The default
+     * "Uncategorized" category is left out.
+     *
+     * @return array<int, array{name: string, url: string}>
+     */
+    protected function categories(): array
+    {
+        $terms = get_the_terms($this->product->get_id(), 'product_cat');
+
+        if (!is_array($terms)) {
+            return [];
+        }
+
+        $defaultId = (int) get_option('default_product_cat', 0);
+        $categories = [];
+
+        foreach ($terms as $term) {
+            if ($term->term_id === $defaultId) {
+                continue;
+            }
+
+            $url = get_term_link($term);
+
+            if (is_wp_error($url)) {
+                continue;
+            }
+
+            $categories[] = [
+                'name' => html_entity_decode($term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                'url' => $url,
+            ];
+        }
+
+        return $categories;
     }
 
     /**
