@@ -21,6 +21,15 @@ describe('Faq::parseLegacyHtml', function () {
         ]);
     });
 
+    it('reads an answer stored as bare text, the way ACF keeps the field before wpautop', function () {
+        $html = "<div class=\"faq-section\">\n<h2>FAQ</h2>\n<h3>Q?</h3>\nTak, w całej Polsce.\n<h3>R?</h3>\nB.\n\n</div>";
+
+        expect(Faq::parseLegacyHtml($html))->toBe([
+            ['q' => 'Q?', 'a' => 'Tak, w całej Polsce.'],
+            ['q' => 'R?', 'a' => 'B.'],
+        ]);
+    });
+
     it('stops an answer at the next heading of any level', function () {
         expect(Faq::parseLegacyHtml('<h3>Q?</h3><p>A.</p><h2>Inne</h2><p>Nie odpowiedź.</p>'))
             ->toBe([['q' => 'Q?', 'a' => '<p>A.</p>']]);

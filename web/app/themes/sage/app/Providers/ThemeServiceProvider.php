@@ -15,6 +15,7 @@ use App\Api\Cities;
 use App\Api\DeliverySchedule;
 use App\Api\Healthcheck;
 use App\Api\PostalCode;
+use App\Console\FaqBlockMigrator;
 use App\Console\FaqImporter;
 use App\Console\LegacyBlockMigrator;
 use App\SEO\CityHub;
@@ -181,6 +182,59 @@ class ThemeServiceProvider extends SageServiceProvider
                     $result['terms'],
                     $result['questions'],
                 ));
+            });
+
+            // wp kb-faq to-block <page-slug> [--term=<category-slug>] [--dry-run]
+            \WP_CLI::add_command('kb-faq to-block', function ($args, $assoc) {
+                $pageSlug = (string) ($args[0] ?? '');
+
+                if ($pageSlug === '') {
+                    \WP_CLI::error('Page slug is required.');
+                }
+
+                $page = get_page_by_path($pageSlug);
+                $term = get_term_by('slug', (string) ($assoc['term'] ?? $pageSlug), 'product_cat');
+
+                if (! $page instanceof \WP_Post) {
+                    \WP_CLI::error("No page with slug '{$pageSlug}'.");
+                }
+
+                if (! $term instanceof \WP_Term) {
+                    \WP_CLI::error('No product_cat term with that slug; pass --term=<slug>.');
+                }
+
+                $result = (new FaqBlockMigrator())->migrate($page->post_content, $term);
+
+                foreach ($result['log'] as $line) {
+                    \WP_CLI::log("    {$line}");
+                }
+
+                if (! $result['changed']) {
+                    \WP_CLI::success('Nothing to migrate.');
+
+                    return;
+                }
+
+                if (isset($assoc['dry-run'])) {
+                    \WP_CLI::log($result['content']);
+                    \WP_CLI::success('Dry run, not saved.');
+
+                    return;
+                }
+
+                // Same write as `blocks migrate`: post_content only, with a
+                // revision to roll back to.
+                wp_save_post_revision($page->ID);
+
+                global $wpdb;
+
+                if ($wpdb->update($wpdb->posts, ['post_content' => $result['content']], ['ID' => $page->ID]) === false) {
+                    \WP_CLI::error('Failed to write post_content.');
+                }
+
+                clean_post_cache($page->ID);
+
+                \WP_CLI::success("FAQ block added to page {$page->ID}.");
             });
 
             \WP_CLI::add_command('blocks migrate', function ($args, $assoc) {

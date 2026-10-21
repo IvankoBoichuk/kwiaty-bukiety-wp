@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\SEO;
 
-use App\Catalog\Faq;
 use App\Modules\LocalLinking\LocalPageRepository;
 use App\Modules\LocalLinking\Tables;
 
@@ -60,41 +59,6 @@ final class CityHub
         add_shortcode(self::SHORTCODE, [self::class, 'renderShortcode']);
         add_action('wp_head', [self::class, 'renderSchema'], 20);
         add_action('wp_footer', [self::class, 'renderSearchConfig']);
-        add_filter('the_content', [self::class, 'appendFaq'], 20);
-    }
-
-    /**
-     * The hub's FAQ under the page copy.
-     *
-     * On production the six questions belonged to the "Kwiaciarnie w Polsce"
-     * category and printed on its archive with their FAQPage markup. The FAQ
-     * import files them under that term, but the category URL now redirects to
-     * this page, so they were shown nowhere.
-     *
-     * The import missed this term: its legacy field held bare h3/p pairs, not
-     * the markup the parser looked for. Until `kb_faq` is filled in, the
-     * questions are read straight from that field.
-     */
-    public static function appendFaq(mixed $content): mixed
-    {
-        if (! is_string($content) || ! is_page(self::HUB_SLUG) || ! in_the_loop() || ! is_main_query()) {
-            return $content;
-        }
-
-        $term = get_term_by('slug', self::HUB_SLUG, 'product_cat');
-
-        if (! $term instanceof \WP_Term) {
-            return $content;
-        }
-
-        $faq = Faq::forTerm($term->term_id)
-            ?: Faq::parseLegacyHtml((string) get_term_meta($term->term_id, Faq::LEGACY_META_KEY, true));
-
-        if ($faq === []) {
-            return $content;
-        }
-
-        return $content . view('woocommerce.category-faq', ['faq' => $faq])->render();
     }
 
     /**
