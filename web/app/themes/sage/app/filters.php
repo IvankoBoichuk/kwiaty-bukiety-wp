@@ -7,6 +7,7 @@
 namespace App;
 
 use App\Catalog\Settings;
+use App\Shop\FuneralCartItem;
 use App\Shop\PurchaseRequest;
 
 /**
@@ -624,13 +625,16 @@ function getOrderPurchaseMetaFromCart(): array
         );
     }
 
-    if ($purchaseData['deceased_full_name'] !== '') {
+    // A wreath carries these on its own order line (FuneralCartItem).
+    $fieldsOnItems = FuneralCartItem::cartCarriesFields();
+
+    if (!$fieldsOnItems && $purchaseData['deceased_full_name'] !== '') {
         $meta[__('Deceased\'s full name', 'sage-front')] = wc_clean(
             $purchaseData['deceased_full_name'],
         );
     }
 
-    if ($purchaseData['card_message'] !== '') {
+    if (!$fieldsOnItems && $purchaseData['card_message'] !== '') {
         $meta[__('Card message content', 'sage-front')] = wc_clean(
             $purchaseData['card_message'],
         );

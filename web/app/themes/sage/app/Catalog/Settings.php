@@ -2,6 +2,8 @@
 
 namespace App\Catalog;
 
+use App\Shop\FuneralOptions;
+
 final class Settings
 {
     /**
@@ -35,12 +37,6 @@ final class Settings
      */
     public static function funeralAdditionsProducts(): array
     {
-        $productIds = [
-            1835, // Example product ID for a candle
-        ];
-
-        return array_values(
-            array_filter(array_map('wc_get_product', $productIds)),
-        );
+        return FuneralOptions::additionProducts();
     }
 }

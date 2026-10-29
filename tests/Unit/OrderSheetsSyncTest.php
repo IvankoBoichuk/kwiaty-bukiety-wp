@@ -139,6 +139,20 @@ describe('the row', function () {
             ->toBe('Bukiet Morska Bryza x1, Róże czerwone x3');
     });
 
+    it('adds a wreath\'s deceased name and ribbon message after its name', function () {
+        $order = kb_order(['items' => [
+            new WC_Order_Item_Product('Wieniec serce', 1, [
+                'deceased_full_name' => 'Jan Kowalski',
+                'ribbon_message' => "Ostatnie pożegnanie\nRodzina",
+            ]),
+            new WC_Order_Item_Product('Znicz', 1),
+        ]]);
+
+        expect(OrderSheetsSync::row($order, 'processing')[3])->toBe(
+            "Wieniec serce x1 (Deceased's full name: Jan Kowalski; Ribbon message: Ostatnie pożegnanie Rodzina), Znicz x1",
+        );
+    });
+
     it('reads the date a migrated order carries on the line item', function () {
         // Orders carried over from production spell it with an "e", and keep it
         // on the item rather than the order.

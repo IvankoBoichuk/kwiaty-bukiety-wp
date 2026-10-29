@@ -2,18 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kwiaty Bukiety\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
-"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
 "Last-Translator: \n"
 "Language-Team: Українська\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.8.5; wp-7.0; php-8.2.29\n"
-"X-Domain: sage-back"
+"X-Domain: sage-back\n"
 
 #: app/Admin/CategoryFaqMetabox.php:44
 msgid "FAQ"
@@ -35,7 +35,8 @@ msgstr "Запитання"
 msgid "Answer"
 msgstr "Відповідь"
 
-#: app/Admin/CategoryFaqMetabox.php:93 app/Admin/ContactSettingsPage.php:561
+#: app/Admin/CategoryFaqMetabox.php:93
+#: app/Admin/ContactSettingsPage.php:561
 msgid "Remove"
 msgstr "Видалити"
 
@@ -71,7 +72,8 @@ msgstr "Видалити плитку"
 msgid "— Select a category —"
 msgstr "— Виберіть категорію —"
 
-#: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
+#: app/Admin/ContactSettingsPage.php:37
+#: app/Admin/ContactSettingsPage.php:214
 msgid "Contact Settings"
 msgstr "Налаштування контактів"
 
@@ -91,7 +93,8 @@ msgstr "Телефони"
 msgid "Each item contains a label and phone number."
 msgstr "Кожен елемент містить підпис і номер телефону."
 
-#: app/Admin/ContactSettingsPage.php:237 app/Admin/ContactSettingsPage.php:267
+#: app/Admin/ContactSettingsPage.php:237
+#: app/Admin/ContactSettingsPage.php:267
 msgid "Label"
 msgstr "Підпис"
 
@@ -216,37 +219,37 @@ msgstr "Акцентний елемент"
 msgid "Shown in the header as a filled pill instead of a plain link."
 msgstr "Показується в шапці як заповнена «пігулка» замість звичайного посилання."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:32
-#: app/Admin/OrderNotificationsSettingsPage.php:33
-#: app/Admin/OrderNotificationsSettingsPage.php:115
+#: app/Admin/OrderNotificationsSettingsPage.php:34
+#: app/Admin/OrderNotificationsSettingsPage.php:35
+#: app/Admin/OrderNotificationsSettingsPage.php:119
 msgid "Order Notifications"
 msgstr "Сповіщення про замовлення"
 
-#: app/Admin/OrderNotificationsSettingsPage.php:73
+#: app/Admin/OrderNotificationsSettingsPage.php:77
 msgid "The partner e-mail address is not valid; the e-mail channel stays off."
 msgstr "Адреса електронної пошти партнера некоректна; канал електронної пошти лишається вимкненим."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:83
+#: app/Admin/OrderNotificationsSettingsPage.php:87
 msgid "The webhook URL is not valid; the webhook stays off."
 msgstr "URL вебхука некоректний; вебхук лишається вимкненим."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:118
+#: app/Admin/OrderNotificationsSettingsPage.php:122
 msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
 msgstr "Надсилається один раз, коли замовлення переходить у стан «в обробці». Залиште поле порожнім, щоб вимкнути цей канал."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:128
+#: app/Admin/OrderNotificationsSettingsPage.php:132
 msgid "Partner e-mail"
 msgstr "Електронна пошта партнера"
 
-#: app/Admin/OrderNotificationsSettingsPage.php:140
+#: app/Admin/OrderNotificationsSettingsPage.php:144
 msgid "Receives the fulfilment e-mail with the order details and the partner price."
 msgstr "Отримує лист про виконання із деталями замовлення та партнерською ціною."
 
-#: app/Admin/OrderNotificationsSettingsPage.php:147
+#: app/Admin/OrderNotificationsSettingsPage.php:151
 msgid "Make.com webhook URL"
 msgstr "URL вебхука Make.com"
 
-#: app/Admin/OrderNotificationsSettingsPage.php:160
+#: app/Admin/OrderNotificationsSettingsPage.php:164
 msgid "The order is posted here as JSON."
 msgstr "Замовлення надсилається сюди у форматі JSON."
 
@@ -317,12 +320,13 @@ msgstr "Надайте цій адресі доступ до таблиці з �
 msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
 msgstr "У цьому середовищі не задано GOOGLE_SHEETS_CREDENTIALS, тому синхронізація вимкнена. На копії сайту так і має бути: це не дає їй писати в робочу таблицю."
 
-#: app/Shop/OrderSheetsSync.php:402
+#: app/Shop/OrderSheetsSync.php:409
 msgid "Send to Google Sheets"
 msgstr "Надіслати в Google Sheets"
 
-#. 1: order status, 2: number of attempts, 3: failure reason.
-#: app/Shop/OrderSheetsSync.php:450
+#. translators: 1: order status, 2: number of attempts, 3: failure reason.
+#: app/Shop/OrderSheetsSync.php:457
+#, php-format
 msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
 msgstr "Не вдалося синхронізувати з Google Sheets для статусу %1$s після %2$d спроб: %3$s"
 
@@ -369,3 +373,66 @@ msgstr "Світле лого"
 #: app/setup.php:518
 msgid "Logo Light Large"
 msgstr "Світле лого, велике"
+
+#. Theme Name of the theme
+#: style.css
+msgid "Kwiaty Bukiety"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://roots.io/sage/"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "Sage is a WordPress starter theme."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "Roots"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://roots.io/"
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:38
+#: app/Admin/FuneralSettingsPage.php:39
+#: app/Admin/FuneralSettingsPage.php:137
+msgid "Funeral settings"
+msgstr "Налаштування похоронних товарів"
+
+#: app/Admin/FuneralSettingsPage.php:117
+msgid "The ribbon message price must be a number of 0 or more; the previous price is kept."
+msgstr "Ціна напису на стрічці має бути числом від 0; залишено попередню ціну."
+
+#: app/Admin/FuneralSettingsPage.php:140
+msgid "What the wreath page offers on top of the wreath itself."
+msgstr "Що сторінка вінка пропонує на додачу до самого вінка."
+
+#: app/Admin/FuneralSettingsPage.php:152
+msgid "Add-on products"
+msgstr "Додаткові товари"
+
+#: app/Admin/FuneralSettingsPage.php:162
+msgid "Search for a product…"
+msgstr "Пошук товару…"
+
+#: app/Admin/FuneralSettingsPage.php:178
+msgid "Offered under every wreath, in this order, and added to the cart as separate lines. Leave empty to offer none."
+msgstr "Пропонуються під кожним вінком у цьому порядку й додаються в кошик окремими позиціями. Залиште порожнім, щоб нічого не пропонувати."
+
+#: app/Admin/FuneralSettingsPage.php:185
+msgid "Ribbon message price"
+msgstr "Ціна напису на стрічці"
+
+#: app/Admin/FuneralSettingsPage.php:200
+msgid "Added to the wreath price when the customer fills in the ribbon message. 0 makes the ribbon free. A cart that already holds a wreath keeps the price it was added at."
+msgstr "Додається до ціни вінка, коли клієнт заповнює напис на стрічці. 0 — стрічка безкоштовна. Кошик, де вінок уже лежить, зберігає ціну на момент додавання."
+
+#. Template Name of the theme
+msgid "Custom Template"
+msgstr ""

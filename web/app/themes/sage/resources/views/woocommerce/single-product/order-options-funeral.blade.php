@@ -1,7 +1,12 @@
 @use('App\Catalog\Settings')
+@use('App\Shop\FuneralOptions')
+@php
+  $ribbonPrice = FuneralOptions::ribbonPrice();
+@endphp
 <div
   class="flex flex-col gap-8"
   data-delivery-schedule="{!! esc_attr(wp_json_encode($deliverySchedule, JSON_UNESCAPED_UNICODE)) !!}"
+  data-ribbon-price="{{ $ribbonPrice }}"
 >
   @include('woocommerce.single-product.shop-notices')
 
@@ -67,12 +72,19 @@
         'class' => 'max-lg:col-span-2'
       ])
 
-    {{-- Ribbon message (20 PLN) --}}
+    {{-- Ribbon message, priced in Products -> Funeral settings --}}
     @include('elements.input-text-1',
       [
         'id' => 'card_message_payed',
         'name' => 'cardMessage',
-        'label' => __('Ribbon message (20 PLN)', 'sage-front'),
+        'label' =>
+          $ribbonPrice > 0
+            ? sprintf(
+              /* translators: %s: ribbon price, e.g. "20 zł". */
+              __('Ribbon message (%s)', 'sage-front'),
+              FuneralOptions::formatPrice($ribbonPrice)
+            )
+            : __('Ribbon message', 'sage-front'),
         'icon' => 'message',
         'class' => 'max-lg:col-span-2'
       ])

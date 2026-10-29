@@ -2,18 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kwiaty Bukiety\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
-"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
 "Last-Translator: \n"
 "Language-Team: Polski\n"
-"Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"PO-Revision-Date: 2026-10-04T21:13:24+00:00\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.8.5; wp-7.0; php-8.2.29\n"
-"X-Domain: sage-front"
+"X-Domain: sage-front\n"
 
 #. Theme Name of the theme
 #: style.css
@@ -52,47 +52,47 @@ msgstr "Bestseller"
 msgid "Free delivery"
 msgstr "Darmowa dostawa"
 
-#: app/Catalog/Settings.php:13
+#: app/Catalog/Settings.php:15
 msgid "Private address"
 msgstr "Adres prywatny"
 
-#: app/Catalog/Settings.php:14
+#: app/Catalog/Settings.php:16
 msgid "Company"
 msgstr "Firma"
 
-#: app/Catalog/Settings.php:15
+#: app/Catalog/Settings.php:17
 msgid "Church"
 msgstr "Kościół"
 
-#: app/Catalog/Settings.php:16
+#: app/Catalog/Settings.php:18
 msgid "Funeral home"
 msgstr "Dom pogrzebowy"
 
-#: app/Catalog/Settings.php:17
+#: app/Catalog/Settings.php:19
 msgid "Hospital"
 msgstr "Szpital"
 
-#: app/Catalog/Settings.php:18
+#: app/Catalog/Settings.php:20
 msgid "Hotel"
 msgstr "Hotel"
 
-#: app/Catalog/Settings.php:19
+#: app/Catalog/Settings.php:21
 msgid "School"
 msgstr "Szkoła"
 
-#: app/Catalog/Settings.php:28
+#: app/Catalog/Settings.php:30
 msgid "Leave at the door"
 msgstr "Zostaw przy drzwiach"
 
-#: app/Catalog/Settings.php:29
+#: app/Catalog/Settings.php:31
 msgid "Hand delivery"
 msgstr "Dostawa ręczna"
 
-#: app/Catalog/SingleProductView.php:216
+#: app/Catalog/SingleProductView.php:271
 msgid "Standard"
 msgstr "Standardowy"
 
-#: app/Catalog/SingleProductView.php:225
+#: app/Catalog/SingleProductView.php:280
 msgid "Ready to order right away."
 msgstr "Gotowy do zamówienia od razu."
 
@@ -160,18 +160,21 @@ msgstr "Wprowadź adres e-mail."
 msgid "Tax ID must contain 10 digits."
 msgstr "NIP musi zawierać 10 cyfr."
 
-#: app/Checkout/CartCheckout.php:101 app/Checkout/CartCheckout.php:466
-#: app/Checkout/CartCheckout.php:475
+#: app/Checkout/CartCheckout.php:101
+#: app/Checkout/CartCheckout.php:495
+#: app/Checkout/CartCheckout.php:504
 msgid "Subtotal"
 msgstr "Razem do zapłaty"
 
-#: app/Checkout/CartCheckout.php:102 app/Checkout/CartCheckout.php:467
-#: app/Checkout/CartCheckout.php:479
+#: app/Checkout/CartCheckout.php:102
+#: app/Checkout/CartCheckout.php:496
+#: app/Checkout/CartCheckout.php:508
 msgid "Delivery"
 msgstr "Dostawa"
 
-#: app/Checkout/CartCheckout.php:103 app/Checkout/CartCheckout.php:468
-#: app/Checkout/CartCheckout.php:483
+#: app/Checkout/CartCheckout.php:103
+#: app/Checkout/CartCheckout.php:497
+#: app/Checkout/CartCheckout.php:512
 msgid "Discount"
 msgstr "Rabat"
 
@@ -195,19 +198,21 @@ msgstr "Nie udało się zastosować tego kuponu."
 msgid "We could not remove this coupon."
 msgstr "Nie udało się usunąć tego kuponu."
 
-#: app/Checkout/CartCheckout.php:469 app/Checkout/CartCheckout.php:487
+#: app/Checkout/CartCheckout.php:498
+#: app/Checkout/CartCheckout.php:516
 msgid "Order Total"
 msgstr "Razem za zamówienie"
 
-#: app/SEO/CityHub.php:189
+#: app/SEO/CityHub.php:191
 msgid "No results"
 msgstr "Brak wyników"
 
-#: app/SEO/CityHub.php:190
+#: app/SEO/CityHub.php:192
+#, php-format
 msgid "Suggestions: %d"
 msgstr "Podpowiedzi: %d"
 
-#: app/SEO/CityHub.php:97
+#: app/SEO/CityHub.php:99
 msgid "Voivodeships"
 msgstr "Województwa"
 
@@ -215,8 +220,9 @@ msgstr "Województwa"
 msgid "The selected delivery time is no longer available. Please refresh the page and choose a new time."
 msgstr "Wybrany termin dostawy jest już niedostępny. Prosimy odświeżyć stronę i wybrać nowy termin."
 
-#. %d: hours of notice required before delivery.
+#. translators: %d: hours of notice required before delivery.
 #: app/Shop/LeadTimeRules.php:72
+#, php-format
 msgid "Orders from this category are fulfilled with at least %d hours notice."
 msgstr "Zamówienia z tej kategorii realizujemy wyłącznie z minimum %d-godzinnym wyprzedzeniem."
 
@@ -228,23 +234,27 @@ msgstr "Dla tego produktu należy wybrać datę i godzinę dostawy."
 msgid "Could not read the selected delivery time."
 msgstr "Nie udało się odczytać wybranego terminu dostawy."
 
-#. %d: hours of notice required before delivery.
+#. translators: %d: hours of notice required before delivery.
 #: app/Shop/LeadTimeRules.php:117
+#, php-format
 msgid "Note: orders from this category are fulfilled with at least %d hours notice."
 msgstr "Uwaga: zamówienia z tej kategorii realizujemy wyłącznie z minimum %d-godzinnym wyprzedzeniem."
 
-#. %s: order number.
+#. translators: %s: order number.
 #: app/Shop/OrderNotifications.php:61
+#, php-format
 msgid "New order to fulfil #%s"
 msgstr "Nowe zamówienie do realizacji #%s"
 
-#. %1$d: lowest number of flowers. %2$d: highest number of flowers.
-#: app/Shop/PartnerOrder.php:247
+#. translators: %1$d: lowest number of flowers. %2$d: highest number of flowers.
+#: app/Shop/PartnerOrder.php:249
+#, php-format
 msgid "%1$d–%2$d flowers"
 msgstr "%1$d–%2$d kwiatów"
 
-#. %d: number of flowers.
-#: app/Shop/PartnerOrder.php:256
+#. translators: %d: number of flowers.
+#: app/Shop/PartnerOrder.php:258
+#, php-format
 msgid "%d flowers"
 msgstr "%d kwiatów"
 
@@ -272,8 +282,9 @@ msgstr "Dla zamówień złożonych po 15:00 czasu polskiego, najbliższy termin 
 msgid "Access to the user list is forbidden."
 msgstr "Dostęp do listy użytkowników jest zabroniony."
 
-#. %d: minimum number of stems.
+#. translators: %d: minimum number of stems.
 #: app/Shop/WholesaleDiscount.php:110
+#, php-format
 msgid "The minimum order quantity for this product is %d pcs."
 msgstr "Minimalna ilość zamówienia dla tego produktu to %d szt."
 
@@ -281,21 +292,27 @@ msgstr "Minimalna ilość zamówienia dla tego produktu to %d szt."
 msgid "Opening hours"
 msgstr "Godziny pracy"
 
+#. translators: %s: opening hour of the next delivery slot.
 #: app/Support/DeliveryTimer.php:130
+#, php-format
 msgid "Next delivery tomorrow from %s"
 msgstr "Najbliższa dostawa jutro od %s"
 
+#. translators: %1$s: delivery date. %2$s: opening hour of the next delivery slot.
 #: app/Support/DeliveryTimer.php:135
+#, php-format
 msgid "Next delivery %1$s from %2$s"
 msgstr "Najbliższa dostawa %1$s od %2$s"
 
-#. %s is an hour range, e.g. 9:00 - 18:00
+#. translators: %s is an hour range, e.g. 9:00 - 18:00
 #: app/Support/DeliveryTimer.php:188
+#, php-format
 msgid "Mon-Fri: %s"
 msgstr "pn-pt: %s"
 
-#. %s is an hour range, e.g. 10:00 - 16:00
+#. translators: %s is an hour range, e.g. 10:00 - 16:00
 #: app/Support/DeliveryTimer.php:193
+#, php-format
 msgid "Sat-Sun: %s"
 msgstr "sob-nd: %s"
 
@@ -308,13 +325,14 @@ msgid "Tomorrow"
 msgstr "Jutro"
 
 #: app/View/Composers/CartCheckout.php:28
-#: resources/views/sections/footer.blade.php:3
+#: resources/views/sections/footer.blade.php:2
 #: resources/views/woocommerce/cart/cart.blade.php:37
 msgid "Buy and pay"
 msgstr "Kup i zapłać"
 
-#. %1$s is replaced with the number of comments and %2$s with the post title
+#. translators: %1$s is replaced with the number of comments and %2$s with the post title
 #: app/View/Composers/Comments.php:37
+#, php-format
 msgctxt "comments title"
 msgid "%1$s response to &ldquo;%2$s&rdquo;"
 msgid_plural "%1$s responses to &ldquo;%2$s&rdquo;"
@@ -339,8 +357,10 @@ msgstr "Nowsze komentarze &rarr;"
 msgid "Leave a comment"
 msgstr "Dodaj komentarz"
 
+#. translators: %s is replaced with the name of the comment author being replied to
 #: app/View/Composers/Comments.php:161
 #: resources/views/partials/comment.blade.php:38
+#, php-format
 msgid "Reply to %s"
 msgstr "Odpowiedź do %s"
 
@@ -376,8 +396,9 @@ msgstr "Podziel się swoją opinią o tym artykule"
 msgid "Save my name and e-mail in this browser for my next comment."
 msgstr "Zapisz moje imię i adres e-mail w tej przeglądarce do następnego komentarza."
 
-#. %s is replaced with the display name of the logged-in user
+#. translators: %s is replaced with the display name of the logged-in user
 #: app/View/Composers/Comments.php:304
+#, php-format
 msgid "Commenting as %s."
 msgstr "Komentujesz jako %s."
 
@@ -393,8 +414,10 @@ msgstr "Aby dodać komentarz, musisz się zalogować."
 msgid "Latest Posts"
 msgstr "Najnowsze wpisy"
 
-#. %s is replaced with the search query
-#: app/View/Composers/Post.php:44 resources/views/search.blade.php:50
+#. translators: %s is replaced with the search query
+#: app/View/Composers/Post.php:44
+#: resources/views/search.blade.php:49
+#, php-format
 msgid "Search Results for %s"
 msgstr "Wyniki wyszukiwania dla %s"
 
@@ -406,144 +429,165 @@ msgstr "Nie znaleziono"
 msgid "Pages:"
 msgstr "Strony:"
 
-#: app/filters.php:21
+#: app/filters.php:22
 msgid "Continued"
 msgstr "Kontynuuj"
 
-#: app/filters.php:28
+#: app/filters.php:64
+#, php-format
 msgid "from %s"
 msgstr "od %s"
 
-#: app/filters.php:63
+#: app/filters.php:99
 msgid "Full name"
 msgstr "Pełne imię i nazwisko"
 
-#: app/filters.php:67
+#: app/filters.php:103
 msgid "e.g. John Doe"
 msgstr "np. Jan Kowalski"
 
-#: app/filters.php:75
+#: app/filters.php:111
 msgid "e.g. john.doe@example.com"
 msgstr "np. jan.kowalski@przyklad.pl"
 
-#: app/filters.php:85
+#: app/filters.php:121
 msgid "e.g. John"
 msgstr "np. Jan"
 
-#: app/filters.php:90
+#: app/filters.php:126
 msgid "e.g. Doe"
 msgstr "np. Kowalski"
 
-#: app/filters.php:95 app/filters.php:117
+#: app/filters.php:131
+#: app/filters.php:153
 msgid "e.g. 123 456 789"
 msgstr "np. 123 456 789"
 
-#: app/filters.php:105 app/filters.php:652 app/filters.php:725
+#: app/filters.php:141
+#: app/filters.php:691
+#: app/filters.php:764
 #: app/Shop/OrderAdminColumns.php:75
 msgid "NIP"
 msgstr "NIP"
 
-#: app/filters.php:106
+#: app/filters.php:142
 msgid "e.g. 1234567890"
 msgstr "np. 1234567890"
 
-#: app/filters.php:116
+#: app/filters.php:152
 msgid "Phone number"
 msgstr "Numer telefonu"
 
-#: app/filters.php:124
+#: app/filters.php:160
 msgid "e.g. 00-001"
 msgstr "np. 00-001"
 
-#: app/filters.php:128
+#: app/filters.php:164
 msgid "Postal code"
 msgstr "Kod pocztowy"
 
-#: app/filters.php:138
+#: app/filters.php:174
 msgid "e.g. Warsaw"
 msgstr "np. Warszawa"
 
-#: app/filters.php:142
+#: app/filters.php:178
 msgid "City"
 msgstr "Miasto"
 
-#: app/filters.php:150 app/filters.php:650 app/filters.php:723
+#: app/filters.php:186
+#: app/filters.php:689
+#: app/filters.php:762
 msgid "Place name"
 msgstr "Nazwa miejsca"
 
-#: app/filters.php:151
+#: app/filters.php:187
 msgid "e.g. Hotel Marriott"
 msgstr "np. Hotel Marriott"
 
-#: app/filters.php:156
+#: app/filters.php:192
 msgid "Street and number"
 msgstr "Ulica i numer"
 
-#: app/filters.php:160
+#: app/filters.php:196
 msgid "e.g. ul. Marszałkowska 1/5"
 msgstr "np. ul. Marszałkowska 1/5"
 
-#: app/filters.php:169 app/filters.php:170
+#: app/filters.php:205
+#: app/filters.php:206
 msgid "Delivery place"
 msgstr "Miejsce dostawy"
 
-#: app/filters.php:203
+#: app/filters.php:239
 msgid "Notes about your order, e.g. specials notes for delivery"
 msgstr "Uwagi do zamówienia, np. specjalne notatki dotyczące dostawy"
 
-#: app/filters.php:266 app/filters.php:581 app/filters.php:766
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:45
+#: app/filters.php:302
+#: app/filters.php:617
+#: app/filters.php:805
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:50
 msgid "Delivery location"
 msgstr "Miejsce dostawy"
 
-#: app/filters.php:268 app/filters.php:587 app/filters.php:770
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:55
+#: app/filters.php:304
+#: app/filters.php:623
+#: app/filters.php:809
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:60
 msgid "Delivery type"
 msgstr "Rodzaj dostawy"
 
-#: app/filters.php:476
+#: app/filters.php:512
 msgid "One of the additions was not found."
 msgstr "Nie znaleziono jednego z dodatków."
 
-#: app/filters.php:540
+#: app/filters.php:576
 msgid "Unable to add one of the additions to cart."
 msgstr "Nie można dodać jednego z dodatków do koszyka."
 
-#: app/filters.php:593 app/filters.php:774
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:65
+#: app/filters.php:632
+#: app/filters.php:813
+#: app/Shop/FuneralCartItem.php:138
+#: app/Shop/FuneralCartItem.php:190
+#: app/Shop/FuneralCartItem.php:225
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:70
 msgid "Deceased's full name"
 msgstr "Pełne imię i nazwisko zmarłego"
 
-#: app/filters.php:599 app/filters.php:778
+#: app/filters.php:638
+#: app/filters.php:817
 msgid "Card message content"
 msgstr "Treść wiadomości do karty"
 
-#: app/filters.php:616 app/filters.php:782
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:84
+#: app/filters.php:655
+#: app/filters.php:821
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:95
 msgid "Add-ons"
 msgstr "Dodatki"
 
-#: app/filters.php:646 app/filters.php:719
+#: app/filters.php:685
+#: app/filters.php:758
 msgid "Delivery place type"
 msgstr "Typ miejsca dostawy"
 
-#: app/filters.php:651 app/filters.php:724
+#: app/filters.php:690
+#: app/filters.php:763
 msgid "Recipient phone"
 msgstr "Telefon odbiorcy"
 
-#: app/filters.php:704
+#: app/filters.php:743
 msgid "Please provide the place name."
 msgstr "Proszę podać nazwę miejsca."
 
-#: app/filters.php:764 app/Checkout/CartCheckout.php:294
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:15
+#: app/Checkout/CartCheckout.php:294
+#: app/filters.php:803
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:20
 #: resources/views/woocommerce/single-product/order-options.blade.php:13
 msgid "Delivery date"
 msgstr "Data dostawy"
 
-#: app/filters.php:765 app/Checkout/CartCheckout.php:302
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:30
-#: resources/views/woocommerce/single-product/order-options.blade.php:70
+#: app/Checkout/CartCheckout.php:302
+#: app/filters.php:804
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:35
+#: resources/views/woocommerce/single-product/order-options.blade.php:72
 msgid "Delivery time"
 msgstr "Czas dostawy"
 
@@ -551,31 +595,34 @@ msgstr "Czas dostawy"
 msgid "Page not found"
 msgstr "Nie znaleziono strony"
 
-#: resources/views/404.blade.php:22
+#: resources/views/404.blade.php:21
 msgid "The page you were looking for has been moved or never existed. Search for a bouquet below, or start again from the home page."
 msgstr "Strona, której szukasz, została przeniesiona lub nigdy nie istniała. Poszukaj bukietu poniżej albo wróć na stronę główną."
 
-#: resources/views/404.blade.php:32 resources/views/forms/search.blade.php:3
+#: resources/views/404.blade.php:31
+#: resources/views/forms/search.blade.php:3
 #: resources/views/partials/header-search.blade.php:25
 msgctxt "label"
 msgid "Search for:"
 msgstr "Szukaj:"
 
-#: resources/views/404.blade.php:39 resources/views/forms/search.blade.php:7
+#: resources/views/404.blade.php:38
+#: resources/views/forms/search.blade.php:7
 #: resources/views/partials/header-search.blade.php:32
 msgctxt "placeholder"
 msgid "Search &hellip;"
 msgstr "Szukaj &hellip;"
 
-#: resources/views/404.blade.php:47 resources/views/forms/search.blade.php:13
+#: resources/views/404.blade.php:46
+#: resources/views/forms/search.blade.php:13
 #: resources/views/partials/header-search.blade.php:45
 msgctxt "submit button"
 msgid "Search"
 msgstr "Szukaj"
 
 #: resources/views/404.blade.php:54
-#: resources/views/woocommerce/checkout/thankyou.blade.php:86
-#: resources/views/woocommerce/checkout/thankyou.blade.php:112
+#: resources/views/woocommerce/checkout/thankyou.blade.php:90
+#: resources/views/woocommerce/checkout/thankyou.blade.php:114
 msgid "Back to Home Page"
 msgstr "Wróć do strony głównej"
 
@@ -607,73 +654,75 @@ msgstr "Adres dostawy:"
 msgid "Delivery date and time:"
 msgstr "Data i godzina dostawy:"
 
-#: resources/views/emails/partner-order.blade.php:33
+#: resources/views/emails/partner-order.blade.php:32
 msgid "Order notes:"
 msgstr "Uwagi do zamówienia:"
 
-#: resources/views/emails/partner-order.blade.php:36
+#: resources/views/emails/partner-order.blade.php:35
 msgid "Products:"
 msgstr "Produkty:"
 
-#: resources/views/emails/partner-order.blade.php:49
+#: resources/views/emails/partner-order.blade.php:51
 msgid "Amount:"
 msgstr "Kwota:"
 
-#: resources/views/emails/partner-order.blade.php:54
+#: resources/views/emails/partner-order.blade.php:65
 msgid "Card message:"
 msgstr "Treść bileciku:"
 
-#: resources/views/emails/partner-order.blade.php:58
+#: resources/views/emails/partner-order.blade.php:69
 msgid "Notes:"
 msgstr "Uwagi:"
 
-#: resources/views/emails/partner-order.blade.php:64
+#: resources/views/emails/partner-order.blade.php:75
 msgid "Total amount:"
 msgstr "Łączna kwota:"
 
-#: resources/views/frontenda-blocks/section/cities-1.blade.php:76
+#: resources/views/frontenda-blocks/section/cities-1.blade.php:80
 msgid "More cities"
 msgstr "Więcej miast"
 
 #: resources/views/frontenda-blocks/section/photogallery-1.blade.php:24
 #: resources/views/woocommerce/single-product/gallery.blade.php:6
-#: resources/views/woocommerce/single-product/gallery.blade.php:33
+#: resources/views/woocommerce/single-product/gallery.blade.php:34
 msgid "Previous image"
 msgstr "Poprzednie zdjęcie"
 
 #: resources/views/frontenda-blocks/section/photogallery-1.blade.php:25
 #: resources/views/woocommerce/single-product/gallery.blade.php:7
-#: resources/views/woocommerce/single-product/gallery.blade.php:44
+#: resources/views/woocommerce/single-product/gallery.blade.php:45
 msgid "Next image"
 msgstr "Następne zdjęcie"
 
 #: resources/views/frontenda-blocks/section/photogallery-1.blade.php:28
+#, php-format
 msgid "Go to image %s"
 msgstr "Przejdź do zdjęcia %s"
 
-#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:35
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:36
 msgid "Bouquet"
 msgstr "Bukiet"
 
-#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:50
-#: resources/views/frontenda-blocks/section/products-1.blade.php:62
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:52
+#: resources/views/frontenda-blocks/section/products-1.blade.php:66
 msgid "Previous"
 msgstr "Poprzedni"
 
-#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:57
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:59
 msgid "Gallery navigation"
 msgstr "Nawigacja galerii"
 
-#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:63
-#: resources/views/frontenda-blocks/section/products-1.blade.php:72
+#: resources/views/frontenda-blocks/section/photogallery-1.blade.php:65
+#: resources/views/frontenda-blocks/section/products-1.blade.php:76
 msgid "Next"
 msgstr "Następny"
 
-#: resources/views/index.blade.php:40 resources/views/search.blade.php:58
+#: resources/views/index.blade.php:40
+#: resources/views/search.blade.php:57
 msgid "Sorry, no results were found."
 msgstr "Przepraszamy, nie znaleziono wyników."
 
-#: resources/views/layouts/app.blade.php:30
+#: resources/views/layouts/app.blade.php:28
 msgid "Skip to content"
 msgstr "Przejdź do treści"
 
@@ -698,11 +747,12 @@ msgid "Tags"
 msgstr "Tagi"
 
 #: resources/views/partials/article-terms.blade.php:21
+#: resources/views/woocommerce/category-tiles.blade.php:14
 msgid "Categories"
 msgstr "Kategorie"
 
-#: resources/views/partials/blog-card-featured.blade.php:75
-#: resources/views/partials/blog-card.blade.php:67
+#: resources/views/partials/blog-card-featured.blade.php:78
+#: resources/views/partials/blog-card.blade.php:70
 msgid "Read more"
 msgstr "Czytaj więcej"
 
@@ -710,7 +760,9 @@ msgstr "Czytaj więcej"
 msgid "Blog"
 msgstr "Blog"
 
+#. translators: %d is the page number.
 #: resources/views/partials/blog-pagination.blade.php:47
+#, php-format
 msgid "Page %d"
 msgstr "Strona %d"
 
@@ -763,15 +815,15 @@ msgstr "Odpowiedz"
 msgid "Your comment is awaiting moderation."
 msgstr "Twój komentarz oczekuje na zatwierdzenie."
 
-#: resources/views/partials/comments.blade.php:32
+#: resources/views/partials/comments.blade.php:34
 msgid "Comments"
 msgstr "Komentarze"
 
-#: resources/views/partials/comments.blade.php:49
+#: resources/views/partials/comments.blade.php:51
 msgid "Comments are closed."
 msgstr "Komentarze są zamknięte."
 
-#: resources/views/partials/content-single.blade.php:81
+#: resources/views/partials/content-single.blade.php:97
 msgid "Page"
 msgstr "Strona"
 
@@ -783,39 +835,40 @@ msgstr "Dostawa kwiatów nawet dziś"
 msgid "Order within:"
 msgstr "Zamów w ciągu:"
 
+#: resources/views/partials/content-single.blade.php:44
 #: resources/views/partials/entry-meta.blade.php:4
 msgid "By"
 msgstr "Przez"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:85
+#: resources/views/partials/header-navigation-desktop.blade.php:89
 msgid "Explore"
 msgstr "Odkrywaj"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:98
+#: resources/views/partials/header-navigation-desktop.blade.php:103
 msgid "View all"
 msgstr "Zobacz wszystkie"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:141
+#: resources/views/partials/header-navigation-desktop.blade.php:151
 msgid "Browse section"
 msgstr "Przeglądaj sekcję"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:150
+#: resources/views/partials/header-navigation-desktop.blade.php:160
 msgid "Curated selection"
 msgstr "Wyselekcjonowany wybór"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:154
+#: resources/views/partials/header-navigation-desktop.blade.php:163
 msgid "Discover featured categories, seasonal picks, and the most popular directions in this section."
 msgstr "Odkryj wyróżnione kategorie, sezonowe propozycje i najpopularniejsze kierunki w tej sekcji."
 
-#: resources/views/partials/header-navigation-desktop.blade.php:165
+#: resources/views/partials/header-navigation-desktop.blade.php:174
 msgid "Sections"
 msgstr "Sekcje"
 
-#: resources/views/partials/header-navigation-desktop.blade.php:171
+#: resources/views/partials/header-navigation-desktop.blade.php:179
 msgid "A broader overview of the catalogue with direct access to key destinations."
 msgstr "Szerszy przegląd katalogu z bezpośrednim dostępem do najważniejszych miejsc."
 
-#: resources/views/partials/header-navigation-desktop.blade.php:183
+#: resources/views/partials/header-navigation-desktop.blade.php:191
 msgid "Open section"
 msgstr "Otwórz sekcję"
 
@@ -823,25 +876,25 @@ msgstr "Otwórz sekcję"
 msgid "Toggle navigation"
 msgstr "Przełącz nawigację"
 
-#: resources/views/partials/header-search.blade.php:51
+#: resources/views/partials/header-search.blade.php:52
 msgid "Close"
 msgstr "Zamknij"
 
-#: resources/views/partials/products-load-more.blade.php:7
+#: resources/views/partials/products-load-more.blade.php:12
 msgid "Show more"
 msgstr "Pokaż więcej"
 
-#: resources/views/partials/products-load-more.blade.php:17
+#: resources/views/partials/products-load-more.blade.php:21
 msgid "Loading..."
 msgstr "Ładowanie..."
 
-#: resources/views/sections/header.blade.php:67
+#: resources/views/sections/header.blade.php:71
 msgid "Search"
 msgstr "Szukaj"
 
-#: resources/views/sections/header.blade.php:79
+#: resources/views/sections/header.blade.php:83
 #: resources/views/woocommerce/cart/cart.blade.php:62
-#: resources/views/woocommerce/cart/cart.blade.php:115
+#: resources/views/woocommerce/cart/cart.blade.php:117
 msgid "Cart"
 msgstr "Koszyk"
 
@@ -849,122 +902,123 @@ msgstr "Koszyk"
 msgid "Choose a voivodeship"
 msgstr "Wybierz województwo"
 
-#: resources/views/template-custom.blade.php:1
+#. Template Name of the theme
 msgid "Custom Template"
 msgstr "Szablon niestandardowy"
 
-#: resources/views/woocommerce/cart/cart.blade.php:71
+#: resources/views/woocommerce/cart/cart.blade.php:72
 msgid "Info"
 msgstr "Informacje"
 
-#: resources/views/woocommerce/cart/cart.blade.php:80
+#: resources/views/woocommerce/cart/cart.blade.php:82
 msgid "Payment"
 msgstr "Płatność"
 
-#: resources/views/woocommerce/cart/cart.blade.php:117
-#: resources/views/woocommerce/cart/cart.blade.php:498
+#: resources/views/woocommerce/cart/cart.blade.php:119
+#: resources/views/woocommerce/cart/cart.blade.php:508
 msgid "Checkout"
 msgstr "Zamówienie"
 
-#: resources/views/woocommerce/cart/cart.blade.php:118
+#: resources/views/woocommerce/cart/cart.blade.php:120
 msgid "Your order"
 msgstr "Twoje zamówienie"
 
-#: resources/views/woocommerce/cart/cart.blade.php:137
+#: resources/views/woocommerce/cart/cart.blade.php:139
 msgid "Image"
 msgstr "Zdjęcie"
 
-#: resources/views/woocommerce/cart/cart.blade.php:138
+#: resources/views/woocommerce/cart/cart.blade.php:140
 msgid "Details"
 msgstr "Szczegóły"
 
-#: resources/views/woocommerce/cart/cart.blade.php:139
+#: resources/views/woocommerce/cart/cart.blade.php:141
 msgid "Quantity"
 msgstr "Ilość"
 
-#: resources/views/woocommerce/cart/cart.blade.php:140
+#: resources/views/woocommerce/cart/cart.blade.php:142
 msgid "Price"
 msgstr "Cena"
 
-#: resources/views/woocommerce/cart/cart.blade.php:141
-#: resources/views/woocommerce/cart/cart.blade.php:430
+#: resources/views/woocommerce/cart/cart.blade.php:143
+#: resources/views/woocommerce/cart/cart.blade.php:438
 msgid "Total"
 msgstr "Razem"
 
-#: resources/views/woocommerce/cart/cart.blade.php:176
-#: resources/views/woocommerce/cart/cart.blade.php:258
+#: resources/views/woocommerce/cart/cart.blade.php:178
+#: resources/views/woocommerce/cart/cart.blade.php:260
 msgid "Remove item"
 msgstr "Usuń produkt"
 
-#: resources/views/woocommerce/cart/cart.blade.php:269
+#: resources/views/woocommerce/cart/cart.blade.php:271
 msgid "Your cart is empty"
 msgstr "Twój koszyk jest pusty"
 
-#: resources/views/woocommerce/cart/cart.blade.php:274
+#: resources/views/woocommerce/cart/cart.blade.php:276
 msgid "Back to shop"
 msgstr "Powrót do sklepu"
 
-#: resources/views/woocommerce/cart/cart.blade.php:297
+#: resources/views/woocommerce/cart/cart.blade.php:300
 msgid "Recipient details"
 msgstr "Dane odbiorcy"
 
-#: resources/views/woocommerce/cart/cart.blade.php:304
+#: resources/views/woocommerce/cart/cart.blade.php:308
 msgid "Sender details"
 msgstr "Dane nadawcy"
 
-#: resources/views/woocommerce/cart/cart.blade.php:311
+#: resources/views/woocommerce/cart/cart.blade.php:316
 msgid "Delivery notes"
 msgstr "Uwagi do dostawy"
 
-#: resources/views/woocommerce/cart/cart.blade.php:367
+#: resources/views/woocommerce/cart/cart.blade.php:372
 msgid "Payment method"
 msgstr "Metoda płatności"
 
-#: resources/views/woocommerce/cart/cart.blade.php:483
+#: resources/views/woocommerce/cart/cart.blade.php:491
+#, php-format
 msgid "Total: %s"
 msgstr "Razem: %s"
 
-#: resources/views/woocommerce/cart/cart.blade.php:511
+#: resources/views/woocommerce/cart/cart.blade.php:522
 msgid "Continue to payment"
 msgstr "Kontynuuj do płatności"
 
-#: resources/views/woocommerce/cart/cart.blade.php:522
+#: resources/views/woocommerce/cart/cart.blade.php:534
 msgid "Processing..."
 msgstr "Przetwarzanie..."
 
-#: resources/views/woocommerce/category-faq.blade.php:14
+#: resources/views/woocommerce/category-faq.blade.php:15
 msgid "FAQ"
 msgstr "Najczęściej zadawane pytania"
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:24
+#: resources/views/woocommerce/checkout/thankyou.blade.php:28
 msgid "Please try to pay for the order again or choose a different payment method."
 msgstr "Spróbuj ponownie zapłacić za zamówienie lub wybierz inną metodę płatności."
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:49
+#: resources/views/woocommerce/checkout/thankyou.blade.php:53
 msgid "Order Confirmation"
 msgstr "Potwierdzenie zamówienia"
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:58
+#: resources/views/woocommerce/checkout/thankyou.blade.php:62
 msgid "Order Successful!"
 msgstr "Zamówienie złożone!"
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:62
+#: resources/views/woocommerce/checkout/thankyou.blade.php:66
 msgid "Thank you for choosing us for your flower delivery."
 msgstr "Dziękujemy za wybranie naszej usługi dostawy kwiatów."
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:63
+#: resources/views/woocommerce/checkout/thankyou.blade.php:67
 msgid "Your order has been successfully placed, and a confirmation has been sent to your email address."
 msgstr "Twoje zamówienie zostało pomyślnie złożone, a potwierdzenie zostało wysłane na Twój adres e-mail."
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:70
+#: resources/views/woocommerce/checkout/thankyou.blade.php:73
 msgid "Expected delivery"
 msgstr "Przewidywany termin dostawy"
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:102
+#: resources/views/woocommerce/checkout/thankyou.blade.php:106
 msgid "Thank You for Your Order"
 msgstr "Dziękujemy za zamówienie"
 
-#: resources/views/woocommerce/checkout/thankyou.blade.php:104
+#: resources/views/woocommerce/checkout/thankyou.blade.php:107
 msgid "Your order confirmation has been saved."
 msgstr "Potwierdzenie zamówienia zostało zapisane."
 
@@ -976,11 +1030,11 @@ msgstr "Wybierz datę dostawy"
 msgid "Choose a delivery time"
 msgstr "Wybierz godzinę dostawy"
 
-#: resources/views/woocommerce/content-single-product.blade.php:126
+#: resources/views/woocommerce/content-single-product.blade.php:131
 msgid "Similar products"
 msgstr "Podobne produkty"
 
-#: resources/views/woocommerce/content-single-product.blade.php:146
+#: resources/views/woocommerce/content-single-product.blade.php:149
 msgid "Categories:"
 msgstr "Kategorie:"
 
@@ -990,6 +1044,7 @@ msgid "Back to the voivodeship"
 msgstr "Powrót do województwa"
 
 #: resources/views/woocommerce/local-linking/back.blade.php:9
+#, php-format
 msgid "← Back to %s voivodeship"
 msgstr "← Wróć do województwa %s"
 
@@ -997,7 +1052,8 @@ msgstr "← Wróć do województwa %s"
 msgid "Nearby cities"
 msgstr "Sąsiednie miasta"
 
-#: resources/views/woocommerce/local-linking/popular.blade.php:6
+#: resources/views/woocommerce/local-linking/popular.blade.php:5
+#, php-format
 msgid "Popular in %s"
 msgstr "Popularne w %s"
 
@@ -1045,20 +1101,16 @@ msgstr "Opis produktu"
 msgid "Close gallery"
 msgstr "Zamknij galerię"
 
-#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:75
-msgid "Ribbon message (20 PLN)"
-msgstr "Treść szarfy (20 zł)"
-
-#: resources/views/woocommerce/single-product/order-options.blade.php:43
-#: resources/views/woocommerce/single-product/order-options.blade.php:53
+#: resources/views/woocommerce/single-product/order-options.blade.php:45
+#: resources/views/woocommerce/single-product/order-options.blade.php:55
 msgid "Custom date"
 msgstr "Inna data"
 
-#: resources/views/woocommerce/single-product/order-options.blade.php:102
+#: resources/views/woocommerce/single-product/order-options.blade.php:106
 msgid "Card message"
 msgstr "Wiadomość do karty"
 
-#: resources/views/woocommerce/single-product/order-options.blade.php:108
+#: resources/views/woocommerce/single-product/order-options.blade.php:112
 msgid "Leave empty if you don't need a card"
 msgstr "Pozostaw puste, jeśli nie potrzebujesz bileciku"
 
@@ -1066,7 +1118,7 @@ msgstr "Pozostaw puste, jeśli nie potrzebujesz bileciku"
 msgid "Reviews"
 msgstr "Opinie"
 
-#: resources/views/woocommerce/single-product/reviews.blade.php:15
+#: resources/views/woocommerce/single-product/reviews.blade.php:16
 msgid "More Reviews"
 msgstr "Więcej opinii"
 
@@ -1074,15 +1126,17 @@ msgstr "Więcej opinii"
 msgid "Important:"
 msgstr "Ważne:"
 
-#: resources/views/woocommerce/single-product/shop-notices.blade.php:26
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:27
 msgid "Bulk discount"
 msgstr "Rabat ilościowy"
 
-#: resources/views/woocommerce/single-product/shop-notices.blade.php:32
+#: resources/views/woocommerce/single-product/shop-notices.blade.php:33
+#, php-format
 msgid "from %1$d pcs. — %2$d%% off"
 msgstr "od %1$d szt. — %2$d%% taniej"
 
 #: resources/views/woocommerce/single-product/shop-notices.blade.php:43
+#, php-format
 msgid "Minimum order quantity: %d pcs."
 msgstr "Minimalna ilość zamówienia: %d szt."
 
@@ -1330,3 +1384,30 @@ msgstr "sm"
 msgctxt "Font size name"
 msgid "xs"
 msgstr "xs"
+
+#. translators: %s: ribbon price, e.g. "20 zł".
+#: app/Shop/FuneralCartItem.php:150
+#, php-format
+msgid "Ribbon message (+%s)"
+msgstr "Treść szarfy (+%s)"
+
+#: app/Shop/FuneralCartItem.php:153
+#: app/Shop/FuneralCartItem.php:191
+#: app/Shop/FuneralCartItem.php:226
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:86
+msgid "Ribbon message"
+msgstr "Treść szarfy"
+
+#: resources/views/emails/partner-order.blade.php:57
+msgid "Deceased's full name:"
+msgstr "Pełne imię i nazwisko zmarłego:"
+
+#: resources/views/emails/partner-order.blade.php:61
+msgid "Ribbon message:"
+msgstr "Treść szarfy:"
+
+#. translators: %s: ribbon price, e.g. "20 zł".
+#: resources/views/woocommerce/single-product/order-options-funeral.blade.php:83
+#, php-format
+msgid "Ribbon message (%s)"
+msgstr "Treść szarfy (%s)"

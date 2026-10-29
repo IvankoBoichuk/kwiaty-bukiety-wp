@@ -300,6 +300,10 @@ final class OrderSheetsSync
     }
 
     /**
+     * "Name xQty", with a wreath's deceased name and ribbon message in
+     * brackets after it: the sheet has no column of its own for them, and
+     * columns past H are not ours to add.
+     *
      * @return array<int, string>
      */
     public static function products(WC_Order $order): array
@@ -311,7 +315,10 @@ final class OrderSheetsSync
                 continue;
             }
 
-            $products[] = $item->get_name() . ' x' . (int) $item->get_quantity();
+            $product = $item->get_name() . ' x' . (int) $item->get_quantity();
+            $note = FuneralCartItem::orderItemNote($item);
+
+            $products[] = $note !== '' ? $product . ' (' . $note . ')' : $product;
         }
 
         return $products;

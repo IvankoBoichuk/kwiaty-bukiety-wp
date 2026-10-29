@@ -50,6 +50,20 @@
         {!! wc_price($item['partner_price'], $currency) !!}
       </p>
 
+      @if ($item['deceased'] !== '')
+        <p style="margin: 0 0 6px">
+          <strong>{{ __("Deceased's full name:", 'sage-front') }}</strong>
+          {{ $item['deceased'] }}
+        </p>
+      @endif
+
+      @if ($item['ribbon'] !== '')
+        <p style="margin: 0 0 6px">
+          <strong>{{ __('Ribbon message:', 'sage-front') }}</strong>
+          {{ $item['ribbon'] }}
+        </p>
+      @endif
+
       @if ($item['card'] !== '')
         <p style="margin: 0 0 6px"><strong>{{ __('Card message:', 'sage-front') }}</strong> {{ $item['card'] }}</p>
       @endif

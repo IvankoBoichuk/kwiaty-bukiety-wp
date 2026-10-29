@@ -321,7 +321,23 @@ class CartCheckout
             : $product->get_name();
     }
 
+    /**
+     * The variation on the first line, then one line per field the line
+     * carries (a wreath's deceased name and ribbon message). Must match
+     * itemSummary() in CartCheckoutStore.ts, which redraws it from the Store
+     * API after every change.
+     */
     protected function itemSummary(array $cartItem, WC_Product $product): string
+    {
+        $lines = array_merge(
+            [$this->variationLine($cartItem, $product)],
+            $this->itemDataLines($cartItem),
+        );
+
+        return implode("\n", array_filter($lines, static fn(string $line) => $line !== ''));
+    }
+
+    protected function variationLine(array $cartItem, WC_Product $product): string
     {
         if (!($product instanceof WC_Product_Variation)) {
             return '';
@@ -337,21 +353,34 @@ class CartCheckout
             }
         }
 
-        if (function_exists('wc_get_formatted_cart_item_data')) {
-            $summary = $this->normalizeSummary(
-                wc_get_formatted_cart_item_data($cartItem, true),
+        return $this->normalizeSummary(
+            wc_get_formatted_variation($product, true, false, true),
+        );
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function itemDataLines(array $cartItem): array
+    {
+        $lines = [];
+
+        foreach ((array) apply_filters('woocommerce_get_item_data', [], $cartItem) as $data) {
+            if (!is_array($data) || !empty($data['hidden'])) {
+                continue;
+            }
+
+            $label = $this->normalizeSummary((string) ($data['key'] ?? ''));
+            $value = $this->normalizeSummary(
+                (string) ($data['display'] ?? ($data['value'] ?? '')),
             );
 
-            if ($summary !== '') {
-                return $summary;
+            if ($label !== '' && $value !== '') {
+                $lines[] = sprintf('%s: %s', $label, $value);
             }
         }
 
-        $summary = $this->normalizeSummary(
-            wc_get_formatted_variation($product, true, false, true),
-        );
-
-        return $summary;
+        return $lines;
     }
 
     protected function variationSummary(

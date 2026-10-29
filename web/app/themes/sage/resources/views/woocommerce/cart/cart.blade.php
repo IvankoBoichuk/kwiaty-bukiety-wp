@@ -162,7 +162,7 @@
                         x-text="item.name"
                       ></a>
                       <p
-                        class="text-green-default/75 text-body-13 md:text-body-14"
+                        class="text-green-default/75 text-body-13 md:text-body-14 whitespace-pre-line"
                         x-show="item.summary"
                         x-text="item.summary"
                       ></p>
@@ -450,7 +450,7 @@
                       <span class="font-bold text-green-default" x-text="item.name"></span>
                     </div>
                     <span
-                      class="text-[#426E59]"
+                      class="block whitespace-pre-line text-[#426E59]"
                       x-show="item.summary"
                       x-text="item.summary">
                     </span>

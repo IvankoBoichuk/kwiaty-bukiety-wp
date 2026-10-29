@@ -9,10 +9,35 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T21:13:24+00:00\n"
+"POT-Creation-Date: 2026-10-29T13:51:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sage-back\n"
+
+#. Theme Name of the theme
+#: style.css
+msgid "Kwiaty Bukiety"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://roots.io/sage/"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "Sage is a WordPress starter theme."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "Roots"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://roots.io/"
+msgstr ""
 
 #: app/Admin/CategoryFaqMetabox.php:44
 msgid "FAQ"
@@ -34,7 +59,8 @@ msgstr ""
 msgid "Answer"
 msgstr ""
 
-#: app/Admin/CategoryFaqMetabox.php:93 app/Admin/ContactSettingsPage.php:561
+#: app/Admin/CategoryFaqMetabox.php:93
+#: app/Admin/ContactSettingsPage.php:561
 msgid "Remove"
 msgstr ""
 
@@ -70,7 +96,8 @@ msgstr ""
 msgid "— Select a category —"
 msgstr ""
 
-#: app/Admin/ContactSettingsPage.php:37 app/Admin/ContactSettingsPage.php:214
+#: app/Admin/ContactSettingsPage.php:37
+#: app/Admin/ContactSettingsPage.php:214
 msgid "Contact Settings"
 msgstr ""
 
@@ -90,7 +117,8 @@ msgstr ""
 msgid "Each item contains a label and phone number."
 msgstr ""
 
-#: app/Admin/ContactSettingsPage.php:237 app/Admin/ContactSettingsPage.php:267
+#: app/Admin/ContactSettingsPage.php:237
+#: app/Admin/ContactSettingsPage.php:267
 msgid "Label"
 msgstr ""
 
@@ -207,6 +235,40 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: app/Admin/FuneralSettingsPage.php:38
+#: app/Admin/FuneralSettingsPage.php:39
+#: app/Admin/FuneralSettingsPage.php:137
+msgid "Funeral settings"
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:117
+msgid "The ribbon message price must be a number of 0 or more; the previous price is kept."
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:140
+msgid "What the wreath page offers on top of the wreath itself."
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:152
+msgid "Add-on products"
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:162
+msgid "Search for a product…"
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:178
+msgid "Offered under every wreath, in this order, and added to the cart as separate lines. Leave empty to offer none."
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:185
+msgid "Ribbon message price"
+msgstr ""
+
+#: app/Admin/FuneralSettingsPage.php:200
+msgid "Added to the wreath price when the customer fills in the ribbon message. 0 makes the ribbon free. A cart that already holds a wreath keeps the price it was added at."
+msgstr ""
+
 #: app/Admin/NavMenuAccent.php:62
 msgid "Accent item"
 msgstr ""
@@ -215,38 +277,66 @@ msgstr ""
 msgid "Shown in the header as a filled pill instead of a plain link."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:32
-#: app/Admin/OrderNotificationsSettingsPage.php:33
-#: app/Admin/OrderNotificationsSettingsPage.php:115
+#: app/Admin/OrderNotificationsSettingsPage.php:34
+#: app/Admin/OrderNotificationsSettingsPage.php:35
+#: app/Admin/OrderNotificationsSettingsPage.php:119
 msgid "Order Notifications"
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:73
+#: app/Admin/OrderNotificationsSettingsPage.php:77
 msgid "The partner e-mail address is not valid; the e-mail channel stays off."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:83
+#: app/Admin/OrderNotificationsSettingsPage.php:87
 msgid "The webhook URL is not valid; the webhook stays off."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:118
+#: app/Admin/OrderNotificationsSettingsPage.php:97
+msgid "That is not a Google Sheets ID or link; the sync stays off."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:122
 msgid "Sent once when an order moves to \"processing\". Leave a field empty to switch that channel off."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:128
+#: app/Admin/OrderNotificationsSettingsPage.php:132
 msgid "Partner e-mail"
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:140
+#: app/Admin/OrderNotificationsSettingsPage.php:144
 msgid "Receives the fulfilment e-mail with the order details and the partner price."
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:147
+#: app/Admin/OrderNotificationsSettingsPage.php:151
 msgid "Make.com webhook URL"
 msgstr ""
 
-#: app/Admin/OrderNotificationsSettingsPage.php:160
+#: app/Admin/OrderNotificationsSettingsPage.php:164
 msgid "The order is posted here as JSON."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:171
+msgid "Google Sheets spreadsheet"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:184
+msgid "The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order's row is removed. Only columns A-H are touched."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:191
+msgid "Sheet tab"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:205
+msgid "Service account"
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:210
+msgid "Share the spreadsheet with this address as an editor."
+msgstr ""
+
+#: app/Admin/OrderNotificationsSettingsPage.php:214
+msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
 msgstr ""
 
 #: app/Admin/ProductAttributeIcons.php:240
@@ -282,47 +372,6 @@ msgstr ""
 
 #: app/Modules/LocalLinking/PopularOrderAdmin.php:101
 msgid "Lower numbers come first in the \"popular cities\" block. Leave empty to order automatically."
-msgstr ""
-
-#: app/Shop/OrderAdminColumns.php:48
-msgid "NIP"
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:97
-msgid "That is not a Google Sheets ID or link; the sync stays off."
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:171
-msgid "Google Sheets spreadsheet"
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:184
-msgid "The spreadsheet link or its ID. Orders entering processing, completed or refunded are written to it, newest at the top; a cancelled order's row is removed. Only columns A-H are touched."
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:191
-msgid "Sheet tab"
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:205
-msgid "Service account"
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:210
-msgid "Share the spreadsheet with this address as an editor."
-msgstr ""
-
-#: app/Admin/OrderNotificationsSettingsPage.php:214
-msgid "GOOGLE_SHEETS_CREDENTIALS is not set in this environment, so the sync is off. That is intended on a copy of the site: it keeps it out of the live spreadsheet."
-msgstr ""
-
-#: app/Shop/OrderSheetsSync.php:402
-msgid "Send to Google Sheets"
-msgstr ""
-
-#. 1: order status, 2: number of attempts, 3: failure reason.
-#: app/Shop/OrderSheetsSync.php:450
-msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
 msgstr ""
 
 #: app/setup.php:365
@@ -367,4 +416,22 @@ msgstr ""
 
 #: app/setup.php:518
 msgid "Logo Light Large"
+msgstr ""
+
+#: app/Shop/OrderAdminColumns.php:48
+msgid "NIP"
+msgstr ""
+
+#: app/Shop/OrderSheetsSync.php:409
+msgid "Send to Google Sheets"
+msgstr ""
+
+#. translators: 1: order status, 2: number of attempts, 3: failure reason.
+#: app/Shop/OrderSheetsSync.php:457
+#, php-format
+msgid "Google Sheets sync failed for status %1$s after %2$d attempts: %3$s"
+msgstr ""
+
+#. Template Name of the theme
+msgid "Custom Template"
 msgstr ""

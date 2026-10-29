@@ -177,8 +177,13 @@ function formatVariationLabel(label?: string): string {
     return normalized.charAt(0).toUpperCase() + normalized.slice(1)
 }
 
-function variationSummary(item: WooStoreApiCartResponse['items'][number]): string {
-    const variationLines = (item.variation || [])
+/**
+ * The variation on the first line, then one line per field the line carries
+ * (a wreath's deceased name and ribbon message). Must match
+ * CartCheckout::itemSummary(), which draws the first paint.
+ */
+function itemSummary(item: WooStoreApiCartResponse['items'][number]): string {
+    const variationLine = (item.variation || [])
         .map((entry) => {
             const label = formatVariationLabel(entry.attribute)
             const value = stripHtml(entry.value)
@@ -186,12 +191,17 @@ function variationSummary(item: WooStoreApiCartResponse['items'][number]): strin
             return label && value ? `${label}: ${value}` : ''
         })
         .filter(Boolean)
+        .join(', ')
 
-    if (variationLines.length > 0) {
-        return variationLines.join(', ')
-    }
+    const itemDataLines = (item.item_data || [])
+        .map((entry) => {
+            const label = stripHtml(entry.name ?? entry.key)
+            const value = stripHtml(entry.display ?? entry.value)
 
-    return ''
+            return label && value ? `${label}: ${value}` : ''
+        })
+
+    return [variationLine, ...itemDataLines].filter(Boolean).join('\n')
 }
 
 function mapStoreApiCart(cart: CartCheckoutStoreApiCartResponse) {
@@ -206,7 +216,7 @@ function mapStoreApiCart(cart: CartCheckoutStoreApiCartResponse) {
             unitPrice: formatStoreApiMoney(item.prices?.price || '0', item.prices),
             image: item.images?.[0]?.src,
             imageAlt: item.images?.[0]?.alt,
-            summary: variationSummary(item),
+            summary: itemSummary(item),
         })),
         coupons: (cart.coupons || []).map((coupon) => ({
             code: coupon.code,

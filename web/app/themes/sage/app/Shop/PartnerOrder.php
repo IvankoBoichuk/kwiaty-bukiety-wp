@@ -139,7 +139,7 @@ final class PartnerOrder
     }
 
     /**
-     * @return array<int, array{name: string, quantity: int, flowers: string, card: string, notes: string, partner_price: float}>
+     * @return array<int, array{name: string, quantity: int, flowers: string, card: string, notes: string, deceased: string, ribbon: string, partner_price: float}>
      */
     public function items(): array
     {
@@ -158,6 +158,8 @@ final class PartnerOrder
                 'flowers' => $extras['flowers'],
                 'card' => $extras['card'],
                 'notes' => $extras['notes'],
+                'deceased' => trim((string) $item->get_meta(FuneralCartItem::DECEASED_META, true)),
+                'ribbon' => trim((string) $item->get_meta(FuneralCartItem::RIBBON_META, true)),
                 'partner_price' => self::partnerPrice((float) $item->get_total()),
             ];
         }

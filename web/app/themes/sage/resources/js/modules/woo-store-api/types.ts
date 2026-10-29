@@ -71,7 +71,9 @@ export interface StoreApiItemVariation {
 
 export interface StoreApiItemDataEntry {
     key?: string
+    name?: string
     value?: string
+    display?: string
 }
 
 export interface StoreApiItemPrices extends StoreApiMoney {
