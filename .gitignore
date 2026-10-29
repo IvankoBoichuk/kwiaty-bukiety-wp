@@ -52,3 +52,6 @@ phpunit.xml
 tests/perf/.reports/
 # Responsive screenshot suite output
 tests/screenshots/.output/
+
+# make db-pull / db-push dumps
+.backups/

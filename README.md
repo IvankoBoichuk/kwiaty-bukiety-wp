@@ -312,20 +312,33 @@ commits: `!:` або `BREAKING CHANGE:` → major, `feat:` → minor, `fix:` →
 
   Без неї автокомпліт міста й індексу в чекауті не працює.
 
-### Перенести прод на локальну машину
+### База й uploads: сервер ⇄ локалка
+
+`Makefile` у корені. Працює з хоста, коли запущений devcontainer, а на сервер
+ходить через `ssh kb` (Host у `~/.ssh/config`).
 
 ```bash
-mysqldump -h <host> -u <user> -p --single-transaction --default-character-set=utf8mb4 <database> > stage-$(date +%F-%H%M).sql
-tar -czf uploads-$(date +%F-%H%M).tar.gz web/app/uploads
+make pull ENV=dev          # БД + uploads з dev
+make db-pull ENV=prod      # тільки БД з проду
+make uploads-pull          # тільки uploads (ENV=dev за замовчуванням)
+make db-push ENV=dev       # локальна БД → dev, просить ввести `dev` для підтвердження
+make uploads-push ENV=dev
 ```
 
-Локально:
+Перед кожним перезаписом знімається дамп того, що перезаписується: локальний
+лежить у `.backups/`, серверний у `~/backups/kwiaty-bukiety/`. Після pull
+URL-и замінюються на `http://localhost:8000`, після push навпаки.
 
-```bash
-mysql -h database -u wordpress -ppassword wordpress < stage-<timestamp>.sql
-tar -xzf uploads-<timestamp>.tar.gz
-wp search-replace 'https://dev.kwiaty-bukiety.com.pl' 'http://localhost:8084'
-```
+На Hostinger у PHP вимкнений `exec()`, тому `wp db export/import` там не
+працює. Серверну частину робить [bin/remote-db.sh](bin/remote-db.sh): він
+викликає `mysqldump`/`mysql` напряму. Сервер працює на MariaDB 11, а
+devcontainer на MySQL 8, тож при pull дамп підправляється під MySQL
+(collation `uca1400`, sandbox-рядок).
+
+Прод поки що звичайний WordPress, а не Bedrock: префікс таблиць `upjig_`,
+uploads лежать у `wp-content/`. Pull це враховує: перейменовує префікс на
+`wp_` і переписує `/wp-content/uploads` на `/app/uploads`. Push на прод
+заблокований, бо в нього інша тема й інші плагіни.
 
 ## Блоки
 
