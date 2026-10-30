@@ -598,10 +598,57 @@ add_filter('body_class', function ($classes) {
     return array_merge($classes, ['flex', 'flex-col', 'min-h-screen']);
 });
 
+// The delivery date, time and card message live in the session rather than on
+// the line, since the cart holds one main product. They are listed under that
+// product so the cart and the checkout summary show what was picked (KB-112).
 add_filter(
     'woocommerce_get_item_data',
     function ($itemData, $cartItem) {
-        unset($cartItem);
+        if (
+            !is_array($itemData)
+            || !is_array($cartItem)
+            || !empty($cartItem['is_sage_addition'])
+        ) {
+            return $itemData;
+        }
+
+        $purchaseData = getPurchaseSessionData();
+        $deliveryDate = $purchaseData['delivery_date'];
+
+        if ($deliveryDate !== '') {
+            $timestamp = strtotime($deliveryDate);
+
+            $itemData[] = [
+                'key' => __('Delivery date', 'sage-front'),
+                'value' => $timestamp !== false
+                    ? date_i18n('d.m.Y', $timestamp)
+                    : wc_clean($deliveryDate),
+            ];
+        }
+
+        if ($purchaseData['delivery_time'] !== '') {
+            $itemData[] = [
+                'key' => __('Delivery time', 'sage-front'),
+                'value' => wc_clean($purchaseData['delivery_time']),
+            ];
+        }
+
+        // A wreath lists this as its ribbon message (FuneralCartItem). One
+        // line, as the page renders it, so the cart reads the same after the
+        // Store API redraws it.
+        $cardMessage = trim(
+            (string) preg_replace('/\s+/', ' ', $purchaseData['card_message']),
+        );
+
+        if (
+            $cardMessage !== ''
+            && !isset($cartItem[FuneralCartItem::RIBBON_KEY])
+        ) {
+            $itemData[] = [
+                'key' => __('Card message', 'sage-front'),
+                'value' => $cardMessage,
+            ];
+        }
 
         return $itemData;
     },
