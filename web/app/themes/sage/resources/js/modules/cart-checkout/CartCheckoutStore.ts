@@ -91,16 +91,6 @@ const INFO_STEP_FIELD_NAMES = [
     'order_comments',
 ] as const
 
-const SHIPPING_PLACE_TYPES = {
-    PRIVATE_ADDRESS: 'private-address',
-    COMPANY: 'company',
-    CHURCH: 'church',
-    FUNERAL_HOME: 'funeral-home',
-    HOSPITAL: 'hospital',
-    HOTEL: 'hotel',
-    SCHOOL: 'school',
-}
-
 /*
  * The validation copy now arrives in the config instead of the global wp.i18n,
  * which was only reachable because two render-blocking scripts ran ahead of
@@ -120,11 +110,7 @@ const infoStepSchema = () => yup.object({
         .required(t('postcodeRequired', 'Enter the postal code.')),
     shipping_city: yup.string().trim().required(t('cityRequired', 'Enter the city.')),
     shipping_first_name: yup.string().trim().required(t('recipientNameRequired', 'Enter the recipient full name.')),
-    shipping_place_name: yup.string().trim().when('shipping_type_of_place', {
-        is: SHIPPING_PLACE_TYPES.PRIVATE_ADDRESS,
-        then: (schema) => schema.required(t('locationNameRequired', 'Enter the location name.')),
-        otherwise: (schema) => schema,
-    }),
+    shipping_place_name: yup.string().trim(),
     shipping_phone: yup.string().trim().required(t('recipientPhoneRequired', 'Enter the recipient phone number.')),
     billing_first_name: yup.string().trim().required(t('senderFirstNameRequired', 'Enter the sender first name.')),
     billing_last_name: yup.string().trim().required(t('senderLastNameRequired', 'Enter the sender last name.')),

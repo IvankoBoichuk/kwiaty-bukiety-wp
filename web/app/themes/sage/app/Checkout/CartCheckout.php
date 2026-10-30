@@ -70,7 +70,6 @@ class CartCheckout
                 'Enter the recipient full name.',
                 'sage-front',
             ),
-            'locationNameRequired' => __('Enter the location name.', 'sage-front'),
             'recipientPhoneRequired' => __(
                 'Enter the recipient phone number.',
                 'sage-front',

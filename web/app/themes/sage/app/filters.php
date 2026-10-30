@@ -128,6 +128,7 @@ add_filter(
             'sage-front',
         );
         $fields['billing']['billing_last_name']['required'] = true;
+        $fields['billing']['billing_phone']['required'] = true;
         $fields['billing']['billing_phone']['placeholder'] = __(
             'e.g. 123 456 789', //'np. 123 456 789',
             'sage-front',
@@ -718,31 +719,6 @@ add_action(
         }
 
         addOrderPurchaseMeta($order);
-    },
-    10,
-    2,
-);
-
-add_action(
-    'woocommerce_after_checkout_validation',
-    function ($data, $errors) {
-        $shippingTypeOfPlace = wc_clean(
-            (string) ($data['shipping_type_of_place'] ?? ''),
-        );
-        $shippingPlaceName = wc_clean(
-            (string) ($data['shipping_place_name'] ?? ''),
-        );
-
-        if (
-            $shippingTypeOfPlace === 'private-address'
-            && $shippingPlaceName === ''
-            && $errors instanceof \WP_Error
-        ) {
-            $errors->add(
-                'shipping_place_name_required',
-                __('Please provide the place name.', 'sage-front'),
-            );
-        }
     },
     10,
     2,
