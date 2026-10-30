@@ -724,9 +724,30 @@ add_action(
     2,
 );
 
+/*
+ * The Store API checks required address fields against the country locale,
+ * which billing and shipping share. The recipient has one full-name field, so
+ * a one-word name arrives without a last name and the order was rejected
+ * with "Nazwisko jest wymagane". The sender's last name stays required: the
+ * classic form sets that per field, and the Store API hook below checks it.
+ */
+add_filter('woocommerce_get_country_locale_default', function ($locale) {
+    $locale['last_name']['required'] = false;
+
+    return $locale;
+});
+
 add_action(
     'woocommerce_store_api_checkout_update_order_from_request',
     function (\WC_Order $order, \WP_REST_Request $request) {
+        if (trim((string) $order->get_billing_last_name()) === '') {
+            throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+                'woocommerce_rest_invalid_address',
+                esc_html__('Enter the sender last name.', 'sage-front'),
+                400,
+            );
+        }
+
         $additionalFields = (array) ($request['additional_fields'] ?? []);
 
         foreach (

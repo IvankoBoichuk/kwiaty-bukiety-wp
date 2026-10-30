@@ -338,6 +338,27 @@ function buildAddress(formData: FormData, prefix: 'billing' | 'shipping'): Store
     return address
 }
 
+/*
+ * The recipient has a single "full name" field, but WooCommerce keeps first
+ * and last names apart. Splitting at the last space keeps multi-word first
+ * names together; a one-word name stays in first_name, which the server
+ * accepts since the last name is optional there.
+ */
+function splitFullName(address: StoreApiAddress): StoreApiAddress {
+    const fullName = address.first_name?.trim() ?? ''
+    const lastSpace = fullName.lastIndexOf(' ')
+
+    if (address.last_name || lastSpace === -1) {
+        return address
+    }
+
+    return {
+        ...address,
+        first_name: fullName.slice(0, lastSpace).trim(),
+        last_name: fullName.slice(lastSpace + 1),
+    }
+}
+
 function mergeAddressFallback(primary: StoreApiAddress, fallback: StoreApiAddress): StoreApiAddress {
     const merged = { ...primary }
 
@@ -390,7 +411,7 @@ function buildCheckoutOrderRequest(form: HTMLFormElement, selectedPaymentMethod:
         formData.set('billing_phone', billingPhone)
     }
 
-    const shippingAddress = buildAddress(formData, 'shipping')
+    const shippingAddress = splitFullName(buildAddress(formData, 'shipping'))
     const billingAddress = mergeAddressFallback(
         buildAddress(formData, 'billing'),
         shippingAddress,

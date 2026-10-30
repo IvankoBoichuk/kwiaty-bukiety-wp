@@ -83,13 +83,10 @@ export function normalizeIntlTelInputValue(input: HTMLInputElement): string {
 
     const normalizedValue = instance.getNumber('E164')
 
-    if (!normalizedValue) {
-        return input.value.trim()
-    }
-
-    input.value = normalizedValue
-
-    return normalizedValue
+    // Only the request gets the E.164 number. Writing it back into the field
+    // put "+380" in it next to the separate dial code, so a checkout that
+    // failed and stayed on the page showed the code twice.
+    return normalizedValue || input.value.trim()
 }
 
 export function isIntlTelInputValid(input: HTMLInputElement): boolean {
