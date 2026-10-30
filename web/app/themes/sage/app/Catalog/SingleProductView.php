@@ -42,6 +42,7 @@ final class SingleProductView
             'variations' => $this->variations(),
             'variationAttributes' => $this->variationAttributes(),
             'availableVariations' => $this->availableVariations(),
+            'defaultVariationId' => $this->defaultVariationId(),
             'isVariable' => $this->product instanceof WC_Product_Variable,
             'additions' => $this->crossSells(),
             'reviews' => $this->reviews(),
@@ -171,6 +172,69 @@ final class SingleProductView
         $this->cache['availableVariations'] = $this->product->get_available_variations();
 
         return $this->cache['availableVariations'];
+    }
+
+    /**
+     * The variation the page opens on, before the customer picks a size.
+     *
+     * The product page used to take the first available variation, which is
+     * whatever sits first in menu order -- on most bouquets that is Deluxe, so
+     * "Cena łączna" opened on the dearest size (KB-114). The default form values
+     * set in WooCommerce win when the shop has set them; otherwise the page opens
+     * on the cheapest variation the customer can actually buy.
+     */
+    protected function defaultVariationId(): ?int
+    {
+        $availableVariations = $this->availableVariations();
+
+        if ($availableVariations === []) {
+            return null;
+        }
+
+        $defaultAttributes = $this->product->get_default_attributes();
+
+        if ($defaultAttributes !== []) {
+            foreach ($availableVariations as $variation) {
+                if ($this->variationMatchesAttributes($variation, $defaultAttributes)) {
+                    return absint($variation['variation_id'] ?? 0) ?: null;
+                }
+            }
+        }
+
+        $purchasable = array_values(array_filter(
+            $availableVariations,
+            fn(array $variation): bool => !empty($variation['is_in_stock']) && !empty($variation['is_purchasable']),
+        ));
+        $candidates = $purchasable ?: $availableVariations;
+        $cheapest = null;
+
+        foreach ($candidates as $variation) {
+            if ($cheapest === null || (float) $variation['display_price'] < (float) $cheapest['display_price']) {
+                $cheapest = $variation;
+            }
+        }
+
+        return absint($cheapest['variation_id'] ?? 0) ?: null;
+    }
+
+    /**
+     * @param array<string, mixed> $variation
+     * @param array<string, string> $attributes Keyed by attribute name, without the "attribute_" prefix.
+     */
+    protected function variationMatchesAttributes(array $variation, array $attributes): bool
+    {
+        $variationAttributes = is_array($variation['attributes'] ?? null) ? $variation['attributes'] : [];
+
+        foreach ($attributes as $attributeName => $attributeValue) {
+            $variationValue = $variationAttributes['attribute_' . sanitize_title((string) $attributeName)] ?? null;
+
+            // An empty value means the variation accepts "any" option for that attribute.
+            if ($variationValue !== '' && $variationValue !== (string) $attributeValue) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

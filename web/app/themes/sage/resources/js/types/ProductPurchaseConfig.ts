@@ -10,6 +10,7 @@ export interface ProductPurchaseConfig {
     currencyThousandSeparator: string
     currencyMinorUnit: number
     isVariable: boolean
+    defaultVariationId?: number | null
     storeApiNonce: string
     i18n?: Strings
 }

@@ -44,6 +44,7 @@
         : ' ',
       'currencyMinorUnit' => function_exists('wc_get_price_decimals') ? (int) wc_get_price_decimals() : 2,
       'isVariable' => $product->is_type('variable'),
+      'defaultVariationId' => $productData['defaultVariationId'] ?? null,
       'storeApiNonce' => (string) wp_create_nonce('wc_store_api'),
       // Travels in the config rather than through @wordpress/i18n, so the
       // bundle needs neither the global wp.i18n nor the two render-blocking

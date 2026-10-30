@@ -39,7 +39,11 @@ export class VariationsPlugin implements ProductPlugin {
 
         this.#buttonsWrapper.addEventListener('click', this.createClickHandler)
 
-        const defaultVariation = this.#variations[0]
+        // The server picks the opening size (shop default, else the cheapest) -- menu order
+        // puts Deluxe first on most bouquets (KB-114).
+        const defaultVariationId = window.product?.defaultVariationId
+        const defaultVariation = this.#variations.find((variation) => variation.variation_id === defaultVariationId)
+            ?? this.#variations[0]
 
         if (defaultVariation) {
             this.applyVariation(defaultVariation)
